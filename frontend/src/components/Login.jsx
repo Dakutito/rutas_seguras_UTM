@@ -40,7 +40,7 @@ const Login = ({ onLogin }) => {
       }
 
       const response = await axios.post(
-        `${API_URL}/auth/login',
+        `${API_URL}/auth/login`,
         loginData
       )
 
