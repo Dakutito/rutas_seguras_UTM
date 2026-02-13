@@ -90,13 +90,10 @@ router.post('/register', [
     // URL que el usuario clickeará en su correo
     const verifyLink = `${process.env.FRONTEND_URL || 'http://localhost:5173'}/verify-email?token=${verificationToken}`;
 
-    // --- ENVÍO DE EMAIL ---
-    try {
-      await sendVerificationEmail(normalizedEmail, name, verifyLink);
-      console.log(`Correo enviado a: ${normalizedEmail}`);
-    } catch (mailError) {
-      console.error("Error al enviar correo, pero el usuario fue creado:", mailError);
-    }
+    // --- ENVÍO DE EMAIL (No bloqueante) ---
+    sendVerificationEmail(normalizedEmail, name, verifyLink)
+      .then(() => console.log(`✅ Correo enviado a: ${normalizedEmail}`))
+      .catch(mailError => console.error("❌ Error al enviar correo (en segundo plano):", mailError.message));
 
     res.status(201).json({
       message: 'Registro exitoso. Revisa tu correo para verificar tu cuenta.',
@@ -255,6 +252,15 @@ router.post('/login', [
     console.error('Error en login:', error);
     res.status(500).json({ error: 'Error al iniciar sesión' });
   }
+});
+
+// Manejo de GET en rutas que solo deben ser POST (para evitar confusiones)
+router.get('/login', (req, res) => {
+  res.status(405).json({ error: 'El login solo acepta peticiones POST' });
+});
+
+router.get('/register', (req, res) => {
+  res.status(405).json({ error: 'El registro solo acepta peticiones POST' });
 });
 
 module.exports = router;
