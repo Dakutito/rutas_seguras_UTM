@@ -10,7 +10,7 @@ import MapView from './pages/MapView'
 import AdminPanel from './pages/AdminPanel'
 import AdminStats from './pages/AdminStats'
 import AdminUsers from './pages/Adminusers'
-import AdminReports from './pages/AdminReports'
+import Adminreports from './pages/Adminreports'
 import RecursosEducativos from './pages/RecursosEducativos'
 
 import Login from './components/Login'
@@ -266,7 +266,7 @@ function App() {
             path="/admin/danger"
             element={
               user && isAdmin ? (
-                <AdminReports type="danger" />
+                <Adminreports type="danger" />
               ) : (
                 <Navigate to="/login" replace />
               )
@@ -277,7 +277,7 @@ function App() {
             path="/admin/today"
             element={
               user && isAdmin ? (
-                <AdminReports type="today" />
+                <Adminreports type="today" />
               ) : (
                 <Navigate to="/login" replace />
               )
@@ -288,7 +288,7 @@ function App() {
             path="/admin/all-reports"
             element={
               user && isAdmin ? (
-                <AdminReports type="all-reports" />
+                <Adminreports type="all-reports" />
               ) : (
                 <Navigate to="/login" replace />
               )
