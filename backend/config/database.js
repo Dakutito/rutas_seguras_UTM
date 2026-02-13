@@ -8,26 +8,45 @@ if (dns.setDefaultResultOrder) {
 }
 
 // Configuración de conexión a PostgreSQL
-const pool = new Pool({
-  // Si existe DATABASE_URL (producción), usarla
-  connectionString: process.env.DATABASE_URL,
-  // Si no existe, usar variables individuales (desarrollo)
-  host: process.env.DB_HOST,
-  port: process.env.DB_PORT,
-  user: process.env.DB_USER,
-  password: process.env.DB_PASSWORD,
-  database: process.env.DB_NAME,
-  // Configuración para producción (SSL)
-  ssl: process.env.NODE_ENV === 'production' ? {
-    rejectUnauthorized: false
-  } : false,
-  // Configuración de pool
-  max: 20,
+// Configuración de conexión con parseo manual para asegurar IPv4
+const isProduction = process.env.NODE_ENV === 'production';
+const connectionString = process.env.DATABASE_URL;
+
+const config = {
+  connectionTimeoutMillis: 5000,
   idleTimeoutMillis: 30000,
-  connectionTimeoutMillis: 2000,
-  // Forzar IPv4 para evitar errores ENETUNREACH en despliegues con Node 17+
+  max: 20,
+  // 🚨 CRÍTICO: Forzar IPv4
   family: 4,
-});
+};
+
+if (connectionString) {
+  // Parsear URL manualmente si existe (Producción/Render)
+  const match = connectionString.match(/postgres:\/\/([^:]+):([^@]+)@([^:]+):(\d+)\/(.+)/);
+  if (match) {
+    config.user = match[1];
+    config.password = match[2];
+    config.host = match[3];
+    config.port = match[4];
+    config.database = match[5];
+
+    // Configuración SSL para Supabase
+    config.ssl = { rejectUnauthorized: false };
+  } else {
+    // Fallback si el regex falla (no debería)
+    config.connectionString = connectionString;
+    config.ssl = { rejectUnauthorized: false };
+  }
+} else {
+  // Desarrollo
+  config.host = process.env.DB_HOST;
+  config.port = process.env.DB_PORT;
+  config.user = process.env.DB_USER;
+  config.password = process.env.DB_PASSWORD;
+  config.database = process.env.DB_NAME;
+}
+
+const pool = new Pool(config);
 
 // Probar conexión
 pool.on('connect', () => {
