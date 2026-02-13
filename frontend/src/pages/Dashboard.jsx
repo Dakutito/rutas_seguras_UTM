@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import '../styles/Components.css'
 
-const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api'
+import { reportsAPI } from '../services/api' // Importar API centralizada
 
 const Dashboard = ({ user }) => {
   const navigate = useNavigate()
@@ -19,24 +19,18 @@ const Dashboard = ({ user }) => {
   const loadUserReports = async () => {
     setLoading(true)
     try {
-      const token = localStorage.getItem('token')
-      const response = await fetch(`${API_URL}/reports/my-reports`, {
-        headers: { 'Authorization': `Bearer ${token}` }
-      })
+      const data = await reportsAPI.getMyReports() // Usar servicio centralizado
+      setUserReports(data)
+      setReportCount(data.length)
 
-      if (response.ok) {
-        const data = await response.json()
-        setUserReports(data)
-        setReportCount(data.length)
+      // Calcular impacto basado en reportes negativos
+      const negativeReports = data.filter(r => ['😢', '😡', '😰', '😨'].includes(r.emotion)).length
+      const total = data.length
+      if (total === 0) setImpactLevel('Low')
+      else if (negativeReports / total > 0.5) setImpactLevel('High')
+      else if (negativeReports / total > 0.2) setImpactLevel('Medium')
+      else setImpactLevel('Low')
 
-        // Calcular impacto basado en reportes negativos
-        const negativeReports = data.filter(r => ['😢', '😡', '😰', '😨'].includes(r.emotion)).length
-        const total = data.length
-        if (total === 0) setImpactLevel('Low')
-        else if (negativeReports / total > 0.5) setImpactLevel('High')
-        else if (negativeReports / total > 0.2) setImpactLevel('Medium')
-        else setImpactLevel('Low')
-      }
     } catch (error) {
       console.error('Error:', error)
     } finally {
@@ -48,13 +42,8 @@ const Dashboard = ({ user }) => {
     if (!window.confirm('¿Eliminar este reporte?')) return
 
     try {
-      const token = localStorage.getItem('token')
-      const response = await fetch(`${API_URL}/reports/${reportId}`, {
-        method: 'DELETE',
-        headers: { 'Authorization': `Bearer ${token}` }
-      })
-
-      if (response.ok) loadUserReports()
+      await reportsAPI.delete(reportId) // Usar servicio centralizado
+      loadUserReports()
     } catch (error) {
       console.error('Error:', error)
     }
@@ -102,7 +91,7 @@ const Dashboard = ({ user }) => {
                 </div>
                 <div className='subcontenidohistorialreportetotaluser'>
                   {userReports.map(r => (
-                    <div className='sub_subcontenidohistorialreportetotaluser' key={r.id} style={{borderLeft: `6px solid ${r.emotion_color}` }}>
+                    <div className='sub_subcontenidohistorialreportetotaluser' key={r.id} style={{ borderLeft: `6px solid ${r.emotion_color}` }}>
                       <div className='botonesreportehistorial'>
                         <div style={{ flex: 1 }}>
                           <div style={{ display: 'flex', gap: '12px', marginBottom: '12px' }}>

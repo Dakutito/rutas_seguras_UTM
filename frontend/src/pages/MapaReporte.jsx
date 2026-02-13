@@ -4,8 +4,7 @@ import { MapContainer, TileLayer, Marker, Circle, Popup, useMapEvents } from 're
 import L from 'leaflet'
 import 'leaflet/dist/leaflet.css'
 import '../styles/reporteusers.css'
-
-const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api'
+import { incidentsAPI } from '../services/api'
 
 // Iconos de Leaflet
 import markerIcon2x from 'leaflet/dist/images/marker-icon-2x.png'
@@ -39,8 +38,7 @@ const MapaReporte = ({ user, viewOnly = false }) => {
   useEffect(() => {
     const loadCategories = async () => {
       try {
-        const response = await fetch(`${API_URL}/incident-categories`)
-        const data = await response.json()
+        const data = await incidentsAPI.getCategories()
         const formatted = data.map(cat => ({
           value: cat.name,
           label: cat.name,
@@ -60,8 +58,7 @@ const MapaReporte = ({ user, viewOnly = false }) => {
   useEffect(() => {
     const loadIncidents = async () => {
       try {
-        const response = await fetch(`${API_URL}/incidents`)
-        const data = await response.json()
+        const data = await incidentsAPI.getAll()
         setExistingIncidents(Array.isArray(data) ? data : [])
       } catch (error) {
         console.error('Error:', error)
@@ -102,28 +99,15 @@ const MapaReporte = ({ user, viewOnly = false }) => {
     setLoading(true)
 
     try {
-      const token = localStorage.getItem('token')
-      const response = await fetch(`${API_URL}/incidents`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`
-        },
-        body: JSON.stringify({
-          incident_type: incidentType,
-          description: description.trim(),
-          latitude: position.lat,
-          longitude: position.lng
-        })
+      await incidentsAPI.create({
+        incident_type: incidentType,
+        description: description.trim(),
+        latitude: position.lat,
+        longitude: position.lng
       })
 
-      if (response.ok) {
-        alert('Incidente reportado exitosamente')
-        navigate('/reportes')
-      } else {
-        const error = await response.json()
-        alert(`Error: ${error.error}`)
-      }
+      alert('Incidente reportado exitosamente')
+      navigate('/reportes')
     } catch (error) {
       console.error('Error:', error)
       alert('Error al enviar el reporte')
@@ -157,12 +141,12 @@ const MapaReporte = ({ user, viewOnly = false }) => {
           <div style={{ display: 'flex', gap: '10px', flexWrap: 'wrap' }}>
             {/* Botón inicio usuario */}
             {!viewOnly && (
-            <button
-              onClick={() => navigate('/dashboard')}
-              className="map-preview-btn"
-            >
-              inicio
-            </button>
+              <button
+                onClick={() => navigate('/dashboard')}
+                className="map-preview-btn"
+              >
+                inicio
+              </button>
             )}
             <button
               onClick={() => navigate('/reportes')}

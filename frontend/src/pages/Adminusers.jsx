@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import '../styles/Components.css'
 
-const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api'
+import { usersAPI } from '../services/api'
 
 const AdminUsers = () => {
   const [users, setUsers] = useState([])
@@ -13,9 +13,7 @@ const AdminUsers = () => {
   // 1. CARGA REAL DESDE LA BASE DE DATOS
   const loadUsers = async () => {
     try {
-      const response = await fetch(`${API_URL}/users`);
-      if (!response.ok) throw new Error('Error al conectar con el servidor');
-      const data = await response.json();
+      const data = await usersAPI.getAll()
       setUsers(Array.isArray(data) ? data : []);
     } catch (error) {
       console.error("Error cargando usuarios de la DB:", error);
@@ -34,12 +32,8 @@ const AdminUsers = () => {
   const handleToggleStatus = async (id, currentStatus) => {
     const newStatus = currentStatus === 'active' ? 'suspended' : 'active';
     try {
-      const response = await fetch(`${API_URL}/users/${id}/status`, {
-        method: 'PATCH',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ status: newStatus })
-      });
-      if (response.ok) loadUsers();
+      await usersAPI.updateStatus(id, newStatus)
+      loadUsers();
     } catch (error) {
       alert("No se pudo cambiar el estado en la base de datos");
     }
@@ -49,10 +43,8 @@ const AdminUsers = () => {
   const handleDelete = async (id) => {
     if (!window.confirm('¿Estás seguro de eliminar este usuario de la base de datos?')) return;
     try {
-      const response = await fetch(`${API_URL}/users/${id}`, {
-        method: 'DELETE'
-      });
-      if (response.ok) loadUsers();
+      await usersAPI.delete(id)
+      loadUsers();
     } catch (error) {
       alert("Error al eliminar el usuario");
     }
@@ -72,12 +64,12 @@ const AdminUsers = () => {
   const suspendedCount = users.filter(u => u.status === 'suspended').length;
   const totalReports = users.reduce((acc, curr) => acc + parseInt(curr.reports_count || 0), 0);
 
-  if (loading && users.length === 0) return <div style={{color: 'white', textAlign: 'center', padding: '50px'}}>Conectando a PostgreSQL...</div>;
+  if (loading && users.length === 0) return <div style={{ color: 'white', textAlign: 'center', padding: '50px' }}>Conectando a PostgreSQL...</div>;
 
   return (
     <div className="container">
       <div className="gestionuseradinmodooscuro">
-        
+
         <div className='sub_gestionuseradinmodooscuro'>
           <div>
             <h1>Gestión de Usuarios</h1>

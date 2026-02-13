@@ -1,8 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
-import axios from 'axios';
-
-const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api'
+import { authAPI } from '../services/api';
 
 function VerifyEmail() {
   const [status, setStatus] = useState('loading');
@@ -25,15 +23,13 @@ function VerifyEmail() {
 
   const verifyEmail = async (token) => {
     try {
-      const response = await axios.get(
-        `${API_URL}/auth/verify-email/${token}`
-      );
+      const data = await authAPI.verifyEmail(token);
 
       setStatus('success');
-      setMessage(response.data.message);
+      setMessage(data.message);
 
-      if (response.data.token) {
-        localStorage.setItem('token', response.data.token);
+      if (data.token) {
+        localStorage.setItem('token', data.token);
       }
 
       setTimeout(() => {
@@ -42,7 +38,8 @@ function VerifyEmail() {
 
     } catch (error) {
       setStatus('error');
-      setMessage(error.response?.data?.error || 'Error al verificar el email');
+      const errorData = error.data || error.response?.data
+      setMessage(errorData?.error || 'Error al verificar el email');
     }
   };
 

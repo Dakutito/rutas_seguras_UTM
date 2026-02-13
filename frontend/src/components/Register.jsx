@@ -1,9 +1,7 @@
 import { useState } from 'react'
 import { useNavigate, Link } from 'react-router-dom'
-import axios from 'axios'
+import { authAPI } from '../services/api'
 import '../styles/Components.css'
-
-const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api'
 
 const Register = () => {
   const navigate = useNavigate()
@@ -31,7 +29,7 @@ const Register = () => {
     }
 
     try {
-      const response = await axios.post(`${API_URL}/auth/register`, {
+      await authAPI.register({
         name: formData.name.trim(),
         email: formData.email.toLowerCase().trim(),
         password: formData.password
@@ -40,20 +38,21 @@ const Register = () => {
       alert('Registro exitoso. Revisa tu correo.')
       setTimeout(() => navigate('/login'), 3000)
     } catch (err) {
-      setError(err.response?.data?.error || 'Error al registrar usuario.')
+      const errorData = err.data || err.response?.data
+      setError(errorData?.error || 'Error al registrar usuario.')
     }
   }
 
   return (
     <div className="auth-container" style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '100vh', background: '#0f172a' }}>
-      
+
       {/* Contenedor Principal en Grid para dividir Izquierda y Derecha */}
-      <div style={{ 
-        display: 'grid', 
-        gridTemplateColumns: 'repeat(auto-fit, minmax(350px, 1fr))', 
-        gap: '20px', 
-        maxWidth: '1100px', 
-        width: '100%' 
+      <div style={{
+        display: 'grid',
+        gridTemplateColumns: 'repeat(auto-fit, minmax(350px, 1fr))',
+        gap: '20px',
+        maxWidth: '1100px',
+        width: '100%'
       }}>
 
         {/* COLUMNA IZQUIERDA: FORMULARIO */}
@@ -79,7 +78,7 @@ const Register = () => {
             <label style={{ color: '#cbd5e1', fontSize: '14px' }}>Confirmar Contraseña</label>
             <input type="password" value={formData.confirmPassword} onChange={e => setFormData({ ...formData, confirmPassword: e.target.value })} required style={{ background: '#334155', border: '1px solid #475569', color: 'white', marginBottom: '20px' }} />
 
-            <button type="submit" className="btn-primary" style={{ width: '100%', padding: '12px', background: '#3b82f6', fontWeight: '600', border:'none', borderRadius: '8px', cursor:'pointer' }}>
+            <button type="submit" className="btn-primary" style={{ width: '100%', padding: '12px', background: '#3b82f6', fontWeight: '600', border: 'none', borderRadius: '8px', cursor: 'pointer' }}>
               Crear Cuenta →
             </button>
           </form>
@@ -135,9 +134,9 @@ const Register = () => {
 
           <div style={{ marginTop: 'auto', padding: '15px', borderTop: '1px solid #334155' }}>
             <label style={{ display: 'flex', gap: '12px', cursor: 'pointer', fontSize: '13px', alignItems: 'center' }}>
-              <input 
-                type="checkbox" 
-                checked={acceptedTerms} 
+              <input
+                type="checkbox"
+                checked={acceptedTerms}
                 onChange={(e) => setAcceptedTerms(e.target.checked)}
                 style={{ width: '18px', height: '18px', cursor: 'pointer' }}
               />

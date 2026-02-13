@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import '../styles/Components.css'
 
-const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api'
+import { reportsAPI } from '../services/api' // Importar API centralizada
 
 const AdminReports = ({ type }) => {
   const navigate = useNavigate()
@@ -18,11 +18,7 @@ const AdminReports = ({ type }) => {
 
   const loadReports = async () => {
     try {
-      const token = localStorage.getItem('token')
-      const response = await fetch(`${API_URL}/reports`, {
-        headers: { 'Authorization': `Bearer ${token}` }
-      })
-      const data = await response.json()
+      const data = await reportsAPI.getAll()
       setAllReports(Array.isArray(data) ? data : [])
     } catch (error) {
       console.error("Error:", error)
@@ -35,12 +31,8 @@ const AdminReports = ({ type }) => {
     if (!window.confirm('¿Eliminar este reporte?')) return
 
     try {
-      const token = localStorage.getItem('token')
-      const response = await fetch(`${API_URL}/reports/${id}`, {
-        method: 'DELETE',
-        headers: { 'Authorization': `Bearer ${token}` }
-      })
-      if (response.ok) setAllReports(allReports.filter(r => r.id !== id))
+      await reportsAPI.delete(id)
+      setAllReports(allReports.filter(r => r.id !== id))
     } catch (error) {
       console.error("Error:", error)
     }
@@ -104,11 +96,11 @@ const AdminReports = ({ type }) => {
                   <div style={{ flex: 1 }}>
                     <div style={{ fontWeight: 'bold' }}>{r.emotion_label}</div>
                     <div style={{ fontSize: '12px', color: '#9ca3af' }}>{new Date(r.created_at).toLocaleString()}</div>
-                    <div  style={{ margin: '10px 0', padding: '8px', borderRadius: '6px', fontSize: '14px' }}>
+                    <div style={{ margin: '10px 0', padding: '8px', borderRadius: '6px', fontSize: '14px' }}>
                       "{r.comment || 'Sin comentario'}"
                     </div>
                     <div style={{ fontSize: '12px', color: '#6b7280' }}>
-                    Usuario: {r.user_name || 'Anónimo'} ({r.user_email || 'sin email'}) | 📍 {parseFloat(r.lat).toFixed(4)}, {parseFloat(r.lng).toFixed(4)}
+                      Usuario: {r.user_name || 'Anónimo'} ({r.user_email || 'sin email'}) | 📍 {parseFloat(r.lat).toFixed(4)}, {parseFloat(r.lng).toFixed(4)}
                     </div>
                   </div>
                 </div>
@@ -153,7 +145,7 @@ const AdminReports = ({ type }) => {
         </div>
 
         {filteredBySearch.length === 0 && (
-          <div style={{ textAlign: 'center', padding: '60px',borderRadius: '12px' }}>
+          <div style={{ textAlign: 'center', padding: '60px', borderRadius: '12px' }}>
             <h3 style={{ color: '#6b7280' }}>No hay reportes que coincidan</h3>
           </div>
         )}

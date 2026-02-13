@@ -1,9 +1,7 @@
 import { useState, useEffect } from 'react'
 import { useNavigate, Link } from 'react-router-dom'
-import axios from 'axios'
+import { authAPI } from '../services/api'
 import '../styles/login.css'
-
-const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api'
 
 const Login = ({ onLogin }) => {
   const navigate = useNavigate()
@@ -39,12 +37,9 @@ const Login = ({ onLogin }) => {
         loginData.adminCode = formData.adminCode
       }
 
-      const response = await axios.post(
-        `${API_URL}/auth/login`,
-        loginData
-      )
+      const data = await authAPI.login(loginData)
 
-      const { user, token } = response.data
+      const { user, token } = data
 
       // Guardar token y usuario
       localStorage.setItem('token', token)
@@ -58,15 +53,15 @@ const Login = ({ onLogin }) => {
       }
 
     } catch (err) {
-      const errorData = err.response?.data
+      const errorData = err.data || err.response?.data
       const message = errorData?.error || 'Error al conectar con el servidor'
-      
+
       // Si el backend requiere código admin, mostrarlo
       if (errorData?.requiresAdminCode) {
         setRequiresAdminCode(true)
         setShowAdminCode(true)
       }
-      
+
       // Mostrar intentos restantes
       if (errorData?.remainingAttempts !== undefined) {
         setError(`${message} (Intentos restantes: ${errorData.remainingAttempts})`)
@@ -80,7 +75,7 @@ const Login = ({ onLogin }) => {
 
   return (
     <div className="auth-container">
-      <div style={{background:'rgb(30, 41, 59)'}} className="logininicio auth-card">
+      <div style={{ background: 'rgb(30, 41, 59)' }} className="logininicio auth-card">
         <h2 className="auth-title">Iniciar Sesión</h2>
 
         {/* Indicador de modo admin */}
@@ -135,9 +130,9 @@ const Login = ({ onLogin }) => {
               padding: '12px',
               marginBottom: '18px',
               borderRadius: '8px',
-              background:'rgb(51, 65, 85)',
-              border:'1px solid rgb(71, 85, 105)',
-              color:'white'
+              background: 'rgb(51, 65, 85)',
+              border: '1px solid rgb(71, 85, 105)',
+              color: 'white'
             }}
           />
 
@@ -161,9 +156,9 @@ const Login = ({ onLogin }) => {
               padding: '12px',
               marginBottom: showAdminCode ? '18px' : '24px',
               borderRadius: '8px',
-              background:'rgb(51, 65, 85)',
-              border:'1px solid rgb(71, 85, 105)',
-              color:'white' 
+              background: 'rgb(51, 65, 85)',
+              border: '1px solid rgb(71, 85, 105)',
+              color: 'white'
             }}
           />
 
@@ -190,9 +185,9 @@ const Login = ({ onLogin }) => {
                   padding: '12px',
                   marginBottom: '24px',
                   borderRadius: '8px',
-                  background:'rgb(51, 65, 85)',
-                  border:'2px solid #fbbf24',
-                  color:'#fbbf24',
+                  background: 'rgb(51, 65, 85)',
+                  border: '2px solid #fbbf24',
+                  color: '#fbbf24',
                   fontWeight: '600',
                   letterSpacing: '2px'
                 }}

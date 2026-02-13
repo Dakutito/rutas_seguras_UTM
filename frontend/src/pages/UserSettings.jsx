@@ -3,7 +3,7 @@ import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import '../styles/Components.css'
 
-const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api'
+import { userSettingsAPI, API_URL } from '../services/api'
 
 const UserSettings = ({ user, onLogout }) => {
   const navigate = useNavigate()
@@ -19,11 +19,7 @@ const UserSettings = ({ user, onLogout }) => {
 
   const loadUserData = async () => {
     try {
-      const token = localStorage.getItem('token')
-      const response = await fetch(`${API_URL}/user-settings/profile`, {
-        headers: { 'Authorization': `Bearer ${token}` }
-      })
-      const data = await response.json()
+      const data = await userSettingsAPI.getProfile()
       setUserData(data)
       setNewName(data.name)
     } catch (error) {
@@ -39,24 +35,13 @@ const UserSettings = ({ user, onLogout }) => {
 
     setLoading(true)
     try {
-      const token = localStorage.getItem('token')
-      const response = await fetch(`${API_URL}/user-settings/update-name`, {
-        method: 'PATCH',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`
-        },
-        body: JSON.stringify({ name: newName })
-      })
+      await userSettingsAPI.updateName(newName)
 
-      if (response.ok) {
-        const data = await response.json()
-        // Actualizar localStorage
-        const updatedUser = { ...user, name: newName }
-        localStorage.setItem('user', JSON.stringify(updatedUser))
-        alert('Nombre actualizado correctamente')
-        loadUserData()
-      }
+      // Actualizar localStorage
+      const updatedUser = { ...user, name: newName }
+      localStorage.setItem('user', JSON.stringify(updatedUser))
+      alert('Nombre actualizado correctamente')
+      loadUserData()
     } catch (error) {
       console.error('Error:', error)
       alert('Error al actualizar nombre')
@@ -74,18 +59,11 @@ const UserSettings = ({ user, onLogout }) => {
 
     setLoading(true)
     try {
-      const token = localStorage.getItem('token')
-      const response = await fetch(`${API_URL}/user-settings/upload-photo`, {
-        method: 'POST',
-        headers: { 'Authorization': `Bearer ${token}` },
-        body: formData
-      })
+      await userSettingsAPI.uploadPhoto(formData)
 
-      if (response.ok) {
-        alert('Foto actualizada correctamente')
-        loadUserData()
-        setShowPhotoMenu(false)
-      }
+      alert('Foto actualizada correctamente')
+      loadUserData()
+      setShowPhotoMenu(false)
     } catch (error) {
       console.error('Error:', error)
       alert('Error al subir foto')
@@ -99,17 +77,11 @@ const UserSettings = ({ user, onLogout }) => {
 
     setLoading(true)
     try {
-      const token = localStorage.getItem('token')
-      const response = await fetch(`${API_URL}/user-settings/delete-photo`, {
-        method: 'DELETE',
-        headers: { 'Authorization': `Bearer ${token}` }
-      })
+      await userSettingsAPI.deletePhoto()
 
-      if (response.ok) {
-        alert('Foto eliminada')
-        loadUserData()
-        setShowPhotoMenu(false)
-      }
+      alert('Foto eliminada')
+      loadUserData()
+      setShowPhotoMenu(false)
     } catch (error) {
       console.error('Error:', error)
       alert('Error al eliminar foto')
@@ -131,17 +103,11 @@ const UserSettings = ({ user, onLogout }) => {
 
     setLoading(true)
     try {
-      const token = localStorage.getItem('token')
-      const response = await fetch(`${API_URL}/user-settings/delete-account`, {
-        method: 'DELETE',
-        headers: { 'Authorization': `Bearer ${token}` }
-      })
+      await userSettingsAPI.deleteAccount()
 
-      if (response.ok) {
-        alert('Tu cuenta ha sido eliminada')
-        onLogout()
-        navigate('/')
-      }
+      alert('Tu cuenta ha sido eliminada')
+      onLogout()
+      navigate('/')
     } catch (error) {
       console.error('Error:', error)
       alert('Error al eliminar cuenta')
@@ -164,8 +130,8 @@ const UserSettings = ({ user, onLogout }) => {
   return (
     <div className="container">
       <div className="card" style={{ maxWidth: '800px', margin: '0 auto' }}>
-        <h1 style={{borderBottom: '1px solid #e5e7eb', padding: '20px 0'}} className='userconfiggh1'>⚙️ Configuración <br />
-          <span style={{color:'#64748B', fontSize:'14px'}}>Gestiona los detalles de tu cuenta y preferencias.</span>
+        <h1 style={{ borderBottom: '1px solid #e5e7eb', padding: '20px 0' }} className='userconfiggh1'>⚙️ Configuración <br />
+          <span style={{ color: '#64748B', fontSize: '14px' }}>Gestiona los detalles de tu cuenta y preferencias.</span>
         </h1>
         {/* FOTO DE PERFIL */}
         <div style={{ marginBottom: '40px', textAlign: 'center' }}>
@@ -176,8 +142,8 @@ const UserSettings = ({ user, onLogout }) => {
                 width: '150px',
                 height: '150px',
                 borderRadius: '50%',
-                background: userData.profile_photo 
-                  ? `url(${API_URL.replace('/api', '')}/uploads/profiles/${userData.profile_photo})` 
+                background: userData.profile_photo
+                  ? `url(${API_URL.replace('/api', '')}/uploads/profiles/${userData.profile_photo})`
                   : '#e5e7eb',
                 backgroundSize: 'cover',
                 backgroundPosition: 'center',
@@ -225,7 +191,7 @@ const UserSettings = ({ user, onLogout }) => {
                     Ver Foto
                   </button>
                 )}
-                
+
                 <label style={{
                   width: '100%',
                   padding: '10px',
@@ -269,14 +235,14 @@ const UserSettings = ({ user, onLogout }) => {
             )}
           </div>
           <h3 style={{ marginBottom: '20px' }}>Foto de Perfil <br />
-            <span style={{color:'#64748B', fontSize:'14px'}}>PNG, JPG hasta 10MB</span>
+            <span style={{ color: '#64748B', fontSize: '14px' }}>PNG, JPG hasta 10MB</span>
           </h3>
         </div>
 
         {/* EDITAR NOMBRE */}
         <div style={{ marginBottom: '40px' }}>
           <h3 style={{ marginBottom: '15px' }}>Información Personal</h3>
-          
+
           <div className='userconfiggh1_email' >
             <label>
               Nombre
@@ -285,7 +251,7 @@ const UserSettings = ({ user, onLogout }) => {
               <input
                 type="text"
                 value={newName}
-                onChange={(e) => setNewName(e.target.value)}/>
+                onChange={(e) => setNewName(e.target.value)} />
               <button
                 onClick={handleUpdateName}
                 disabled={loading || newName === userData.name}
@@ -311,7 +277,7 @@ const UserSettings = ({ user, onLogout }) => {
             <input
               type="text"
               value={userData.email}
-              disabled/>
+              disabled />
             <small>
               El email no se puede cambiar
             </small>
@@ -324,7 +290,7 @@ const UserSettings = ({ user, onLogout }) => {
             <input
               type="text"
               value={new Date(userData.created_at).toLocaleDateString('es-ES')}
-              disabled/>
+              disabled />
           </div>
         </div>
 

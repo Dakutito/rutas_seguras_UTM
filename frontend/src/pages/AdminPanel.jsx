@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import '../styles/Components.css'
 
-const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api'
+import { usersAPI, reportsAPI } from '../services/api' // Importar API centralizada
 
 const AdminPanel = () => {
   const navigate = useNavigate()
@@ -18,14 +18,13 @@ const AdminPanel = () => {
 
   const loadData = async () => {
     try {
-      const token = localStorage.getItem('token')
-      const [usersRes, reportsRes] = await Promise.all([
-        fetch(`${API_URL}/users`, { headers: { 'Authorization': `Bearer ${token}` } }),
-        fetch(`${API_URL}/reports`, { headers: { 'Authorization': `Bearer ${token}` } })
+      const [users, reports] = await Promise.all([
+        usersAPI.getAll(),
+        reportsAPI.getAll()
       ])
 
-      const users = await usersRes.json()
-      const reports = await reportsRes.json()
+      // const users = await usersRes.json() // Ya no es necesario
+      // const reports = await reportsRes.json() // Ya no es necesario
 
       const totalUsers = Array.isArray(users) ? users.length : 0
       const activeUsers = Array.isArray(users) ? users.filter(u => u.status === 'active').length : 0
@@ -227,7 +226,7 @@ const AdminPanel = () => {
                         <div style={{ display: 'flex', gap: '8px', flex: 1 }}>
                           <span style={{ fontSize: '22px' }}>{r.emotion}</span>
                           <div style={{ flex: 1 }}>
-                            <div style={{ color:'#1f2937',fontWeight: '600', fontSize: '14px' }}>{r.emotion_label}</div>
+                            <div style={{ color: '#1f2937', fontWeight: '600', fontSize: '14px' }}>{r.emotion_label}</div>
                             <div style={{ fontSize: '12px', color: '#6b7280' }}><span style={{ fontSize: '12px', fontWeight: '600' }}>usuario:</span> {r.user_name || 'Anónimo'} ({r.user_email || 'sin email'})</div>
                             {r.comment && <div style={{ fontSize: '12px', color: '#6b7280' }}> {r.comment}</div>}
 
