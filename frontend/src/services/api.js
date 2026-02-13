@@ -1,11 +1,14 @@
-// services/api.js - Servicio para conectar frontend con backend
-
 const getApiUrl = () => {
-  let url = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
+  // Obtener URL del .env
+  let url = import.meta.env.VITE_API_URL || 'http://localhost:5000';
+
   // Eliminar slash final si existe
   url = url.replace(/\/$/, '');
-  // Agregar /api si no existe
-  return url.endsWith('/api') ? url : `${url}/api`;
+
+  // NO agregar /api aquí, se agrega en cada endpoint
+  console.log('🔧 API Base URL:', url);
+
+  return url;
 };
 
 export const API_URL = getApiUrl();
@@ -42,7 +45,7 @@ const authHeaders = () => {
 export const authAPI = {
   // Registro
   register: async (userData) => {
-    const response = await fetch(`${API_URL}/auth/register`, {
+    const response = await fetch(`${API_URL}/api/auth/register`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(userData)
@@ -52,7 +55,7 @@ export const authAPI = {
 
   // Login
   login: async (credentials) => {
-    const response = await fetch(`${API_URL}/auth/login`, {
+    const response = await fetch(`${API_URL}/api/auth/login`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(credentials)
@@ -69,7 +72,7 @@ export const authAPI = {
 
   // Logout
   logout: async () => {
-    const response = await fetch(`${API_URL}/auth/logout`, {
+    const response = await fetch(`${API_URL}/api/auth/logout`, {
       method: 'POST',
       headers: authHeaders()
     });
@@ -82,7 +85,7 @@ export const authAPI = {
 
   // Verificar token
   verifyToken: async () => {
-    const response = await fetch(`${API_URL}/auth/verify`, {
+    const response = await fetch(`${API_URL}/api/auth/verify`, {
       headers: authHeaders()
     });
     return handleResponse(response);
@@ -90,7 +93,7 @@ export const authAPI = {
 
   // Verificar Email
   verifyEmail: async (token) => {
-    const response = await fetch(`${API_URL}/auth/verify-email/${token}`);
+    const response = await fetch(`${API_URL}/api/auth/verify-email/${token}`);
     return handleResponse(response);
   }
 };
@@ -100,7 +103,7 @@ export const authAPI = {
 export const usersAPI = {
   // Obtener todos los usuarios (admin)
   getAll: async () => {
-    const response = await fetch(`${API_URL}/users`, {
+    const response = await fetch(`${API_URL}/api/users`, {
       headers: authHeaders()
     });
     return handleResponse(response);
@@ -108,7 +111,7 @@ export const usersAPI = {
 
   // Obtener perfil propio
   getProfile: async () => {
-    const response = await fetch(`${API_URL}/users/profile`, {
+    const response = await fetch(`${API_URL}/api/users/profile`, {
       headers: authHeaders()
     });
     return handleResponse(response);
@@ -116,7 +119,7 @@ export const usersAPI = {
 
   // Cambiar estado de usuario (suspend/active)
   updateStatus: async (userId, status) => {
-    const response = await fetch(`${API_URL}/users/${userId}/status`, {
+    const response = await fetch(`${API_URL}/api/users/${userId}/status`, {
       method: 'PATCH',
       headers: authHeaders(),
       body: JSON.stringify({ status })
@@ -126,7 +129,7 @@ export const usersAPI = {
 
   // Eliminar usuario
   delete: async (userId) => {
-    const response = await fetch(`${API_URL}/users/${userId}`, {
+    const response = await fetch(`${API_URL}/api/users/${userId}`, {
       method: 'DELETE',
       headers: authHeaders()
     });
@@ -135,7 +138,7 @@ export const usersAPI = {
 
   // Restablecer contraseña
   resetPassword: async (userId) => {
-    const response = await fetch(`${API_URL}/users/${userId}/reset-password`, {
+    const response = await fetch(`${API_URL}/api/users/${userId}/reset-password`, {
       method: 'PUT',
       headers: authHeaders()
     });
@@ -144,7 +147,7 @@ export const usersAPI = {
 
   // Actualizar perfil
   updateProfile: async (userData) => {
-    const response = await fetch(`${API_URL}/users/profile`, {
+    const response = await fetch(`${API_URL}/api/users/profile`, {
       method: 'PUT',
       headers: authHeaders(),
       body: JSON.stringify(userData)
@@ -154,7 +157,7 @@ export const usersAPI = {
 
   // Cambiar contraseña
   changePassword: async (passwords) => {
-    const response = await fetch(`${API_URL}/users/change-password`, {
+    const response = await fetch(`${API_URL}/api/users/change-password`, {
       method: 'PUT',
       headers: authHeaders(),
       body: JSON.stringify(passwords)
@@ -168,7 +171,7 @@ export const usersAPI = {
 export const reportsAPI = {
   // Crear reporte
   create: async (reportData) => {
-    const response = await fetch(`${API_URL}/reports`, {
+    const response = await fetch(`${API_URL}/api/reports`, {
       method: 'POST',
       headers: authHeaders(),
       body: JSON.stringify(reportData)
@@ -178,13 +181,13 @@ export const reportsAPI = {
 
   // Obtener todos los reportes activos
   getAll: async () => {
-    const response = await fetch(`${API_URL}/reports`);
+    const response = await fetch(`${API_URL}/api/reports`);
     return handleResponse(response);
   },
 
   // Obtener mis reportes
   getMyReports: async () => {
-    const response = await fetch(`${API_URL}/reports/my-reports`, {
+    const response = await fetch(`${API_URL}/api/reports/my-reports`, {
       headers: authHeaders()
     });
     return handleResponse(response);
@@ -192,7 +195,7 @@ export const reportsAPI = {
 
   // Obtener reportes de un usuario
   getByUser: async (userId) => {
-    const response = await fetch(`${API_URL}/reports/user/${userId}`, {
+    const response = await fetch(`${API_URL}/api/reports/user/${userId}`, {
       headers: authHeaders()
     });
     return handleResponse(response);
@@ -200,7 +203,7 @@ export const reportsAPI = {
 
   // Eliminar reporte
   delete: async (reportId) => {
-    const response = await fetch(`${API_URL}/reports/${reportId}`, {
+    const response = await fetch(`${API_URL}/api/reports/${reportId}`, {
       method: 'DELETE',
       headers: authHeaders()
     });
@@ -209,7 +212,7 @@ export const reportsAPI = {
 
   // Limpiar reportes expirados (admin)
   cleanup: async () => {
-    const response = await fetch(`${API_URL}/reports/cleanup`, {
+    const response = await fetch(`${API_URL}/api/reports/cleanup`, {
       method: 'POST',
       headers: authHeaders()
     });
@@ -222,20 +225,20 @@ export const reportsAPI = {
 export const zonesAPI = {
   // Obtener todas las zonas
   getAll: async () => {
-    const response = await fetch(`${API_URL}/zones`);
+    const response = await fetch(`${API_URL}/api/zones`);
     return handleResponse(response);
   },
 
   // Obtener zonas por nivel de peligro
   getByDangerLevel: async (level) => {
-    const response = await fetch(`${API_URL}/zones/danger/${level}`);
+    const response = await fetch(`${API_URL}/api/zones/danger/${level}`);
     return handleResponse(response);
   },
 
   // Buscar zonas cercanas
   getNearby: async (lat, lng, radius = 0.01) => {
     const response = await fetch(
-      `${API_URL}/zones/nearby?lat=${lat}&lng=${lng}&radius=${radius}`
+      `${API_URL}/api/zones/nearby?lat=${lat}&lng=${lng}&radius=${radius}`
     );
     return handleResponse(response);
   }
@@ -246,13 +249,13 @@ export const zonesAPI = {
 export const statsAPI = {
   // Estadísticas generales
   getGeneral: async () => {
-    const response = await fetch(`${API_URL}/stats/general`);
+    const response = await fetch(`${API_URL}/api/stats/general`);
     return handleResponse(response);
   },
 
   // Estadísticas de admin
   getAdmin: async () => {
-    const response = await fetch(`${API_URL}/stats/admin`, {
+    const response = await fetch(`${API_URL}/api/stats/admin`, {
       headers: authHeaders()
     });
     return handleResponse(response);
@@ -260,7 +263,7 @@ export const statsAPI = {
 
   // Estadísticas de usuario
   getUser: async () => {
-    const response = await fetch(`${API_URL}/stats/user`, {
+    const response = await fetch(`${API_URL}/api/stats/user`, {
       headers: authHeaders()
     });
     return handleResponse(response);
@@ -268,7 +271,7 @@ export const statsAPI = {
 
   // Heatmap
   getHeatmap: async () => {
-    const response = await fetch(`${API_URL}/stats/heatmap`);
+    const response = await fetch(`${API_URL}/api/stats/heatmap`);
     return handleResponse(response);
   }
 };
@@ -279,15 +282,15 @@ export const incidentsAPI = {
   // Obtener todos
   getAll: async (type = null) => {
     const url = type && type !== 'Todos'
-      ? `${API_URL}/incidents?type=${type}`
-      : `${API_URL}/incidents`;
+      ? `${API_URL}/api/incidents?type=${type}`
+      : `${API_URL}/api/incidents`;
     const response = await fetch(url);
     return handleResponse(response);
   },
 
   // Crear incidente
   create: async (data) => {
-    const response = await fetch(`${API_URL}/incidents`, {
+    const response = await fetch(`${API_URL}/api/incidents`, {
       method: 'POST',
       headers: authHeaders(),
       body: JSON.stringify(data)
@@ -297,7 +300,7 @@ export const incidentsAPI = {
 
   // Eliminar incidente
   delete: async (id) => {
-    const response = await fetch(`${API_URL}/incidents/${id}`, {
+    const response = await fetch(`${API_URL}/api/incidents/${id}`, {
       method: 'DELETE',
       headers: authHeaders()
     });
@@ -306,7 +309,7 @@ export const incidentsAPI = {
 
   // Obtener categorías
   getCategories: async () => {
-    const response = await fetch(`${API_URL}/incident-categories`);
+    const response = await fetch(`${API_URL}/api/incident-categories`);
     return handleResponse(response);
   }
 };
@@ -316,7 +319,7 @@ export const incidentsAPI = {
 export const userSettingsAPI = {
   // Obtener perfil completo
   getProfile: async () => {
-    const response = await fetch(`${API_URL}/user-settings/profile`, {
+    const response = await fetch(`${API_URL}/api/user-settings/profile`, {
       headers: authHeaders()
     });
     return handleResponse(response);
@@ -324,7 +327,7 @@ export const userSettingsAPI = {
 
   // Actualizar nombre
   updateName: async (name) => {
-    const response = await fetch(`${API_URL}/user-settings/update-name`, {
+    const response = await fetch(`${API_URL}/api/user-settings/update-name`, {
       method: 'PATCH',
       headers: authHeaders(),
       body: JSON.stringify({ name })
@@ -335,7 +338,7 @@ export const userSettingsAPI = {
   // Subir foto
   uploadPhoto: async (formData) => {
     const token = getToken();
-    const response = await fetch(`${API_URL}/user-settings/upload-photo`, {
+    const response = await fetch(`${API_URL}/api/user-settings/upload-photo`, {
       method: 'POST',
       headers: {
         ...(token && { 'Authorization': `Bearer ${token}` })
@@ -348,7 +351,7 @@ export const userSettingsAPI = {
 
   // Eliminar foto
   deletePhoto: async () => {
-    const response = await fetch(`${API_URL}/user-settings/delete-photo`, {
+    const response = await fetch(`${API_URL}/api/user-settings/delete-photo`, {
       method: 'DELETE',
       headers: authHeaders()
     });
@@ -357,7 +360,7 @@ export const userSettingsAPI = {
 
   // Eliminar cuenta
   deleteAccount: async () => {
-    const response = await fetch(`${API_URL}/user-settings/delete-account`, {
+    const response = await fetch(`${API_URL}/api/user-settings/delete-account`, {
       method: 'DELETE',
       headers: authHeaders()
     });
@@ -368,7 +371,7 @@ export const userSettingsAPI = {
 // ==================== HEALTH CHECK ====================
 
 export const healthCheck = async () => {
-  const response = await fetch(`${API_URL}/health`);
+  const response = await fetch(`${API_URL}/api/health`);
   return handleResponse(response);
 };
 

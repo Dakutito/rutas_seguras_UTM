@@ -50,41 +50,13 @@ const clearAttempts = (email) => {
   loginAttempts.delete(email);
 };
 
-// REGISTRO
-router.get('/register', (req, res) => {
-  res.status(405).json({ error: 'Método no permitido. Usa POST para registrar.' });
-});
-
-// TEST DATABASE - DEBUGGING ONLY
-router.get('/test-db', async (req, res) => {
-  try {
-    const result = await query('SELECT NOW() as now');
-    res.json({
-      message: 'Conexión a base de datos exitosa',
-      time: result.rows[0].now,
-      env: {
-        host: process.env.DB_HOST,
-        db: process.env.DB_NAME,
-        user: process.env.DB_USER
-      }
-    });
-  } catch (error) {
-    console.error('Test DB Error:', error);
-    res.status(500).json({
-      error: 'Error de conexión a BD',
-      details: error.message,
-      code: error.code,
-      meta: error
-    });
-  }
-});
-
+// ✅ REGISTRO (Solo POST, sin GET)
 router.post('/register', [
   body('name').trim().isLength({ min: 3 }),
   body('email').isEmail(),
   body('password').isLength({ min: 6 })
 ], async (req, res) => {
-  console.log('Intento de registro:', req.body.email); // Debug log
+  console.log('Intento de registro:', req.body.email);
   try {
     const errors = validationResult(req);
     if (!errors.isEmpty()) return res.status(400).json({ errors: errors.array() });
@@ -116,7 +88,7 @@ router.post('/register', [
     );
 
     // URL que el usuario clickeará en su correo
-    const verifyLink = `http://localhost:5173/verify-email?token=${verificationToken}`;
+    const verifyLink = `${process.env.FRONTEND_URL || 'http://localhost:5173'}/verify-email?token=${verificationToken}`;
 
     // --- ENVÍO DE EMAIL ---
     try {
@@ -181,7 +153,7 @@ router.post('/login', [
   body('password').notEmpty()
 ], async (req, res) => {
   try {
-    const { email, password, adminCode } = req.body; // adminCode
+    const { email, password, adminCode } = req.body;
     const normalizedEmail = email.toLowerCase();
 
     // VERIFICAR RATE LIMITING
@@ -242,7 +214,7 @@ router.post('/login', [
       if (adminCode !== validAdminCode) {
         recordFailedAttempt(normalizedEmail);
 
-        // LOG DE SEGURIDAD - Registrar intento de acceso no autorizado
+        // LOG DE SEGURIDAD
         console.warn(`INTENTO DE ACCESO ADMIN FALLIDO:
           Email: ${normalizedEmail}
           IP: ${req.ip}
