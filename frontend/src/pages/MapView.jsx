@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react'
 import Map from '../components/Map'
 import EmotionSelector from '../components/EmotionSelector'
 import CommentForm from '../components/CommentForm'
-import '../styles/MapView.css'
+import '../styles/mapview.css'
 
 const MapView = ({ isAdmin, user }) => {
   const [selectedEmotion, setSelectedEmotion] = useState(null)
