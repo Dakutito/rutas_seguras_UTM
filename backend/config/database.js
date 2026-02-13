@@ -19,6 +19,8 @@ const pool = new Pool({
   max: 20,
   idleTimeoutMillis: 30000,
   connectionTimeoutMillis: 2000,
+  // Forzar IPv4 para evitar errores ENETUNREACH en despliegues con Node 17+
+  family: 4,
 });
 
 // Probar conexión
