@@ -69,7 +69,7 @@ function VerifyEmail() {
           <div className="icon">❌</div>
           <h2>Error de Verificación</h2>
           <p>{message}</p>
-          <button onClick={() => navigate('/login')}>
+          <button onClick={() => navigate('/login`)}>
             Ir al Login
           </button>
         </div>

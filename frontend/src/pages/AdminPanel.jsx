@@ -20,8 +20,8 @@ const AdminPanel = () => {
     try {
       const token = localStorage.getItem('token')
       const [usersRes, reportsRes] = await Promise.all([
-        fetch(`${API_URL}/users', { headers: { 'Authorization`: `Bearer ${token}` } }),
-        fetch(`${API_URL}/reports', { headers: { 'Authorization`: `Bearer ${token}` } })
+        fetch(`${API_URL}/users`, { headers: { 'Authorization': `Bearer ${token}` } }),
+        fetch(`${API_URL}/reports`, { headers: { 'Authorization': `Bearer ${token}` } })
       ])
 
       const users = await usersRes.json()
@@ -38,7 +38,7 @@ const AdminPanel = () => {
       // 🆕 Calcular estadísticas de emociones para el mapa de calor
       calculateEmotionStats(Array.isArray(reports) ? reports : [])
     } catch (error) {
-      console.error('Error:', error)
+      console.error('Error:`, error)
     } finally {
       setLoading(false)
     }
@@ -72,7 +72,7 @@ const AdminPanel = () => {
   }
 
   const getDangerColor = (e) => ({ '😊': '#10b981', '😌': '#34d399', '😐': '#a3e635', '😰': '#fbbf24', '😨': '#f59e0b', '😢': '#f97316', '😡': '#ef4444' }[e] || '#6b7280')
-  const getDangerLabel = (e) => ({ '😊': 'Bajo', '😌': 'Bajo', '😐': 'Bajo', '😰': 'Medio', '😨': 'Medio', '😢': 'Alto', '😡': 'Alto' }[e] || 'Bajo')
+  const getDangerLabel = (e) => ({ '😊': 'Bajo', '😌': 'Bajo', '😐': 'Bajo', '😰': 'Medio', '😨': 'Medio', '😢': 'Alto', '😡': 'Alto' }[e] || 'Bajo`)
   const formatTime = (d) => { const diff = (new Date() - new Date(d)) / 1000; return diff < 60 ? 'Hace unos segundos' : diff < 3600 ? `Hace ${Math.floor(diff / 60)} min` : diff < 86400 ? `Hace ${Math.floor(diff / 3600)}h` : `Hace ${Math.floor(diff / 86400)} días` }
 
   if (loading) return <div className="container"><div className="card" style={{ textAlign: 'center', padding: '60px' }}><div style={{ fontSize: '48px' }}>⏳</div><h2>Conectando...</h2></div></div>
@@ -146,7 +146,7 @@ const AdminPanel = () => {
                     style={{
                       background: '#f9fafb',
                       padding: '16px',
-                      borderRadius: '8px',
+                      borderRadius: '8px`,
                       borderLeft: `6px solid ${stat.color}`
                     }}
                   >
@@ -158,7 +158,7 @@ const AdminPanel = () => {
                             {stat.label}
                           </div>
                           <div style={{ fontSize: '13px', color: '#6b7280' }}>
-                            {stat.count} {stat.count === 1 ? 'reporte' : 'reportes'}
+                            {stat.count} {stat.count === 1 ? 'reporte' : 'reportes`}
                           </div>
                         </div>
                       </div>
@@ -180,7 +180,7 @@ const AdminPanel = () => {
                       height: '8px',
                       background: '#e5e7eb',
                       borderRadius: '4px',
-                      overflow: 'hidden'
+                      overflow: 'hidden`
                     }}>
                       <div style={{
                         width: `${getPercentage(stat.count)}%`,
@@ -222,7 +222,7 @@ const AdminPanel = () => {
                 {stats.reports.slice(0, 10).map(r => {
                   const color = getDangerColor(r.emotion)
                   return (
-                    <div key={r.id} style={{ background: 'white', padding: '12px 14px', borderRadius: '8px', borderLeft: `5px solid ${color}` }}>
+                    <div key={r.id} style={{ background: 'white', padding: '12px 14px', borderRadius: '8px`, borderLeft: `5px solid ${color}` }}>
                       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
                         <div style={{ display: 'flex', gap: '8px', flex: 1 }}>
                           <span style={{ fontSize: '22px' }}>{r.emotion}</span>
@@ -252,7 +252,7 @@ const AdminPanel = () => {
                               cursor: 'pointer',
                               fontSize: '11px',
                               fontWeight: '600',
-                              whiteSpace: 'nowrap'
+                              whiteSpace: 'nowrap`
                             }}
                             title="Ver ubicación en el mapa"
                           >

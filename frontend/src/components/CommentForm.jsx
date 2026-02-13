@@ -30,14 +30,14 @@ const CommentForm = ({ emotion, location, onClose, isAdmin, user }) => {
       const response = await fetch(`${API_URL}/reports', {
         method: 'POST',
         headers: {
-          'Content-Type': 'application/json',
-          'Authorization`: `Bearer ${token}` // Middleware de auth requiere esto
+          'Content-Type': 'application/json`,
+          'Authorization': `Bearer ${token}` // Middleware de auth requiere esto
         },
         body: JSON.stringify(reportData)
       })
 
       if (response.ok) {
-        console.log('Reporte guardado en PostgreSQL')
+        console.log('Reporte guardado en PostgreSQL`)
         setSubmitted(true)
         // Recargar la página después de 2 segundos para ver el punto en el mapa
         setTimeout(() => {
@@ -46,7 +46,7 @@ const CommentForm = ({ emotion, location, onClose, isAdmin, user }) => {
         }, 2000)
       } else {
         const err = await response.json()
-        alert(`Error al guardar: ${err.error || 'Intenta de nuevo'}`)
+        alert(`Error al guardar: ${err.error || 'Intenta de nuevo`}`)
       }
     } catch (error) {
       console.error('Error de conexión:', error)
@@ -78,7 +78,7 @@ const CommentForm = ({ emotion, location, onClose, isAdmin, user }) => {
     <div className='tardemotion'>
       <h3 style={{ marginBottom: '18px' }}>Confirmar Reporte</h3>
 
-      <div style={{ display: 'flex', alignItems: 'center', background: emotion.color + '18', border: `2px solid ${emotion.color}40`, padding: '16px', borderRadius: '10px', marginBottom: '22px' }}>
+      <div style={{ display: 'flex', alignItems: 'center', background: emotion.color + '18`, border: `2px solid ${emotion.color}40`, padding: '16px', borderRadius: '10px', marginBottom: '22px' }}>
         <span style={{ fontSize: '44px', marginRight: '16px' }}>{emotion.emoji}</span>
         <div>
           <div className='tardemotion_user'>{emotion.label}</div>
@@ -107,7 +107,7 @@ const CommentForm = ({ emotion, location, onClose, isAdmin, user }) => {
           disabled={loading}
           style={{ flex: 2, padding: '12px', background: emotion.color, color: 'white', border: 'none', borderRadius: '8px', fontWeight: 'bold', cursor: 'pointer' }}
         >
-          {loading ? 'Guardando en DB...' : 'Enviar Reporte Real'}
+          {loading ? 'Guardando en DB...' : 'Enviar Reporte Real`}
         </button>
       </div>
     </div>
