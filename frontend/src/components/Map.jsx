@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react'
 import { MapContainer, TileLayer, Circle, Popup, Marker, useMap } from 'react-leaflet'
 import 'leaflet/dist/leaflet.css'
 import L from 'leaflet'
-import '../styles/Map.css'
+import '../styles/map.css'
 
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api'
 
