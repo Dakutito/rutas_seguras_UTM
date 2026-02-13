@@ -39,7 +39,7 @@ const MapaReporte = ({ user, viewOnly = false }) => {
   useEffect(() => {
     const loadCategories = async () => {
       try {
-        const response = await fetch(`${API_URL}/incident-categories')
+        const response = await fetch(`${API_URL}/incident-categories`)
         const data = await response.json()
         const formatted = data.map(cat => ({
           value: cat.name,
@@ -95,7 +95,7 @@ const MapaReporte = ({ user, viewOnly = false }) => {
     }
 
     if (!position) {
-      alert('Por favor selecciona una ubicación en el mapa')
+      alert('Por favor selecciona una ubicación en el mapa`)
       return
     }
 
@@ -106,8 +106,8 @@ const MapaReporte = ({ user, viewOnly = false }) => {
       const response = await fetch(`${API_URL}/incidents', {
         method: 'POST',
         headers: {
-          'Content-Type': 'application/json',
-          'Authorization`: `Bearer ${token}`
+          'Content-Type': 'application/json`,
+          'Authorization': `Bearer ${token}`
         },
         body: JSON.stringify({
           incident_type: incidentType,
@@ -119,7 +119,7 @@ const MapaReporte = ({ user, viewOnly = false }) => {
 
       if (response.ok) {
         alert('Incidente reportado exitosamente')
-        navigate('/reportes')
+        navigate('/reportes`)
       } else {
         const error = await response.json()
         alert(`Error: ${error.error}`)
@@ -255,7 +255,7 @@ const MapaReporte = ({ user, viewOnly = false }) => {
 
               {incidentTypes.length === 0 ? (
                 <div style={{ textAlign: 'center', padding: '20px', background: '#fef3c7', borderRadius: '8px' }}>
-                  <p style={{ margin: 0, color: '#92400e' }}>
+                  <p style={{ margin: 0, color: '#92400e` }}>
                     Cargando categorías...
                   </p>
                 </div>
@@ -266,7 +266,7 @@ const MapaReporte = ({ user, viewOnly = false }) => {
                       key={type.value}
                       onClick={() => setIncidentType(type.value)}
                       style={{
-                        border: incidentType === type.value ? `3px solid ${type.color}` : 'none',
+                        border: incidentType === type.value ? `3px solid ${type.color}` : 'none`,
                         background: incidentType === type.value ? `${type.color}15` : '',
                       }}
                     >
@@ -376,7 +376,7 @@ const MapaReporte = ({ user, viewOnly = false }) => {
                     borderRadius: '50%',
                     background: type.color
                   }}></div>
-                  <span style={{ fontSize: '12px', color: '#6b7280' }}>
+                  <span style={{ fontSize: '12px', color: '#6b7280` }}>
                     {type.icon} {type.label}
                   </span>
                 </div>

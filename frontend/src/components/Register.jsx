@@ -139,7 +139,7 @@ const Register = () => {
                 type="checkbox" 
                 checked={acceptedTerms} 
                 onChange={(e) => setAcceptedTerms(e.target.checked)}
-                style={{ width: '18px', height: '18px', cursor: 'pointer` }}
+                style={{ width: '18px', height: '18px`, cursor: 'pointer` }}
               />
               <span>
                 He leído y acepto los <strong>Términos y Condiciones</strong> y la <strong>Política de Privacidad</strong>.

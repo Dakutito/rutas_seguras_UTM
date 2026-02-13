@@ -34,8 +34,8 @@ const Map = ({ userLocation, onZoneClick, isAdmin = false, user }) => {
         setReports(Array.isArray(data) ? data : []);
       } else if (user) {
         // Usuario normal solo ve SUS PROPIOS reportes
-        const response = await fetch(`${API_URL}/reports/my-reports', {
-          headers: { 'Authorization`: `Bearer ${token}` }
+        const response = await fetch(`${API_URL}/reports/my-reports`, {
+          headers: { 'Authorization': `Bearer ${token}` }
         });
         const data = await response.json();
         setReports(Array.isArray(data) ? data : []);
@@ -76,8 +76,8 @@ const Map = ({ userLocation, onZoneClick, isAdmin = false, user }) => {
           <Popup>
             <strong>{report.emotion} {report.emotion_label}</strong><br/>
             {report.comment && <em>"{report.comment}"</em>}<br/>
-            <small style={{ color: '#6b7280' }}>
-              {isAdmin ? `Por: ${report.user_name || 'Usuario'}` : 'Tu reporte'}
+            <small style={{ color: '#6b7280` }}>
+              {isAdmin ? `Por: ${report.user_name || 'Usuario`}` : 'Tu reporte`}
             </small>
           </Popup>
         </Circle>

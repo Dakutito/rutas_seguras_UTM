@@ -32,7 +32,7 @@ const EmotionSelector = ({ onSelect }) => {
               transition: 'all 0.3s'
             }}
             onMouseEnter={(e) => e.target.style.transform = 'scale(1.1)'}
-            onMouseLeave={(e) => e.target.style.transform = 'scale(1)'}
+            onMouseLeave={(e) => e.target.style.transform = 'scale(1)`}
             title={emotion.label}
           >
             {emotion.emoji}

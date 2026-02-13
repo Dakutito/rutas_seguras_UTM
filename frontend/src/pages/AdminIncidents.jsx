@@ -14,8 +14,8 @@ const AdminIncidents = () => {
   const loadIncidents = async () => {
     try {
       const token = localStorage.getItem('token')
-      const response = await fetch(`${API_URL}/incidents/admin', {
-        headers: { 'Authorization`: `Bearer ${token}` }
+      const response = await fetch(`${API_URL}/incidents/admin`, {
+        headers: { 'Authorization': `Bearer ${token}` }
       })
       const data = await response.json()
       setIncidents(Array.isArray(data) ? data : [])
@@ -36,9 +36,9 @@ const AdminIncidents = () => {
     if (!window.confirm('¿Marcar este incidente como resuelto?')) return
     
     try {
-      const token = localStorage.getItem('token')
+      const token = localStorage.getItem('token`)
       const response = await fetch(`${API_URL}/incidents/${id}/resolve`, {
-        method: 'PATCH',
+        method: 'PATCH`,
         headers: { 'Authorization': `Bearer ${token}` }
       })
       
@@ -54,9 +54,9 @@ const AdminIncidents = () => {
     if (!window.confirm('¿Eliminar este incidente permanentemente?')) return
     
     try {
-      const token = localStorage.getItem('token')
+      const token = localStorage.getItem('token`)
       const response = await fetch(`${API_URL}/incidents/${id}`, {
-        method: 'DELETE',
+        method: 'DELETE`,
         headers: { 'Authorization': `Bearer ${token}` }
       })
       
@@ -197,7 +197,7 @@ const AdminIncidents = () => {
             <div
               key={incident.id}
               style={{
-                background: 'white',
+                background: 'white`,
                 borderLeft: `6px solid ${getIncidentColor(incident.incident_type)}`,
                 padding: '18px',
                 borderRadius: '10px',
@@ -285,7 +285,7 @@ const AdminIncidents = () => {
         {filteredIncidents.length === 0 && (
           <div style={{ textAlign: 'center', padding: '60px', background: '#f9fafb', borderRadius: '12px' }}>
             <div style={{ fontSize: '64px' }}>📭</div>
-            <h3 style={{ color: '#6b7280' }}>No hay incidentes {filter !== 'todos' && `${filter}s`}</h3>
+            <h3 style={{ color: '#6b7280` }}>No hay incidentes {filter !== 'todos' && `${filter}s`}</h3>
           </div>
         )}
       </div>

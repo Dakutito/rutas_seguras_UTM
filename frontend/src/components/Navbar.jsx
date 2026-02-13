@@ -100,7 +100,7 @@ const Navbar = ({ user, onLogout, isAdmin, darkMode, onToggleDarkMode }) => {
         </button>
 
         {/* Menú móvil */}
-        <div className={`mobile-menu ${mobileMenuOpen ? 'open' : ''}`}>
+        <div className={`mobile-menu ${mobileMenuOpen ? 'open' : '`}`}>
           <div className="mobile-menu-header">
             <span className="mobile-logo">Rutas Seguras UTM</span>
             {user && <span className="mobile-user">{user.name}</span>}
@@ -161,7 +161,7 @@ const Navbar = ({ user, onLogout, isAdmin, darkMode, onToggleDarkMode }) => {
                   className="dark-mode-toggle-mobile"
                 >
                   <span className="dark-mode-icon">{darkMode ? '☀️' : '🌙'}</span>
-                  {darkMode ? 'Modo Claro' : 'Modo Oscuro'}
+                  {darkMode ? 'Modo Claro' : 'Modo Oscuro`}
                 </button>
 
                 <button

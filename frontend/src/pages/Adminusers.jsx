@@ -14,7 +14,7 @@ const AdminUsers = () => {
   const loadUsers = async () => {
     try {
       const response = await fetch(`${API_URL}/users');
-      if (!response.ok) throw new Error('Error al conectar con el servidor');
+      if (!response.ok) throw new Error('Error al conectar con el servidor`);
       const data = await response.json();
       setUsers(Array.isArray(data) ? data : []);
     } catch (error) {
@@ -47,7 +47,7 @@ const AdminUsers = () => {
 
   // 3. ELIMINAR USUARIO DE LA DB
   const handleDelete = async (id) => {
-    if (!window.confirm('¿Estás seguro de eliminar este usuario de la base de datos?')) return;
+    if (!window.confirm('¿Estás seguro de eliminar este usuario de la base de datos?`)) return;
     try {
       const response = await fetch(`${API_URL}/users/${id}`, {
         method: 'DELETE'
@@ -162,7 +162,7 @@ const AdminUsers = () => {
                       <button onClick={() => handleToggleStatus(user.id, user.status)} style={{ background: '#f59e0b', color: 'white', border: 'none', padding: '7px 12px', borderRadius: '6px', cursor: 'pointer' }}>
                         {user.status === 'active' ? 'Suspender' : 'Activar'}
                       </button>
-                      <button onClick={() => handleDelete(user.id)} style={{ background: '#ef4444', color: 'white', border: 'none', padding: '7px 12px', borderRadius: '6px', cursor: 'pointer' }}>Eliminar</button>
+                      <button onClick={() => handleDelete(user.id)} style={{ background: '#ef4444', color: 'white', border: 'none', padding: '7px 12px', borderRadius: '6px', cursor: 'pointer` }}>Eliminar</button>
                     </div>
                   </td>
                 </tr>

@@ -54,7 +54,7 @@ const Login = ({ onLogin }) => {
       if (user.role === 'admin') {
         navigate('/admin')
       } else {
-        navigate('/dashboard')
+        navigate('/dashboard`)
       }
 
     } catch (err) {
@@ -240,7 +240,7 @@ const Login = ({ onLogin }) => {
             style={{
               color: '#4f46e5',
               fontWeight: '600',
-              textDecoration: 'none'
+              textDecoration: 'none`
             }}
           >
             Regístrate aquí
