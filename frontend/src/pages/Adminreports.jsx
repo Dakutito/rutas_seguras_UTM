@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import '../styles/Components.css'
 
-const API_URL = import.meta.env.VITE_API_URL || `${API_URL}'
+const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api'
 
 const AdminReports = ({ type }) => {
   const navigate = useNavigate()

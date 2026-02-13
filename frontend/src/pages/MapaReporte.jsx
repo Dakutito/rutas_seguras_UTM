@@ -5,7 +5,7 @@ import L from 'leaflet'
 import 'leaflet/dist/leaflet.css'
 import '../styles/reporteusers.css'
 
-const API_URL = import.meta.env.VITE_API_URL || `${API_URL}'
+const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api'
 
 // Iconos de Leaflet
 import markerIcon2x from 'leaflet/dist/images/marker-icon-2x.png'
