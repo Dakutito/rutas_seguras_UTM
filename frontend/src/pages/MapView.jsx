@@ -76,7 +76,7 @@ const MapView = ({ isAdmin, user }) => {
         <span>
           {userLocation
             ? `Activada (${userLocation.lat.toFixed(4)}, ${userLocation.lng.toFixed(4)})`
-            : 'No activada`
+            : 'No activada'
           }
         </span>
       </div>
