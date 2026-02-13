@@ -20,8 +20,8 @@ const AdminPanel = () => {
     try {
       const token = localStorage.getItem('token')
       const [usersRes, reportsRes] = await Promise.all([
-        fetch(`${API_URL}/users', { headers: { 'Authorization': `Bearer ${token}` } }),
-        fetch(`${API_URL}/reports', { headers: { 'Authorization': `Bearer ${token}` } })
+        fetch(`${API_URL}/users', { headers: { 'Authorization`: `Bearer ${token}` } }),
+        fetch(`${API_URL}/reports', { headers: { 'Authorization`: `Bearer ${token}` } })
       ])
 
       const users = await usersRes.json()

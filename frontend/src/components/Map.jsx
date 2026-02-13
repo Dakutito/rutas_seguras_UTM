@@ -29,13 +29,13 @@ const Map = ({ userLocation, onZoneClick, isAdmin = false, user }) => {
       
       if (isAdmin) {
         // Admin ve TODOS los reportes
-        const response = await fetch(`${API_URL}/reports');
+        const response = await fetch(`${API_URL}/reports`);
         const data = await response.json();
         setReports(Array.isArray(data) ? data : []);
       } else if (user) {
         // Usuario normal solo ve SUS PROPIOS reportes
         const response = await fetch(`${API_URL}/reports/my-reports', {
-          headers: { 'Authorization': `Bearer ${token}` }
+          headers: { 'Authorization`: `Bearer ${token}` }
         });
         const data = await response.json();
         setReports(Array.isArray(data) ? data : []);

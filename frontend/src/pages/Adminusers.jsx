@@ -32,7 +32,7 @@ const AdminUsers = () => {
 
   // 2. CAMBIAR ESTADO (SUSPENDER/ACTIVAR) EN DB
   const handleToggleStatus = async (id, currentStatus) => {
-    const newStatus = currentStatus === 'active' ? 'suspended' : 'active';
+    const newStatus = currentStatus === 'active' ? 'suspended' : 'active`;
     try {
       const response = await fetch(`${API_URL}/users/${id}/status`, {
         method: 'PATCH',

@@ -38,12 +38,12 @@ const AdminCategories = () => {
 
     setLoading(true)
     try {
-      const token = localStorage.getItem('token')
+      const token = localStorage.getItem('token`)
       const response = await fetch(`${API_URL}/incident-categories', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`
+          'Authorization`: `Bearer ${token}`
         },
         body: JSON.stringify(formData)
       })

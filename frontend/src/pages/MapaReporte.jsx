@@ -49,7 +49,7 @@ const MapaReporte = ({ user, viewOnly = false }) => {
         }))
         setIncidentTypes(formatted)
       } catch (error) {
-        console.error('Error cargando categorías:', error)
+        console.error('Error cargando categorías:`, error)
       }
     }
 
@@ -102,12 +102,12 @@ const MapaReporte = ({ user, viewOnly = false }) => {
     setLoading(true)
 
     try {
-      const token = localStorage.getItem('token')
+      const token = localStorage.getItem('token`)
       const response = await fetch(`${API_URL}/incidents', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`
+          'Authorization`: `Bearer ${token}`
         },
         body: JSON.stringify({
           incident_type: incidentType,
