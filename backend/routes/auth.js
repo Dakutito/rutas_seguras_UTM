@@ -16,13 +16,13 @@ const loginAttempts = new Map();
 const checkRateLimit = (email) => {
   const now = Date.now();
   const attempts = loginAttempts.get(email) || { count: 0, firstAttempt: now };
-  
+
   // Resetear contador después de 15 minutos
   if (now - attempts.firstAttempt > 15 * 60 * 1000) {
     loginAttempts.delete(email);
     return { allowed: true, remaining: 5 };
   }
-  
+
   // Máximo 5 intentos en 15 minutos
   if (attempts.count >= 5) {
     const timeLeft = Math.ceil((15 * 60 * 1000 - (now - attempts.firstAttempt)) / 60000);
@@ -32,7 +32,7 @@ const checkRateLimit = (email) => {
       message: `Demasiados intentos. Intenta de nuevo en ${timeLeft} minutos.`
     };
   }
-  
+
   return { allowed: true, remaining: 5 - attempts.count };
 };
 
@@ -51,11 +51,16 @@ const clearAttempts = (email) => {
 };
 
 // REGISTRO
+router.get('/register', (req, res) => {
+  res.status(405).json({ error: 'Método no permitido. Usa POST para registrar.' });
+});
+
 router.post('/register', [
   body('name').trim().isLength({ min: 3 }),
   body('email').isEmail(),
   body('password').isLength({ min: 6 })
 ], async (req, res) => {
+  console.log('Intento de registro:', req.body.email); // Debug log
   try {
     const errors = validationResult(req);
     if (!errors.isEmpty()) return res.status(400).json({ errors: errors.array() });
@@ -88,7 +93,7 @@ router.post('/register', [
 
     // URL que el usuario clickeará en su correo
     const verifyLink = `http://localhost:5173/verify-email?token=${verificationToken}`;
-    
+
     // --- ENVÍO DE EMAIL ---
     try {
       await sendVerificationEmail(normalizedEmail, name, verifyLink);
@@ -134,9 +139,9 @@ router.get('/verify-email/:token', async (req, res) => {
 
     // --- ENVIAR EMAIL DE BIENVENIDA ---
     try {
-        await sendWelcomeEmail(verification.email, verification.name);
+      await sendWelcomeEmail(verification.email, verification.name);
     } catch (welcomeError) {
-        console.error("Error al enviar email de bienvenida:", welcomeError);
+      console.error("Error al enviar email de bienvenida:", welcomeError);
     }
 
     res.json({ message: 'Email verificado correctamente. Ya puedes iniciar sesión.' });
@@ -199,7 +204,7 @@ router.post('/login', [
     // VERIFICACIÓN DE CÓDIGO ADMIN
     if (user.role === 'admin') {
       const validAdminCode = process.env.ADMIN_ACCESS_CODE;
-      
+
       // Si es admin, DEBE proporcionar el código
       if (!adminCode) {
         recordFailedAttempt(normalizedEmail);
@@ -212,7 +217,7 @@ router.post('/login', [
       // Verificar que el código sea correcto
       if (adminCode !== validAdminCode) {
         recordFailedAttempt(normalizedEmail);
-      
+
         // LOG DE SEGURIDAD - Registrar intento de acceso no autorizado
         console.warn(`INTENTO DE ACCESO ADMIN FALLIDO:
           Email: ${normalizedEmail}
@@ -220,13 +225,13 @@ router.post('/login', [
           Fecha: ${new Date().toISOString()}
           Código incorrecto proporcionado
         `);
-        
+
         return res.status(403).json({
           error: 'Código de acceso de administrador incorrecto',
           remainingAttempts: rateCheck.remaining - 1
         });
       }
-      
+
       // LOG DE SEGURIDAD - Acceso admin exitoso
       console.log(`ACCESO ADMIN EXITOSO:
         Email: ${normalizedEmail}
