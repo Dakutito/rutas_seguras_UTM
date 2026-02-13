@@ -8,14 +8,16 @@ const getApiUrl = () => {
   return url.endsWith('/api') ? url : `${url}/api`;
 };
 
-const API_URL = getApiUrl();
+export const API_URL = getApiUrl();
 
 // Helper para manejar respuestas
 const handleResponse = async (response) => {
   const data = await response.json();
 
   if (!response.ok) {
-    throw new Error(data.error || 'Error en la petición');
+    const error = new Error(data.error || 'Error en la petición');
+    error.data = data;
+    throw error;
   }
 
   return data;
@@ -84,6 +86,12 @@ export const authAPI = {
       headers: authHeaders()
     });
     return handleResponse(response);
+  },
+
+  // Verificar Email
+  verifyEmail: async (token) => {
+    const response = await fetch(`${API_URL}/auth/verify-email/${token}`);
+    return handleResponse(response);
   }
 };
 
@@ -106,20 +114,12 @@ export const usersAPI = {
     return handleResponse(response);
   },
 
-  // Suspender usuario
-  suspend: async (userId) => {
-    const response = await fetch(`${API_URL}/users/${userId}/suspend`, {
-      method: 'PUT',
-      headers: authHeaders()
-    });
-    return handleResponse(response);
-  },
-
-  // Reactivar usuario
-  activate: async (userId) => {
-    const response = await fetch(`${API_URL}/users/${userId}/activate`, {
-      method: 'PUT',
-      headers: authHeaders()
+  // Cambiar estado de usuario (suspend/active)
+  updateStatus: async (userId, status) => {
+    const response = await fetch(`${API_URL}/users/${userId}/status`, {
+      method: 'PATCH',
+      headers: authHeaders(),
+      body: JSON.stringify({ status })
     });
     return handleResponse(response);
   },
@@ -179,6 +179,14 @@ export const reportsAPI = {
   // Obtener todos los reportes activos
   getAll: async () => {
     const response = await fetch(`${API_URL}/reports`);
+    return handleResponse(response);
+  },
+
+  // Obtener mis reportes
+  getMyReports: async () => {
+    const response = await fetch(`${API_URL}/reports/my-reports`, {
+      headers: authHeaders()
+    });
     return handleResponse(response);
   },
 
@@ -265,6 +273,98 @@ export const statsAPI = {
   }
 };
 
+// ==================== INCIDENTES ====================
+
+export const incidentsAPI = {
+  // Obtener todos
+  getAll: async (type = null) => {
+    const url = type && type !== 'Todos'
+      ? `${API_URL}/incidents?type=${type}`
+      : `${API_URL}/incidents`;
+    const response = await fetch(url);
+    return handleResponse(response);
+  },
+
+  // Crear incidente
+  create: async (data) => {
+    const response = await fetch(`${API_URL}/incidents`, {
+      method: 'POST',
+      headers: authHeaders(),
+      body: JSON.stringify(data)
+    });
+    return handleResponse(response);
+  },
+
+  // Eliminar incidente
+  delete: async (id) => {
+    const response = await fetch(`${API_URL}/incidents/${id}`, {
+      method: 'DELETE',
+      headers: authHeaders()
+    });
+    return handleResponse(response);
+  },
+
+  // Obtener categorías
+  getCategories: async () => {
+    const response = await fetch(`${API_URL}/incident-categories`);
+    return handleResponse(response);
+  }
+};
+
+// ==================== CONFIGURACIÓN DE USUARIO ====================
+
+export const userSettingsAPI = {
+  // Obtener perfil completo
+  getProfile: async () => {
+    const response = await fetch(`${API_URL}/user-settings/profile`, {
+      headers: authHeaders()
+    });
+    return handleResponse(response);
+  },
+
+  // Actualizar nombre
+  updateName: async (name) => {
+    const response = await fetch(`${API_URL}/user-settings/update-name`, {
+      method: 'PATCH',
+      headers: authHeaders(),
+      body: JSON.stringify({ name })
+    });
+    return handleResponse(response);
+  },
+
+  // Subir foto
+  uploadPhoto: async (formData) => {
+    const token = getToken();
+    const response = await fetch(`${API_URL}/user-settings/upload-photo`, {
+      method: 'POST',
+      headers: {
+        ...(token && { 'Authorization': `Bearer ${token}` })
+        // No Content-Type header needed for FormData, browser sets it with boundary
+      },
+      body: formData
+    });
+    return handleResponse(response);
+  },
+
+  // Eliminar foto
+  deletePhoto: async () => {
+    const response = await fetch(`${API_URL}/user-settings/delete-photo`, {
+      method: 'DELETE',
+      headers: authHeaders()
+    });
+    return handleResponse(response);
+  },
+
+  // Eliminar cuenta
+  deleteAccount: async () => {
+    const response = await fetch(`${API_URL}/user-settings/delete-account`, {
+      method: 'DELETE',
+      headers: authHeaders()
+    });
+    return handleResponse(response);
+  }
+};
+
 // ==================== HEALTH CHECK ====================
 
 export const healthCheck = async () => {
@@ -278,5 +378,7 @@ export default {
   reports: reportsAPI,
   zones: zonesAPI,
   stats: statsAPI,
+  incidents: incidentsAPI,
+  userSettings: userSettingsAPI,
   healthCheck
 };

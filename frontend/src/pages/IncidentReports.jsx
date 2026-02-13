@@ -3,7 +3,7 @@ import { Link, useNavigate } from 'react-router-dom'
 import { isAdmin } from '../services/authService'
 import '../styles/Components.css'
 
-const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api'
+import { incidentsAPI } from '../services/api'
 
 const IncidentReports = () => {
   const navigate = useNavigate()
@@ -19,8 +19,7 @@ const IncidentReports = () => {
   useEffect(() => {
     const loadCategories = async () => {
       try {
-        const response = await fetch(`${API_URL}/incident-categories`)
-        const data = await response.json()
+        const data = await incidentsAPI.getCategories()
         setIncidentTypes(['Todos', ...data.map(cat => cat.name)])
       } catch (error) {
         console.error('Error:', error)
@@ -31,12 +30,7 @@ const IncidentReports = () => {
 
   const loadIncidents = async () => {
     try {
-      const url = filter === 'Todos'
-        ? `${API_URL}/incidents`
-        : `${API_URL}/incidents?type=${filter}`
-
-      const response = await fetch(url)
-      const data = await response.json()
+      const data = await incidentsAPI.getAll(filter)
       setIncidents(Array.isArray(data) ? data : [])
     } catch (error) {
       console.error('Error:', error)
@@ -55,16 +49,9 @@ const IncidentReports = () => {
     if (!window.confirm('¿Eliminar este incidente?')) return
 
     try {
-      const token = localStorage.getItem('token')
-      const response = await fetch(`${API_URL}/incidents/${id}`, {
-        method: 'DELETE',
-        headers: { 'Authorization': `Bearer ${token}` }
-      })
-
-      if (response.ok) {
-        alert('Incidente eliminado')
-        loadIncidents()
-      }
+      await incidentsAPI.delete(id)
+      alert('Incidente eliminado')
+      loadIncidents()
     } catch (error) {
       console.error('Error:', error)
       alert('Error al eliminar')

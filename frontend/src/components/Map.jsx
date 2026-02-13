@@ -3,13 +3,13 @@ import { MapContainer, TileLayer, Circle, Popup, Marker, useMap } from 'react-le
 import 'leaflet/dist/leaflet.css'
 import L from 'leaflet'
 import '../styles/Map.css'
-
-const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api'
+import { reportsAPI } from '../services/api'
 
 // Corrección de iconos de Leaflet
 import markerIcon2x from 'leaflet/dist/images/marker-icon-2x.png'
 import markerIcon from 'leaflet/dist/images/marker-icon.png'
 import markerShadow from 'leaflet/dist/images/marker-shadow.png'
+
 delete L.Icon.Default.prototype._getIconUrl
 L.Icon.Default.mergeOptions({ iconRetinaUrl: markerIcon2x, iconUrl: markerIcon, shadowUrl: markerShadow })
 
@@ -19,25 +19,18 @@ function ChangeView({ center }) {
   return null;
 }
 
-// AGREGADO: Props isAdmin y user para controlar privacidad
 const Map = ({ userLocation, onZoneClick, isAdmin = false, user }) => {
   const [reports, setReports] = useState([]);
 
   const fetchReports = async () => {
     try {
-      const token = localStorage.getItem('token');
-      
       if (isAdmin) {
         // Admin ve TODOS los reportes
-        const response = await fetch(`${API_URL}/reports`);
-        const data = await response.json();
+        const data = await reportsAPI.getAll()
         setReports(Array.isArray(data) ? data : []);
       } else if (user) {
         // Usuario normal solo ve SUS PROPIOS reportes
-        const response = await fetch(`${API_URL}/reports/my-reports`, {
-          headers: { 'Authorization': `Bearer ${token}` }
-        });
-        const data = await response.json();
+        const data = await reportsAPI.getMyReports()
         setReports(Array.isArray(data) ? data : []);
       } else {
         setReports([]);
@@ -49,17 +42,17 @@ const Map = ({ userLocation, onZoneClick, isAdmin = false, user }) => {
 
   useEffect(() => {
     fetchReports();
-    
+
     // Actualizar cada 15 segundos
     const timer = setInterval(fetchReports, 15000);
     return () => clearInterval(timer);
-  }, [isAdmin, user]); // Dependencias actualizadas
+  }, [isAdmin, user]);
 
   return (
-    <MapContainer className='tamañodelMapa' style={{position:'sticky'}}  center={[-1.0234, -80.4667]} zoom={15}>
+    <MapContainer className='tamañodelMapa' style={{ position: 'sticky' }} center={[-1.0234, -80.4667]} zoom={15}>
       <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
       {userLocation && <ChangeView center={[userLocation.lat, userLocation.lng]} />}
-      
+
       {/* Mostrar círculos: TODOS para admin, SOLO PROPIOS para usuario */}
       {reports.map((report) => (
         <Circle
@@ -74,8 +67,8 @@ const Map = ({ userLocation, onZoneClick, isAdmin = false, user }) => {
           eventHandlers={{ click: () => onZoneClick && onZoneClick(report) }}
         >
           <Popup>
-            <strong>{report.emotion} {report.emotion_label}</strong><br/>
-            {report.comment && <em>"{report.comment}"</em>}<br/>
+            <strong>{report.emotion} {report.emotion_label}</strong><br />
+            {report.comment && <em>"{report.comment}"</em>}<br />
             <small style={{ color: '#6b7280' }}>
               {isAdmin ? `Por: ${report.user_name || 'Usuario'}` : 'Tu reporte'}
             </small>
