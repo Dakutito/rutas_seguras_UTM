@@ -55,6 +55,30 @@ router.get('/register', (req, res) => {
   res.status(405).json({ error: 'Método no permitido. Usa POST para registrar.' });
 });
 
+// TEST DATABASE - DEBUGGING ONLY
+router.get('/test-db', async (req, res) => {
+  try {
+    const result = await query('SELECT NOW() as now');
+    res.json({
+      message: 'Conexión a base de datos exitosa',
+      time: result.rows[0].now,
+      env: {
+        host: process.env.DB_HOST,
+        db: process.env.DB_NAME,
+        user: process.env.DB_USER
+      }
+    });
+  } catch (error) {
+    console.error('Test DB Error:', error);
+    res.status(500).json({
+      error: 'Error de conexión a BD',
+      details: error.message,
+      code: error.code,
+      meta: error
+    });
+  }
+});
+
 router.post('/register', [
   body('name').trim().isLength({ min: 3 }),
   body('email').isEmail(),
