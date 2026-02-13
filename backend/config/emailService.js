@@ -11,14 +11,17 @@ if (!process.env.EMAIL_USER || !process.env.EMAIL_PASSWORD) {
 const transporter = nodemailer.createTransport({
   host: process.env.EMAIL_HOST || 'smtp.gmail.com',
   port: parseInt(process.env.EMAIL_PORT || '465'),
-  secure: process.env.EMAIL_SECURE !== 'false', // true para 465, default true si no es 'false'
+  secure: process.env.EMAIL_SECURE !== 'false',
   auth: {
     user: process.env.EMAIL_USER,
     pass: process.env.EMAIL_PASSWORD
   },
   tls: {
     rejectUnauthorized: false
-  }
+  },
+  connectionTimeout: 20000, // 20 segundos
+  greetingTimeout: 20000,
+  socketTimeout: 20000
 });
 
 // Verificar conexión al iniciar
@@ -85,5 +88,6 @@ const sendWelcomeEmail = async (email, name) => {
 
 module.exports = {
   sendVerificationEmail,
-  sendWelcomeEmail
+  sendWelcomeEmail,
+  transporter // Lo exportamos para pruebas manuales si es necesario
 };
