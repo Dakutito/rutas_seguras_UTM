@@ -1,4 +1,10 @@
 const express = require('express');
+const dns = require('dns');
+
+// Forzar resolución IPv4 globalmente
+if (dns.setDefaultResultOrder) {
+  dns.setDefaultResultOrder('ipv4first');
+}
 const cors = require('cors');
 const path = require('path');
 require('dotenv').config();
@@ -13,7 +19,7 @@ app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
 // Middlewares
 const corsOptions = {
-  origin: process.env.CORS_ORIGIN 
+  origin: process.env.CORS_ORIGIN
     ? process.env.CORS_ORIGIN.split(',').map(url => url.trim())
     : ['http://localhost:3000', 'http://localhost:5173', 'http://localhost:5174'],
   credentials: true,
@@ -56,8 +62,8 @@ app.use('/api/incident-categories', incidentCategoriesRoutes);
 
 // Ruta de salud
 app.get('/api/health', (req, res) => {
-  res.json({ 
-    status: 'OK', 
+  res.json({
+    status: 'OK',
     message: 'API de Rutas Seguras funcionando correctamente',
     timestamp: new Date().toISOString()
   });
@@ -81,9 +87,9 @@ app.get('/', (req, res) => {
 
 // Manejo de errores 404
 app.use((req, res) => {
-  res.status(404).json({ 
+  res.status(404).json({
     error: 'Ruta no encontrada',
-    path: req.path 
+    path: req.path
   });
 });
 
