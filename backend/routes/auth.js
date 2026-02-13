@@ -254,6 +254,25 @@ router.post('/login', [
   }
 });
 
+// RUTA PARA PRUEBA RÁPIDA DE EMAIL DESDE NAVEGADOR (Solo para debugging)
+router.get('/test-email', async (req, res) => {
+  try {
+    const { email } = req.query;
+    if (!email) return res.status(400).json({ error: 'Indica un email: /test-email?email=tu@correo.com' });
+
+    console.log('--- TEST DE EMAIL INICIADO ---');
+    await sendVerificationEmail(email, 'Usuario de Prueba', 'http://localhost:3000/test');
+    res.json({ message: 'Email de prueba enviado (revisa la consola de Render para confirmación)' });
+  } catch (error) {
+    res.status(500).json({
+      error: 'Error en el test de email',
+      message: error.message,
+      code: error.code,
+      details: 'Revisa que EMAIL_USER y EMAIL_PASSWORD sean correctos en Render'
+    });
+  }
+});
+
 // Manejo de GET en rutas que solo deben ser POST (para evitar confusiones)
 router.get('/login', (req, res) => {
   res.status(405).json({ error: 'El login solo acepta peticiones POST' });
