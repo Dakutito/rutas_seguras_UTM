@@ -7,8 +7,8 @@ require('dotenv').config({ path: path.resolve(__dirname, '../.env') });
 const transporter = nodemailer.createTransport({
   service: 'gmail',
   auth: {
-    user: process.env.GMAIL_USER,     
-    pass: process.env.GMAIL_APP_PASSWORD 
+    user: process.env.EMAIL_USER,     
+    pass: process.env.EMAIL_PASSWORD 
   },
   tls: {
     rejectUnauthorized: false // Ayuda a evitar bloqueos en entornos locales
@@ -19,7 +19,7 @@ const transporter = nodemailer.createTransport({
 transporter.verify((error, success) => {
   if (error) {
     console.error('❌ Error configurando servicio de email:', error.message);
-    console.log('💡 Tip: Revisa que GMAIL_USER y GMAIL_APP_PASSWORD estén bien en el .env');
+    console.log('💡 Tip: Revisa que EMAIL_USER y EMAIL_PASSWORD estén bien en el .env');
   } else {
     console.log('✅ Servicio de email configurado correctamente');
   }
@@ -31,7 +31,7 @@ transporter.verify((error, success) => {
 const sendVerificationEmail = async (email, name, verificationUrl) => {
   try {
     const mailOptions = {
-      from: `"Rutas Seguras UTM" <${process.env.GMAIL_USER}>`,
+      from: `"Rutas Seguras UTM" <${process.env.EMAIL_USER}>`,
       to: email,
       subject: 'Verifica tu cuenta - Rutas Seguras UTM',
       html: `
@@ -63,7 +63,7 @@ const sendVerificationEmail = async (email, name, verificationUrl) => {
 const sendWelcomeEmail = async (email, name) => {
   try {
     const mailOptions = {
-      from: `"Rutas Seguras UTM" <${process.env.GMAIL_USER}>`,
+      from: `"Rutas Seguras UTM" <${process.env.EMAIL_USER}>`,
       to: email,
       subject: '¡Bienvenido a Rutas Seguras UTM!',
       html: `<h1>🎉 ¡Cuenta activada!</h1><p>Hola ${name}, tu cuenta ha sido verificada con éxito. Ya puedes iniciar sesión.</p>`
