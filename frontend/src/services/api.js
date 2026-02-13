@@ -1,15 +1,20 @@
 // services/api.js - Servicio para conectar frontend con backend
 
-const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
+const getApiUrl = () => {
+  const url = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
+  return url.endsWith('/api') ? url : `${url}/api`;
+};
+
+const API_URL = getApiUrl();
 
 // Helper para manejar respuestas
 const handleResponse = async (response) => {
   const data = await response.json();
-  
+
   if (!response.ok) {
     throw new Error(data.error || 'Error en la petición');
   }
-  
+
   return data;
 };
 
@@ -48,12 +53,12 @@ export const authAPI = {
       body: JSON.stringify(credentials)
     });
     const data = await handleResponse(response);
-    
+
     // Guardar token
     if (data.token) {
       localStorage.setItem('token', data.token);
     }
-    
+
     return data;
   },
 
@@ -63,10 +68,10 @@ export const authAPI = {
       method: 'POST',
       headers: authHeaders()
     });
-    
+
     // Limpiar token
     localStorage.removeItem('token');
-    
+
     return handleResponse(response);
   },
 
