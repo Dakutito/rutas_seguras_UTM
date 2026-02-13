@@ -1,0 +1,252 @@
+/* Contenedor principal */
+.ContenidoMapaInteractivo_User {
+    position: sticky;
+    top: 20px;
+    display: flex;
+    align-items: flex-start;
+    height: fit-content;
+}
+
+/* Panel interactivo mejorado */
+.map-interactive-content {
+    background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+    padding:25px;
+    min-height: -webkit-fill-available;
+    border: 1px solid #e2e8f0;
+    backdrop-filter: blur(10px);
+}
+
+.map-sub-interactive-content {
+    display: flex;
+    flex-direction: column;
+
+}
+
+/* Mejoras para títulos y texto */
+.map-interactive-content h3 {
+    margin: 0;
+    color: #1e293b;
+    font-size: 1.5rem;
+    font-weight: 600;
+    line-height: 1.2;
+}
+
+.map-interactive-content span {
+    color: #64748b;
+    font-size: 0.95rem;
+    line-height: 1.5;
+    display: block;
+    margin-bottom: 5px;
+}
+
+/* Botón de activar ubicación mejorado */
+.location-btn {
+    width: 100%;
+    padding: 14px 20px;
+    background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
+    color: white;
+    border: none;
+    border-radius: 12px;
+    font-weight: 600;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    margin: 10px 0;
+}
+
+.location-btn:hover {
+    background: linear-gradient(135deg, #2563eb 0%, #1e40af 100%);
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(37, 99, 235, 0.3);
+}
+
+/* Modal overlay mejorado */
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(5px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+    animation: fadeIn 0.3s ease;
+}
+/* Tarjeta de bienestar */
+.wellness-card {
+    background: linear-gradient(135deg, #e0f2fe 0%, #bae6fd 100%);
+    border-radius: 12px;
+    padding: 15px;
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    margin: 15px 0;
+    border-left: 4px solid #0ea5e9;
+}
+
+.wellness-icon {
+    font-size: 1.8rem;
+}
+
+.wellness-text {
+    display: flex;
+    flex-direction: column;
+}
+
+.wellness-text strong {
+    color: #0369a1;
+    font-size: 0.95rem;
+}
+
+.wellness-text small {
+    color: #0c4a6e;
+    font-size: 0.85rem;
+    opacity: 0.9;
+}
+
+/* Estado de ubicación */
+.location-status {
+    background: white;
+    border-radius: 12px;
+    padding: 15px;
+    border: 1px solid #e2e8f0;
+    margin: 10px 0;
+}
+
+.location-info {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 15px;
+}
+
+.location-info strong {
+    color: #334155;
+    font-size: 0.9rem;
+    margin-bottom: 4px;
+}
+
+.location-info span {
+    color: #64748b;
+    font-size: 0.85rem;
+}
+
+/* Sección de emociones */
+
+
+.emotion-section h4 {
+    color: #1e293b;
+    font-size: 1.1rem;
+    margin-bottom: 12px;
+    font-weight: 600;
+}
+
+/* Botón de reporte */
+.report-btn {
+    width: 100%;
+    padding: 16px 20px;
+    background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+    color: white;
+    border: none;
+    border-radius: 12px;
+    font-weight: 600;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    margin-top: 15px;
+}
+
+.report-btn:hover {
+    background: linear-gradient(135deg, #059669 0%, #047857 100%);
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(16, 185, 129, 0.3);
+}
+
+.emotion-icon {
+    font-size: 1.2rem;
+}
+
+.arrow {
+    font-size: 1.1rem;
+    opacity: 0.9;
+}
+
+/* Estado del reporte */
+.report-status {
+    background: #f0fdf4;
+    border: 1px solid #bbf7d0;
+    border-radius: 10px;
+    padding: 12px 15px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-top: 15px;
+    animation: slideIn 0.3s ease;
+}
+
+@keyframes slideIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.status-dot {
+    width: 10px;
+    height: 10px;
+    background: #10b981;
+    border-radius: 50%;
+    animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+    0% { opacity: 1; }
+    50% { opacity: 0.5; }
+    100% { opacity: 1; }
+}
+
+.report-status span {
+    color: #065f46;
+    font-size: 0.9rem;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+@media (max-width: 768px) {
+    .ContenidoMapaInteractivo_User {
+        flex-direction: column;
+        position: static;
+    }
+    
+    .map-interactive-content {
+        max-width: 100%;
+        min-width: unset;
+    }
+    
+    .map-legend {
+        max-width: 100%;
+    }
+    
+    .control-btn {
+        width: 35px;
+        height: 35px;
+        font-size: 16px;
+    }
+}

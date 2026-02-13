@@ -1,0 +1,8 @@
+/* App.css - Estilos generales de la aplicación */
+
+.app {
+  min-height: 100vh;
+  background: var(--app-gradient);
+}
+
+/* Agregar estilos adicionales si son necesarios */

@@ -1,0 +1,254 @@
+/* Variables de modo claro (por defecto) */
+:root {
+    --bg-primary: #f5f7fa;
+    --bg-secondary: #f9fafb;
+    --bg-card: #ffffff;
+    --bg-navbar: #ffffff;
+    --bg-input: #ffffff;
+    --bg-hover: #f3f4f6;
+    --bg-section: #f8fafc;
+
+    --text-primary: #1f2937;
+    --text-secondary: #6b7280;
+    --text-muted: #9ca3af;
+    --text-heading: #1f2937;
+
+    --border-color: #e5e7eb;
+    --border-light: #f3f4f6;
+
+    --shadow-card: 0 4px 20px rgba(0, 0, 0, 0.06);
+    --shadow-navbar: 0 2px 8px rgba(0, 0, 0, 0.08);
+
+    --app-gradient: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+}
+
+/* Variables de modo oscuro */
+[data-theme="dark"] {
+    --bg-primary: #0F172A;
+    --bg-secondary: #1E293B;
+    --bg-card: #1E293B;
+    --bg-navbar: #1E293B;
+    --bg-input: #334155;
+    --bg-hover: #334155;
+    --bg-section: #0F172A;
+
+    --text-primary: #e2e8f0;
+    --text-secondary: #94a3b8;
+    --text-muted: #64748b;
+    --text-heading: #f1f5f9;
+
+    --border-color: #334155;
+    --border-light: #1E293B;
+
+    --shadow-card: 0 4px 20px rgba(0, 0, 0, 0.3);
+    --shadow-navbar: 0 2px 8px rgba(0, 0, 0, 0.4);
+
+    --app-gradient: linear-gradient(135deg, #0F172A 0%, #1E293B 100%);
+}
+
+/* BOTÓN TOGGLE DARK MODE*/
+.dark-mode-toggle {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 42px;
+    height: 42px;
+    border: 2px solid var(--border-color);
+    border-radius: 12px;
+    background: var(--bg-card);
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-size: 20px;
+    line-height: 1;
+    position: relative;
+    overflow: hidden;
+}
+
+.dark-mode-toggle:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(102, 126, 234, 0.25);
+    border-color: #303034;
+}
+
+.dark-mode-toggle:active {
+    transform: translateY(0);
+}
+
+.dark-mode-icon {
+    transition: transform 0.4s ease, opacity 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.dark-mode-toggle:hover .dark-mode-icon {
+    transform: rotate(25deg);
+}
+
+/* Versión móvil del toggle */
+.dark-mode-toggle-mobile {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 14px 16px;
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: 10px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-size: 15px;
+    font-weight: 500;
+    color: var(--text-primary);
+    width: 100%;
+}
+
+.dark-mode-toggle-mobile:hover {
+    background: var(--bg-hover);
+}
+
+/* ESTILOS GENERALES EN DARK MODE*/
+
+[data-theme="dark"] * {
+    color-scheme: dark;
+}
+
+[data-theme="dark"] body,
+[data-theme="dark"] html {
+    background: var(--bg-primary);
+}
+
+[data-theme="dark"] input,
+[data-theme="dark"] textarea,
+[data-theme="dark"] select {
+    background: var(--bg-input);
+    color: var(--text-primary);
+    border-color: var(--border-color);
+}
+
+[data-theme="dark"] input::placeholder,
+[data-theme="dark"] textarea::placeholder {
+    color: var(--text-muted);
+}
+
+[data-theme="dark"] button {
+    border-color: var(--border-color);
+}
+
+[data-theme="dark"] a {
+    color: #667eea;
+}
+
+[data-theme="dark"] a:hover {
+    color: #7c8ff0;
+}
+
+[data-theme="dark"] .card,
+[data-theme="dark"] .modal-content,
+[data-theme="dark"] .navbar,
+[data-theme="dark"] .report-status,
+[data-theme="dark"] .botonesdeladminreport,
+[data-theme="dark"] .subb_botonesdeladminreport h3,
+[data-theme="dark"] .adminemailreporte,
+[data-theme="dark"] .navbarsububicacion,
+[data-theme="dark"] .cuandonohayreporte,
+[data-theme="dark"] .categoriaadinmodooscuro,
+[data-theme="dark"] .map-interactive-content {
+    background:#182234;
+    color: var(--text-primary);
+    border: none;
+}
+[data-theme="dark"] .gestionuseradinmodooscuro{
+    background:#182234;
+    border: none;
+}
+
+[data-theme="dark"] .conenidodelmapaubicac {
+    background: var(--bg-card);
+    border: none;
+}
+[data-theme="dark"] .userconfiggh1_email input{
+    background: #1f2e4b;
+    border: none;
+    color: var(--text-primary);
+}
+[data-theme="dark"] .userconfiggh1_email input{
+    background: #1f2e4b;
+    border: none;
+    color: var(--text-primary);
+}
+
+[data-theme="dark"] .sud_adminemailreporte strong,
+[data-theme="dark"] .sud_adminemailreporte span,
+[data-theme="dark"] .conenidodelmapaubicac strong,
+[data-theme="dark"] .subb_botonesdeladminreport p {
+    color: rgb(123, 123, 123);
+}
+
+
+[data-theme="dark"] .sub_Comienzareporte,
+[data-theme="dark"] .sub_detallesincidenteuserBotones button{
+    background: #172133;
+    color: white;
+    border: none;
+}
+
+[data-theme="dark"] .sub_subb_comentario p,
+[data-theme="dark"] .historialreportetotaluser,
+[data-theme="dark"] .sub_subcontenidohistorialreportetotaluser,
+[data-theme="dark"] .mapacaloradmindeuser,
+[data-theme="dark"] .reportedeuseraladmi,
+[data-theme="dark"] .ub_analisisemocionuser,
+[data-theme="dark"] .sub_sub_distribuiremouser,
+[data-theme="dark"] .sub_subb_comentario{
+    background: #161E33;
+    color: rgb(255, 255, 255);
+    border: none;
+}
+[data-theme="dark"] .sub_sub_subcontenidohistorialreportetotaluser,
+[data-theme="dark"] .categoriadereporte button{
+    background: #172133;
+    color: white;
+    border: 1px solid var(--border-color);
+}
+[data-theme="dark"] .mensajemap,
+[data-theme="dark"] .location-status{
+    background: var(--bg-card);
+    color:rgb(255, 255, 255);
+    box-shadow: var(--shadow-card);
+    border:none;
+}
+
+[data-theme="dark"].report-status strong,
+[data-theme="dark"] .location-status strong,
+[data-theme="dark"] .report-status span,
+[data-theme="dark"] .map-sub-interactive-content h3,
+[data-theme="dark"] .emotion-section h4,
+[data-theme="dark"] .tardemotion_user,
+[data-theme="dark"] .h4mensa,
+[data-theme="dark"] .userconfiggh1,
+[data-theme="dark"] .navbarsububicacion h2,
+[data-theme="dark"] .sub_gestionuseradinmodooscuro h1,
+[data-theme="dark"] .mapacaloradmindeuser,
+[data-theme="dark"] .sub_analisisemocionuser h1,
+[data-theme="dark"] .sub_distribuiremouser h2,
+[data-theme="dark"] .map-sub-interactive-content span{
+    color:white;
+}
+
+[data-theme="dark"] .tardemotion{
+    color:white;
+    background: var(--bg-card);
+}
+[data-theme="dark"] .sub_contenidoapartadobo h1,
+[data-theme="dark"] .tardemotion_ubi_us{
+    color:rgb(182, 182, 182);
+}
+[data-theme="dark"] .tardemotionboton{
+    background-color: #667eea;
+    color: white;
+}
+[data-theme="dark"] .zonapelicgrocuenta{
+    background-color: #1A182C;
+    border-color: #452036;
+}
+
