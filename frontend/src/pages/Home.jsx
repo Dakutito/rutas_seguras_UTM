@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom'
 import { getUser } from '../services/authService'
-import '../styles/Home.css'
+import '../styles/home.css'
 
 const Home = () => {
   const user = getUser()
