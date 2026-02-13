@@ -88,7 +88,8 @@ router.post('/register', [
     );
 
     // URL que el usuario clickeará en su correo
-    const verifyLink = `${process.env.FRONTEND_URL || 'http://localhost:5173'}/verify-email?token=${verificationToken}`;
+    const frontendUrl = process.env.FRONTEND_URL || 'https://rutas-seguras-utm.vercel.app';
+    const verifyLink = `${frontendUrl}/verify-email?token=${verificationToken}`;
 
     // --- ENVÍO DE EMAIL (No bloqueante) ---
     sendVerificationEmail(normalizedEmail, name, verifyLink)
