@@ -20,7 +20,7 @@ const AdminReports = ({ type }) => {
     try {
       const token = localStorage.getItem('token')
       const response = await fetch(`${API_URL}/reports', {
-        headers: { 'Authorization': `Bearer ${token}` }
+        headers: { 'Authorization`: `Bearer ${token}` }
       })
       const data = await response.json()
       setAllReports(Array.isArray(data) ? data : [])

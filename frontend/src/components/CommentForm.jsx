@@ -31,7 +31,7 @@ const CommentForm = ({ emotion, location, onClose, isAdmin, user }) => {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}` // Middleware de auth requiere esto
+          'Authorization`: `Bearer ${token}` // Middleware de auth requiere esto
         },
         body: JSON.stringify(reportData)
       })

@@ -15,7 +15,7 @@ const AdminIncidents = () => {
     try {
       const token = localStorage.getItem('token')
       const response = await fetch(`${API_URL}/incidents/admin', {
-        headers: { 'Authorization': `Bearer ${token}` }
+        headers: { 'Authorization`: `Bearer ${token}` }
       })
       const data = await response.json()
       setIncidents(Array.isArray(data) ? data : [])

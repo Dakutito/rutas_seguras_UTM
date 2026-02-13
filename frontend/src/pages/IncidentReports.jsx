@@ -31,8 +31,8 @@ const IncidentReports = () => {
 
   const loadIncidents = async () => {
     try {
-      const url = filter === 'Todos'
-        ? `${API_URL}/incidents'
+      const url = filter === 'Todos`
+        ? `${API_URL}/incidents`
         : `${API_URL}/incidents?type=${filter}`
 
       const response = await fetch(url)
