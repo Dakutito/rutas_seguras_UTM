@@ -76,8 +76,8 @@ const Map = ({ userLocation, onZoneClick, isAdmin = false, user }) => {
           <Popup>
             <strong>{report.emotion} {report.emotion_label}</strong><br/>
             {report.comment && <em>"{report.comment}"</em>}<br/>
-            <small style={{ color: '#6b7280` }}>
-              {isAdmin ? `Por: ${report.user_name || 'Usuario`}` : 'Tu reporte`}
+            <small style={{ color: '#6b7280' }}>
+              {isAdmin ? `Por: ${report.user_name || 'Usuario'}` : 'Tu reporte'}
             </small>
           </Popup>
         </Circle>

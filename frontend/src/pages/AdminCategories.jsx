@@ -18,7 +18,7 @@ const AdminCategories = () => {
 
   const loadCategories = async () => {
     try {
-      const response = await fetch(`${API_URL}/incident-categories')
+      const response = await fetch(`${API_URL}/incident-categories`)
       const data = await response.json()
       setCategories(Array.isArray(data) ? data : [])
     } catch (error) {
@@ -32,17 +32,17 @@ const AdminCategories = () => {
     e.preventDefault()
     
     if (!formData.name || !formData.icon || !formData.color) {
-      alert('Todos los campos son obligatorios`)
+      alert('Todos los campos son obligatorios')
       return
     }
 
     setLoading(true)
     try {
-      const token = localStorage.getItem('token`)
-      const response = await fetch(`${API_URL}/incident-categories', {
+      const token = localStorage.getItem('token')
+      const response = await fetch(`${API_URL}/incident-categories`, {
         method: 'POST',
         headers: {
-          'Content-Type': 'application/json`,
+          'Content-Type': 'application/json',
           'Authorization': `Bearer ${token}`
         },
         body: JSON.stringify(formData)
@@ -65,11 +65,11 @@ const AdminCategories = () => {
   const handleUpdate = async (id, updates) => {
     setLoading(true)
     try {
-      const token = localStorage.getItem('token`)
+      const token = localStorage.getItem('token')
       const response = await fetch(`${API_URL}/incident-categories/${id}`, {
         method: 'PATCH',
         headers: {
-          'Content-Type': 'application/json`,
+          'Content-Type': 'application/json',
           'Authorization': `Bearer ${token}`
         },
         body: JSON.stringify(updates)
@@ -82,7 +82,7 @@ const AdminCategories = () => {
       }
     } catch (error) {
       console.error('Error:', error)
-      alert('Error al actualizar`)
+      alert('Error al actualizar')
     } finally {
       setLoading(false)
     }
@@ -93,9 +93,9 @@ const AdminCategories = () => {
 
     setLoading(true)
     try {
-      const token = localStorage.getItem('token`)
+      const token = localStorage.getItem('token')
       const response = await fetch(`${API_URL}/incident-categories/${id}`, {
-        method: 'DELETE`,
+        method: 'DELETE',
         headers: { 'Authorization': `Bearer ${token}` }
       })
 
@@ -253,7 +253,7 @@ const AdminCategories = () => {
         )}
 
         {/* Lista de Categorías */}
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '12px` }}>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
           {categories.map(cat => (
             <div className='categoriaadinmodooscuro'
               key={cat.id}
@@ -265,7 +265,7 @@ const AdminCategories = () => {
               {editingCategory === cat.id ? (
                 // MODO EDICIÓN
                 <div>
-                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '12px', marginBottom: '12px` }}>
+                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '12px', marginBottom: '12px' }}>
                     <input
                       type="text"
                       defaultValue={cat.name}
@@ -273,7 +273,7 @@ const AdminCategories = () => {
                       style={{
                         padding: '10px',
                         border: '2px solid #d1d5db',
-                        borderRadius: '6px`
+                        borderRadius: '6px'
                       }}
                     />
                     <input
@@ -284,7 +284,7 @@ const AdminCategories = () => {
                       style={{
                         padding: '10px',
                         border: '2px solid #d1d5db',
-                        borderRadius: '6px`
+                        borderRadius: '6px'
                       }}
                     />
                     <input
@@ -299,7 +299,7 @@ const AdminCategories = () => {
                     />
                   </div>
 
-                  <div style={{ display: 'flex', gap: '10px` }}>
+                  <div style={{ display: 'flex', gap: '10px' }}>
                     <button
                       onClick={() => {
                         const name = document.getElementById(`name-${cat.id}`).value
@@ -390,7 +390,7 @@ const AdminCategories = () => {
         {categories.length === 0 && (
           <div style={{ textAlign: 'center', padding: '60px', background: '#f9fafb', borderRadius: '12px' }}>
             <h3 style={{ color: '#6b7280' }}>No hay categorías creadas</h3>
-            <p style={{ color: '#9ca3af', fontSize: '14px` }}>
+            <p style={{ color: '#9ca3af', fontSize: '14px' }}>
               Crea tu primera categoría usando el botón "Nueva Categoría"
             </p>
           </div>

@@ -31,7 +31,7 @@ const Register = () => {
     }
 
     try {
-      const response = await axios.post(`${API_URL}/auth/register', {
+      const response = await axios.post(`${API_URL}/auth/register`, {
         name: formData.name.trim(),
         email: formData.email.toLowerCase().trim(),
         password: formData.password
@@ -139,7 +139,7 @@ const Register = () => {
                 type="checkbox" 
                 checked={acceptedTerms} 
                 onChange={(e) => setAcceptedTerms(e.target.checked)}
-                style={{ width: '18px', height: '18px`, cursor: 'pointer` }}
+                style={{ width: '18px', height: '18px', cursor: 'pointer' }}
               />
               <span>
                 He leído y acepto los <strong>Términos y Condiciones</strong> y la <strong>Política de Privacidad</strong>.

@@ -28,7 +28,7 @@ const EmotionLegend = () => {
           <span style={{ fontSize: '24px', marginRight: '10px' }}>{emotion.emoji}</span>
           <div>
             <div style={{ fontWeight: '600' }}>{emotion.label}</div>
-            <div style={{ fontSize: '12px', color: '#6b7280` }}>Nivel: {emotion.level}</div>
+            <div style={{ fontSize: '12px', color: '#6b7280' }}>Nivel: {emotion.level}</div>
           </div>
         </div>
       ))}

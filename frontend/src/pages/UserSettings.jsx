@@ -39,11 +39,11 @@ const UserSettings = ({ user, onLogout }) => {
 
     setLoading(true)
     try {
-      const token = localStorage.getItem('token`)
+      const token = localStorage.getItem('token')
       const response = await fetch(`${API_URL}/user-settings/update-name`, {
         method: 'PATCH',
         headers: {
-          'Content-Type': 'application/json`,
+          'Content-Type': 'application/json',
           'Authorization': `Bearer ${token}`
         },
         body: JSON.stringify({ name: newName })
@@ -74,9 +74,9 @@ const UserSettings = ({ user, onLogout }) => {
 
     setLoading(true)
     try {
-      const token = localStorage.getItem('token`)
+      const token = localStorage.getItem('token')
       const response = await fetch(`${API_URL}/user-settings/upload-photo`, {
-        method: 'POST`,
+        method: 'POST',
         headers: { 'Authorization': `Bearer ${token}` },
         body: formData
       })
@@ -99,9 +99,9 @@ const UserSettings = ({ user, onLogout }) => {
 
     setLoading(true)
     try {
-      const token = localStorage.getItem('token`)
+      const token = localStorage.getItem('token')
       const response = await fetch(`${API_URL}/user-settings/delete-photo`, {
-        method: 'DELETE`,
+        method: 'DELETE',
         headers: { 'Authorization': `Bearer ${token}` }
       })
 
@@ -131,9 +131,9 @@ const UserSettings = ({ user, onLogout }) => {
 
     setLoading(true)
     try {
-      const token = localStorage.getItem('token`)
+      const token = localStorage.getItem('token')
       const response = await fetch(`${API_URL}/user-settings/delete-account`, {
-        method: 'DELETE`,
+        method: 'DELETE',
         headers: { 'Authorization': `Bearer ${token}` }
       })
 
@@ -175,9 +175,9 @@ const UserSettings = ({ user, onLogout }) => {
               style={{
                 width: '150px',
                 height: '150px',
-                borderRadius: '50%`,
+                borderRadius: '50%',
                 background: userData.profile_photo 
-                  ? `url(${API_URL.replace('/api', '`)}${userData.profile_photo})` 
+                  ? `url(${API_URL.replace('/api', '')}/uploads/profiles/${userData.profile_photo})` 
                   : '#e5e7eb',
                 backgroundSize: 'cover',
                 backgroundPosition: 'center',
@@ -205,11 +205,11 @@ const UserSettings = ({ user, onLogout }) => {
                 boxShadow: '0 4px 12px rgba(0,0,0,0.15)',
                 padding: '10px',
                 zIndex: 100,
-                minWidth: '180px`
+                minWidth: '180px'
               }}>
                 {userData.profile_photo && (
                   <button
-                    onClick={() => window.open(`${API_URL.replace('/api', '`)}${userData.profile_photo}`, '_blank')}
+                    onClick={() => window.open(`${API_URL.replace('/api', '')}/uploads/profiles/${userData.profile_photo}`, '_blank')}
                     style={{
                       width: '100%',
                       padding: '10px',
@@ -345,7 +345,7 @@ const UserSettings = ({ user, onLogout }) => {
               borderRadius: '8px',
               cursor: 'pointer',
               fontWeight: '700',
-              fontSize: '15px`
+              fontSize: '15px'
             }}
           >
             🗑️ Eliminar mi Cuenta

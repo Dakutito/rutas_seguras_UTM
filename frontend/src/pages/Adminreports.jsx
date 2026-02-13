@@ -35,9 +35,9 @@ const AdminReports = ({ type }) => {
     if (!window.confirm('¿Eliminar este reporte?')) return
 
     try {
-      const token = localStorage.getItem('token`)
+      const token = localStorage.getItem('token')
       const response = await fetch(`${API_URL}/reports/${id}`, {
-        method: 'DELETE`,
+        method: 'DELETE',
         headers: { 'Authorization': `Bearer ${token}` }
       })
       if (response.ok) setAllReports(allReports.filter(r => r.id !== id))
@@ -95,7 +95,7 @@ const AdminReports = ({ type }) => {
         <input type="text" placeholder="Buscar..." value={search} onChange={(e) => setSearch(e.target.value)}
           style={{ width: '100%', padding: '12px', marginBottom: '20px', borderRadius: '8px', border: '2px solid #e5e7eb' }} />
 
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '12px` }}>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
           {filteredBySearch.map(r => (
             <div className='reportedeuseraladmi' key={r.id} style={{ borderLeft: `6px solid ${getDangerColor(r.emotion)}` }}>
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
@@ -154,7 +154,7 @@ const AdminReports = ({ type }) => {
 
         {filteredBySearch.length === 0 && (
           <div style={{ textAlign: 'center', padding: '60px',borderRadius: '12px' }}>
-            <h3 style={{ color: '#6b7280` }}>No hay reportes que coincidan</h3>
+            <h3 style={{ color: '#6b7280' }}>No hay reportes que coincidan</h3>
           </div>
         )}
       </div>

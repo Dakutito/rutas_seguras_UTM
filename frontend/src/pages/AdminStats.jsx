@@ -147,7 +147,7 @@ const AdminStats = () => {
                       height: '12px',
                       background: '#e5e7eb',
                       borderRadius: '6px',
-                      overflow: 'hidden`
+                      overflow: 'hidden'
                     }}>
                       <div style={{
                         width: `${percentage}%`,
@@ -202,7 +202,6 @@ const AdminStats = () => {
           </div>
         </div>
 
-        {/* Zonas por nivel de peligro */}
         <div className='sub_distribuiremouser' >
           <h2 >
             Zonas por Nivel de Peligro
@@ -217,7 +216,7 @@ const AdminStats = () => {
               const colors = {
                 'bajo': { bg: '#d1fae5', text: '#065f46', border: '#10b981' },
                 'medio': { bg: '#fef3c7', text: '#92400e', border: '#fbbf24' },
-                'alto': { bg: '#fee2e2', text: '#991b1b', border: '#ef4444` }
+                'alto': { bg: '#fee2e2', text: '#991b1b', border: '#ef4444' }
               }
               return (
                 <div
@@ -258,7 +257,7 @@ const AdminStats = () => {
           background: '#eff6ff',
           borderRadius: '8px',
           fontSize: '13px',
-          color: '#1e40af`
+          color: '#1e40af'
         }}>
           <strong>💡 Nota:</strong> Los datos se actualizan automáticamente cada 10 segundos.
           Las zonas de peligro se calculan en base a la concentración de emociones negativas.

@@ -19,11 +19,11 @@ const IncidentReports = () => {
   useEffect(() => {
     const loadCategories = async () => {
       try {
-        const response = await fetch(`${API_URL}/incident-categories')
+        const response = await fetch(`${API_URL}/incident-categories`)
         const data = await response.json()
         setIncidentTypes(['Todos', ...data.map(cat => cat.name)])
       } catch (error) {
-        console.error('Error:`, error)
+        console.error('Error:', error)
       }
     }
     loadCategories()
@@ -31,7 +31,7 @@ const IncidentReports = () => {
 
   const loadIncidents = async () => {
     try {
-      const url = filter === 'Todos`
+      const url = filter === 'Todos'
         ? `${API_URL}/incidents`
         : `${API_URL}/incidents?type=${filter}`
 
@@ -55,9 +55,9 @@ const IncidentReports = () => {
     if (!window.confirm('¿Eliminar este incidente?')) return
 
     try {
-      const token = localStorage.getItem('token`)
+      const token = localStorage.getItem('token')
       const response = await fetch(`${API_URL}/incidents/${id}`, {
-        method: 'DELETE`,
+        method: 'DELETE',
         headers: { 'Authorization': `Bearer ${token}` }
       })
 
@@ -67,7 +67,7 @@ const IncidentReports = () => {
       }
     } catch (error) {
       console.error('Error:', error)
-      alert('Error al eliminar`)
+      alert('Error al eliminar')
     }
   }
 
@@ -210,7 +210,7 @@ const IncidentReports = () => {
               style={{
                 background: filter === type ? getIncidentColor(type) : '',
                 color: filter === type ? 'white' : '',
-                fontWeight: filter === type ? '600' : '400`,
+                fontWeight: filter === type ? '600' : '400',
               }}
             >
               {type !== 'Todos' && getIncidentIcon(type)} {type}
@@ -290,7 +290,7 @@ const IncidentReports = () => {
                     </div>
                   </div>
 
-                  <div style={{ display: 'flex', flexDirection: 'column', gap: '10px', minWidth: '140px` }}>
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: '10px', minWidth: '140px' }}>
                     <span style={{
                       background: `${getIncidentColor(incident.incident_type)}20`,
                       color: getIncidentColor(incident.incident_type),
@@ -382,7 +382,7 @@ const IncidentReports = () => {
               maxWidth: '1200px',
               width: '100%',
               padding: '0',
-              overflow: 'hidden`
+              overflow: 'hidden'
             }}
           >
             <div className='navbarsububicacion'>
@@ -417,7 +417,7 @@ const IncidentReports = () => {
 
               {/* EDITAR */}
               {/* Enlace para abrir en Google Maps */}
-              <div style={{ marginTop: '16px', textAlign: 'center` }}>
+              <div style={{ marginTop: '16px', textAlign: 'center' }}>
                 <a
                   href={`https://www.google.com/maps?q=${selectedLocation.lat},${selectedLocation.lng}`}
                   target="_blank"
@@ -429,7 +429,7 @@ const IncidentReports = () => {
                     textDecoration: 'none',
                     borderRadius: '8px',
                     fontWeight: '600',
-                    display: 'inline-block`
+                    display: 'inline-block'
                   }}
                 >
                   Abrir en Google Maps
