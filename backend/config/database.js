@@ -1,5 +1,11 @@
 const { Pool } = require('pg');
+const dns = require('dns');
 require('dotenv').config();
+
+// Forzar resolución IPv4 para evitar errores ENETUNREACH
+if (dns.setDefaultResultOrder) {
+  dns.setDefaultResultOrder('ipv4first');
+}
 
 // Configuración de conexión a PostgreSQL
 const pool = new Pool({
