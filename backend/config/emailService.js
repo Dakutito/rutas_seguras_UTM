@@ -4,6 +4,10 @@ const path = require('path');
 // Carga el .env usando una ruta absoluta para evitar errores de "undefined"
 require('dotenv').config({ path: path.resolve(__dirname, '../.env') });
 
+if (!process.env.EMAIL_USER || !process.env.EMAIL_PASSWORD) {
+  console.warn('⚠️ ADVERTENCIA: EMAIL_USER o EMAIL_PASSWORD no están definidos. El envío de correos fallará.');
+}
+
 const transporter = nodemailer.createTransport({
   host: process.env.EMAIL_HOST || 'smtp.gmail.com',
   port: parseInt(process.env.EMAIL_PORT || '587'),
@@ -21,9 +25,12 @@ const transporter = nodemailer.createTransport({
 transporter.verify((error, success) => {
   if (error) {
     console.error('❌ Error configurando servicio de email:', error.message);
+    console.error('   Host:', process.env.EMAIL_HOST);
+    console.error('   Port:', process.env.EMAIL_PORT);
+    console.error('   User:', process.env.EMAIL_USER);
     console.log('💡 Tip: Revisa que EMAIL_USER y EMAIL_PASSWORD estén bien en el .env');
   } else {
-    console.log('✅ Servicio de email configurado correctamente');
+    console.log(`✅ Servicio de email configurado correctamente (${process.env.EMAIL_USER})`);
   }
 });
 
