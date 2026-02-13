@@ -1,7 +1,10 @@
 // services/api.js - Servicio para conectar frontend con backend
 
 const getApiUrl = () => {
-  const url = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
+  let url = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
+  // Eliminar slash final si existe
+  url = url.replace(/\/$/, '');
+  // Agregar /api si no existe
   return url.endsWith('/api') ? url : `${url}/api`;
 };
 
