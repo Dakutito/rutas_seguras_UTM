@@ -1,8 +1,4 @@
-import { useState, useEffect } from 'react'
-import { Link } from 'react-router-dom'
-import '../styles/Components.css'
-
-const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api'
+import { API_URL } from '../services/api'
 
 const AdminCategories = () => {
   const [categories, setCategories] = useState([])
@@ -17,7 +13,7 @@ const AdminCategories = () => {
 
   const loadCategories = async () => {
     try {
-      const response = await fetch(`${API_URL}/incident-categories`)
+      const response = await fetch(`${API_URL}/api/incident-categories`)
       const data = await response.json()
       setCategories(Array.isArray(data) ? data : [])
     } catch (error) {
@@ -38,7 +34,7 @@ const AdminCategories = () => {
     setLoading(true)
     try {
       const token = localStorage.getItem('token')
-      const response = await fetch(`${API_URL}/incident-categories`, {
+      const response = await fetch(`${API_URL}/api/incident-categories`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -65,7 +61,7 @@ const AdminCategories = () => {
     setLoading(true)
     try {
       const token = localStorage.getItem('token')
-      const response = await fetch(`${API_URL}/incident-categories/${id}`, {
+      const response = await fetch(`${API_URL}/api/incident-categories/${id}`, {
         method: 'PATCH',
         headers: {
           'Content-Type': 'application/json',
@@ -93,7 +89,7 @@ const AdminCategories = () => {
     setLoading(true)
     try {
       const token = localStorage.getItem('token')
-      const response = await fetch(`${API_URL}/incident-categories/${id}`, {
+      const response = await fetch(`${API_URL}/api/incident-categories/${id}`, {
         method: 'DELETE',
         headers: { 'Authorization': `Bearer ${token}` }
       })
