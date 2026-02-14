@@ -8,10 +8,13 @@ if (dns.setDefaultResultOrder) {
 const cors = require('cors');
 const path = require('path');
 require('dotenv').config();
+const compression = require('compression');
+
 
 const app = express();
 
-const PORT = process.env.PORT || 5000;
+const PORT = process.env.PORT || 8000;
+
 
 
 // IMPORTANTE: Servir archivos estáticos (fotos de perfil)
@@ -27,7 +30,9 @@ const corsOptions = {
   allowedHeaders: ['Content-Type', 'Authorization']
 };
 
+app.use(compression());
 app.use(cors(corsOptions));
+
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
@@ -59,6 +64,12 @@ app.use('/api/stats', statsRoutes);
 app.use('/api/incidents', incidentsRoutes);
 app.use('/api/user-settings', userSettingsRoutes);
 app.use('/api/incident-categories', incidentCategoriesRoutes);
+
+// Ruta de Salud para Koyeb
+app.get('/health', (req, res) => {
+  res.status(200).send('OK');
+});
+
 
 // Ruta de salud
 app.get('/api/health', (req, res) => {
@@ -103,11 +114,14 @@ app.use((err, req, res, next) => {
 });
 
 // Iniciar servidor
-app.listen(PORT, () => {
+app.listen(PORT, '0.0.0.0', () => {
   console.log(`\nServidor corriendo en puerto ${PORT}`);
-  console.log(`http://localhost:${PORT}`);
-  console.log(`Health check: http://localhost:${PORT}/api/health\n`);
+  console.log(`Host configurado en: 0.0.0.0`);
+  console.log(`Puerto asignado: ${PORT}`);
+  console.log(`Health check (Koyeb): http://localhost:${PORT}/health`);
+  console.log(`Health check (API): http://localhost:${PORT}/api/health\n`);
 });
+
 
 // Manejo de shutdown graceful
 process.on('SIGTERM', () => {
