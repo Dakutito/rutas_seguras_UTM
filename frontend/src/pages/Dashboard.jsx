@@ -81,7 +81,7 @@ const Dashboard = ({ user }) => {
             userReports.length === 0 ? (
               <div style={{ textAlign: 'center', padding: '60px', borderRadius: '12px' }}>
                 <h2 style={{ color: '#6b7280' }}>No tienes reportes aún</h2>
-                <Link to="/map" className="btn btn-primary" style={{ marginTop: '20px', background: '#000000', color: 'white' }}>Ir al Mapa</Link>
+                <Link to="/map" className="btn btn-primary" style={{ marginTop: '20px' }}>Ir al Mapa</Link>
               </div>
             ) : (
               <>
