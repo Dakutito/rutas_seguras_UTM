@@ -143,7 +143,7 @@ const UserSettings = ({ user, onLogout }) => {
                 height: '150px',
                 borderRadius: '50%',
                 background: userData.profile_photo
-                  ? `url(${API_URL.replace('/api', '')}/uploads/profiles/${userData.profile_photo})`
+                  ? `url(${API_URL.replace('/api', '')}${userData.profile_photo})`
                   : '#e5e7eb',
                 backgroundSize: 'cover',
                 backgroundPosition: 'center',
@@ -175,7 +175,7 @@ const UserSettings = ({ user, onLogout }) => {
               }}>
                 {userData.profile_photo && (
                   <button
-                    onClick={() => window.open(`${API_URL.replace('/api', '')}/uploads/profiles/${userData.profile_photo}`, '_blank')}
+                    onClick={() => window.open(`${API_URL.replace('/api', '')}${userData.profile_photo}`, '_blank')}
                     style={{
                       width: '100%',
                       padding: '10px',
