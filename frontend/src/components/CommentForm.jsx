@@ -1,3 +1,5 @@
+import { useState } from 'react'
+import '../styles/Components.css'
 import { reportsAPI } from '../services/api'
 
 const CommentForm = ({ emotion, location, onClose, isAdmin, user }) => {
