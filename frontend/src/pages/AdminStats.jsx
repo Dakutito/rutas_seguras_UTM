@@ -1,8 +1,4 @@
-import { useState, useEffect } from 'react'
-import { Link } from 'react-router-dom'
-import '../styles/Components.css'
-
-const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api'
+import { API_URL } from '../services/api'
 
 const AdminStats = () => {
   const [stats, setStats] = useState(null)
@@ -17,7 +13,7 @@ const AdminStats = () => {
   const loadStats = async () => {
     try {
       const token = localStorage.getItem('token')
-      const response = await fetch(`${API_URL}/stats/general`, {
+      const response = await fetch(`${API_URL}/api/stats/general`, {
         headers: { 'Authorization': `Bearer ${token}` }
       })
 

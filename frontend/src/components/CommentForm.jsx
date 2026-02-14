@@ -1,7 +1,4 @@
-import { useState } from 'react'
-import '../styles/Components.css'
-
-const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api'
+import { reportsAPI } from '../services/api'
 
 const CommentForm = ({ emotion, location, onClose, isAdmin, user }) => {
   const [comment, setComment] = useState('')
@@ -12,10 +9,7 @@ const CommentForm = ({ emotion, location, onClose, isAdmin, user }) => {
     e.preventDefault()
     setLoading(true)
 
-    // 1. Obtener el token de seguridad para poder guardar
-    const token = localStorage.getItem('token')
-
-    // 2. Preparar el objeto con los nombres exactos que espera tu backend/DB
+    // Preparar el objeto con los nombres exactos que espera tu backend/DB
     const reportData = {
       emotion: emotion.emoji,
       emotionLabel: emotion.label,
@@ -26,31 +20,19 @@ const CommentForm = ({ emotion, location, onClose, isAdmin, user }) => {
     }
 
     try {
-      // 3. Petición real al servidor
-      const response = await fetch(`${API_URL}/reports`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}` // Middleware de auth requiere esto
-        },
-        body: JSON.stringify(reportData)
-      })
+      // Petición al servidor usando el servicio centralizado
+      await reportsAPI.create(reportData)
 
-      if (response.ok) {
-        console.log('Reporte guardado en PostgreSQL')
-        setSubmitted(true)
-        // Recargar la página después de 2 segundos para ver el punto en el mapa
-        setTimeout(() => {
-          onClose()
-          window.location.reload()
-        }, 2000)
-      } else {
-        const err = await response.json()
-        alert(`Error al guardar: ${err.error || 'Intenta de nuevo'}`)
-      }
+      console.log('Reporte guardado en PostgreSQL')
+      setSubmitted(true)
+      // Recargar la página después de 2 segundos para ver el punto en el mapa
+      setTimeout(() => {
+        onClose()
+        window.location.reload()
+      }, 2000)
     } catch (error) {
-      console.error('Error de conexión:', error)
-      alert("No se pudo conectar con el servidor")
+      console.error('Error al guardar reporte:', error)
+      alert(`Error al guardar: ${error.message || 'Intenta de nuevo'}`)
     } finally {
       setLoading(false)
     }

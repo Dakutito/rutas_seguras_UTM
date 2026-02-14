@@ -1,8 +1,4 @@
-import { useState, useEffect } from 'react'
-import { Link } from 'react-router-dom'
-import '../styles/Components.css'
-
-const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api'
+import { API_URL } from '../services/api'
 
 const AdminIncidents = () => {
   const [incidents, setIncidents] = useState([])
@@ -13,7 +9,7 @@ const AdminIncidents = () => {
   const loadIncidents = async () => {
     try {
       const token = localStorage.getItem('token')
-      const response = await fetch(`${API_URL}/incidents/admin`, {
+      const response = await fetch(`${API_URL}/api/incidents/admin`, {
         headers: { 'Authorization': `Bearer ${token}` }
       })
       const data = await response.json()
@@ -36,7 +32,7 @@ const AdminIncidents = () => {
 
     try {
       const token = localStorage.getItem('token')
-      const response = await fetch(`${API_URL}/incidents/${id}/resolve`, {
+      const response = await fetch(`${API_URL}/api/incidents/${id}/resolve`, {
         method: 'PATCH',
         headers: { 'Authorization': `Bearer ${token}` }
       })
@@ -54,7 +50,7 @@ const AdminIncidents = () => {
 
     try {
       const token = localStorage.getItem('token')
-      const response = await fetch(`${API_URL}/incidents/${id}`, {
+      const response = await fetch(`${API_URL}/api/incidents/${id}`, {
         method: 'DELETE',
         headers: { 'Authorization': `Bearer ${token}` }
       })
