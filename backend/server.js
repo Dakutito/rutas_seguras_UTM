@@ -22,13 +22,29 @@ app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
 // Middlewares
 const corsOptions = {
-  origin: process.env.CORS_ORIGIN
-    ? process.env.CORS_ORIGIN.split(',').map(url => url.trim())
-    : ['http://localhost:3000', 'http://localhost:5173', 'http://localhost:5174'],
+  origin: (origin, callback) => {
+    // Permitir peticiones sin origin (como herramientas locales o Postman)
+    if (!origin) return callback(null, true);
+
+    const allowedOrigins = process.env.CORS_ORIGIN
+      ? process.env.CORS_ORIGIN.split(',').map(url => url.trim().replace(/\/$/, ''))
+      : ['http://localhost:3000', 'http://localhost:5173', 'http://localhost:5174', 'https://rutas-seguras-utm.vercel.app'];
+
+    // Limpiar el origin de la petición (quitar barra final si la tiene)
+    const cleanOrigin = origin.replace(/\/$/, '');
+
+    if (allowedOrigins.indexOf(cleanOrigin) !== -1 || allowedOrigins.includes('*')) {
+      callback(null, true);
+    } else {
+      console.log('CORS bloqueado para el origen:', origin);
+      callback(new Error('No permitido por CORS'));
+    }
+  },
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization']
 };
+
 
 app.use(compression());
 app.use(cors(corsOptions));
