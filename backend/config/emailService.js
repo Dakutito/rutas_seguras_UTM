@@ -10,9 +10,9 @@ let resend;
 
 if (RESEND_API_KEY) {
   resend = new Resend(RESEND_API_KEY);
-  console.log('📬 Servicio de email: Usando RESEND API');
+  console.log('Servicio de email: Usando RESEND API');
 } else {
-  console.log('📬 Servicio de email: Usando SMTP (Nodemailer)');
+  console.log('Servicio de email: Usando SMTP (Nodemailer)');
 }
 
 // Configuración SMTP (Fallback / Local)
@@ -34,9 +34,9 @@ const transporter = nodemailer.createTransport({
 if (!RESEND_API_KEY) {
   transporter.verify((error) => {
     if (error) {
-      console.error('❌ Error SMTP:', error.message);
+      console.error(' Error SMTP:', error.message);
     } else {
-      console.log(`✅ SMTP configurado (${process.env.EMAIL_USER})`);
+      console.log(`SMTP configurado (${process.env.EMAIL_USER})`);
     }
   });
 }
@@ -58,7 +58,7 @@ const sendEmail = async ({ to, subject, html }) => {
       if (error) throw error;
       return data;
     } catch (error) {
-      console.error('❌ Error Resend API:', error);
+      console.error('Error Resend API:', error);
       throw error;
     }
   } else {
@@ -71,7 +71,7 @@ const sendEmail = async ({ to, subject, html }) => {
 const sendVerificationEmail = async (email, name, verificationUrl) => {
   const html = `
     <div style="font-family: sans-serif; max-width: 600px; margin: auto; border: 1px solid #eee; padding: 20px;">
-      <h2 style="color: #4f46e5;">🛡️ Rutas Seguras UTM</h2>
+      <h2 style="color: #4f46e5;">Rutas Seguras UTM</h2>
       <p>Hola <strong>${name}</strong>,</p>
       <p>Gracias por registrarte. Para activar tu cuenta, haz clic en el siguiente botón:</p>
       <div style="text-align: center; margin: 30px 0;">

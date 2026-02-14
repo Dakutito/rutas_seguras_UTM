@@ -50,7 +50,7 @@ const clearAttempts = (email) => {
   loginAttempts.delete(email);
 };
 
-// ✅ REGISTRO (Solo POST, sin GET)
+// REGISTRO (Solo POST, sin GET)
 router.post('/register', [
   body('name').trim().isLength({ min: 3 }),
   body('email').isEmail(),
@@ -93,8 +93,8 @@ router.post('/register', [
 
     // --- ENVÍO DE EMAIL (No bloqueante) ---
     sendVerificationEmail(normalizedEmail, name, verifyLink)
-      .then(() => console.log(`✅ Correo enviado a: ${normalizedEmail}`))
-      .catch(mailError => console.error("❌ Error al enviar correo (en segundo plano):", mailError.message));
+      .then(() => console.log(`Correo enviado a: ${normalizedEmail}`))
+      .catch(mailError => console.error("Error al enviar correo (en segundo plano):", mailError.message));
 
     res.status(201).json({
       message: 'Registro exitoso. Revisa tu correo para verificar tu cuenta.',

@@ -1,4 +1,3 @@
-// frontend/src/pages/AdminCategories.jsx
 import { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import '../styles/Components.css'
@@ -30,7 +29,7 @@ const AdminCategories = () => {
 
   const handleCreate = async (e) => {
     e.preventDefault()
-    
+
     if (!formData.name || !formData.icon || !formData.color) {
       alert('Todos los campos son obligatorios')
       return
@@ -171,10 +170,10 @@ const AdminCategories = () => {
             marginBottom: '30px'
           }}>
             <h3 style={{ marginTop: 0, color: '#047857' }}>Nueva Categoría</h3>
-            
+
             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '15px', marginBottom: '15px' }}>
               <div>
-                <label style={{ color:'#393939',display: 'block', fontWeight: '600', marginBottom: '6px', fontSize: '14px' }}>
+                <label style={{ color: '#393939', display: 'block', fontWeight: '600', marginBottom: '6px', fontSize: '14px' }}>
                   Nombre
                 </label>
                 <input
@@ -194,7 +193,7 @@ const AdminCategories = () => {
               </div>
 
               <div>
-                <label style={{ color:'#393939',display: 'block', fontWeight: '600', marginBottom: '6px', fontSize: '14px' }}>
+                <label style={{ color: '#393939', display: 'block', fontWeight: '600', marginBottom: '6px', fontSize: '14px' }}>
                   Ícono (Emoji)
                 </label>
                 <input
@@ -215,8 +214,8 @@ const AdminCategories = () => {
               </div>
 
               <div>
-                <label style={{ color:'#393939',display: 'block', fontWeight: '600', marginBottom: '6px', fontSize: '14px' }}>
-                  Color 
+                <label style={{ color: '#393939', display: 'block', fontWeight: '600', marginBottom: '6px', fontSize: '14px' }}>
+                  Color
                 </label>
                 <input
                   type="color"

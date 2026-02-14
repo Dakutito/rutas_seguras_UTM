@@ -13,11 +13,11 @@ async function test() {
     const result = await sendEmail({
       to: process.env.EMAIL_USER,
       subject: 'Test de Email - Rutas Seguras',
-      html: '<h1>✅ Funciona!</h1><p>Si recibes esto, el sistema de correos está listo.</p>'
+      html: '<h1>Funciona!</h1><p>Si recibes esto, el sistema de correos está listo.</p>'
     });
-    console.log('✅ Resultado:', result);
+    console.log('Resultado:', result);
   } catch (error) {
-    console.error('❌ Error en el test:', error);
+    console.error('Error en el test:', error);
   }
 }
 

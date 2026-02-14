@@ -34,7 +34,7 @@ const AdminPanel = () => {
 
       setStats({ totalUsers, activeUsers, reports: Array.isArray(reports) ? reports : [], dangerCount, todayCount })
 
-      // 🆕 Calcular estadísticas de emociones para el mapa de calor
+      // Calcular estadísticas de emociones para el mapa de calor
       calculateEmotionStats(Array.isArray(reports) ? reports : [])
     } catch (error) {
       console.error('Error:', error)
@@ -43,7 +43,7 @@ const AdminPanel = () => {
     }
   }
 
-  // 🆕 Función para calcular estadísticas de emociones
+  // Función para calcular estadísticas de emociones
   const calculateEmotionStats = (reports) => {
     const emotionCount = {}
 
@@ -64,7 +64,7 @@ const AdminPanel = () => {
     setEmotionStats(statsArray)
   }
 
-  // 🆕 Función para ir al mapa con un reporte específico
+  // Función para ir al mapa con un reporte específico
   const goToReportLocation = (report) => {
     // Navegar al mapa con parámetros de ubicación
     navigate(`/map?lat=${report.lat}&lng=${report.lng}&reportId=${report.id}`)
@@ -255,7 +255,7 @@ const AdminPanel = () => {
                             }}
                             title="Ver ubicación en el mapa"
                           >
-                            📍 Ubicación
+                            Ubicación
                           </button>
                         </div>
                       </div>

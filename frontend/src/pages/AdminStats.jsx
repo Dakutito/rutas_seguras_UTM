@@ -63,7 +63,7 @@ const AdminStats = () => {
               Aquí verás gráficos de emociones, duración y zonas de riesgo.
             </p>
             <Link to="/map" className="btn btn-primary" style={{ marginTop: '24px', display: 'inline-block' }}>
-              📍 Ir al Mapa
+              Ir al Mapa
             </Link>
           </div>
         </div>
@@ -259,7 +259,7 @@ const AdminStats = () => {
           fontSize: '13px',
           color: '#1e40af'
         }}>
-          <strong>💡 Nota:</strong> Los datos se actualizan automáticamente cada 10 segundos.
+          <strong>Nota:</strong> Los datos se actualizan automáticamente cada 10 segundos.
           Las zonas de peligro se calculan en base a la concentración de emociones negativas.
         </div>
       </div>
