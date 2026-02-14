@@ -105,7 +105,7 @@ const Login = ({ onLogin }) => {
             marginBottom: '18px',
             fontSize: '14px'
           }}>
-            ⚠️ {error}
+            {error}
           </div>
         )}
 

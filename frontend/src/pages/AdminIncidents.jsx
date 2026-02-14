@@ -1,4 +1,3 @@
-// frontend/src/pages/AdminIncidents.jsx
 import { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import '../styles/Components.css'
@@ -34,14 +33,14 @@ const AdminIncidents = () => {
 
   const handleResolve = async (id) => {
     if (!window.confirm('¿Marcar este incidente como resuelto?')) return
-    
+
     try {
       const token = localStorage.getItem('token')
       const response = await fetch(`${API_URL}/incidents/${id}/resolve`, {
         method: 'PATCH',
         headers: { 'Authorization': `Bearer ${token}` }
       })
-      
+
       if (response.ok) {
         loadIncidents()
       }
@@ -52,14 +51,14 @@ const AdminIncidents = () => {
 
   const handleDelete = async (id) => {
     if (!window.confirm('¿Eliminar este incidente permanentemente?')) return
-    
+
     try {
       const token = localStorage.getItem('token')
       const response = await fetch(`${API_URL}/incidents/${id}`, {
         method: 'DELETE',
         headers: { 'Authorization': `Bearer ${token}` }
       })
-      
+
       if (response.ok) {
         loadIncidents()
       }
@@ -119,7 +118,6 @@ const AdminIncidents = () => {
     return (
       <div className="container">
         <div className="card" style={{ textAlign: 'center', padding: '60px' }}>
-          <div style={{ fontSize: '48px' }}>⏳</div>
           <h2>Cargando...</h2>
         </div>
       </div>
@@ -133,7 +131,7 @@ const AdminIncidents = () => {
         <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '24px', flexWrap: 'wrap', gap: '12px' }}>
           <div>
             <h1 style={{ color: '#ef4444', marginBottom: '8px' }}>
-              🚨 Gestión de Incidentes
+              Gestión de Incidentes
             </h1>
             <p style={{ color: '#6b7280', fontSize: '14px', margin: 0 }}>
               Panel de administración de reportes de incidentes
@@ -224,19 +222,19 @@ const AdminIncidents = () => {
                       fontSize: '11px',
                       fontWeight: '600'
                     }}>
-                      {incident.status === 'resuelto' ? '✓ Resuelto' : '⏳ Activo'}
+                      {incident.status === 'resuelto' ? '✓ Resuelto' : ' Activo'}
                     </span>
                   </div>
 
                   {incident.description && (
                     <div style={{ background: '#f9fafb', padding: '12px', borderRadius: '8px', marginBottom: '12px' }}>
-                      <p style={{ margin: 0, fontSize: '14px' }}>💬 "{incident.description}"</p>
+                      <p style={{ margin: 0, fontSize: '14px' }}> "{incident.description}"</p>
                     </div>
                   )}
 
                   <div style={{ fontSize: '12px', color: '#6b7280', display: 'flex', flexWrap: 'wrap', gap: '16px' }}>
-                    <span>👤 {incident.user_name} ({incident.user_email})</span>
-                    <span>📍 {parseFloat(incident.latitude).toFixed(4)}, {parseFloat(incident.longitude).toFixed(4)}</span>
+                    <span> usuario: {incident.user_name} ({incident.user_email})</span>
+                    <span> ubicacion: {parseFloat(incident.latitude).toFixed(4)}, {parseFloat(incident.longitude).toFixed(4)}</span>
                     {incident.resolved_by_name && (
                       <span>✓ Resuelto por: {incident.resolved_by_name}</span>
                     )}
@@ -258,7 +256,7 @@ const AdminIncidents = () => {
                         fontWeight: '600'
                       }}
                     >
-                      ✓ Resolver
+                      Resolver
                     </button>
                   )}
                   <button
@@ -274,7 +272,7 @@ const AdminIncidents = () => {
                       fontWeight: '600'
                     }}
                   >
-                    🗑️ Eliminar
+                    Eliminar
                   </button>
                 </div>
               </div>
@@ -285,7 +283,7 @@ const AdminIncidents = () => {
         {filteredIncidents.length === 0 && (
           <div style={{ textAlign: 'center', padding: '60px', background: '#f9fafb', borderRadius: '12px' }}>
             <div style={{ fontSize: '64px' }}>📭</div>
-              <h3 style={{ color: '#6b7280' }}>No hay incidentes {filter !== 'todos' && `${filter}s`}</h3>
+            <h3 style={{ color: '#6b7280' }}>No hay incidentes {filter !== 'todos' && `${filter}s`}</h3>
           </div>
         )}
       </div>

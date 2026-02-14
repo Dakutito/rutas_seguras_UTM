@@ -99,7 +99,7 @@ app.get('/api/health', (req, res) => {
 // Ruta raíz
 app.get('/', (req, res) => {
   res.json({
-    message: '🗺️ API de Rutas Seguras UTM',
+    message: 'API de Rutas Seguras UTM',
     version: '1.0.0',
     endpoints: {
       health: '/api/health',

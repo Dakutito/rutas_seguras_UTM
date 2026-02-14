@@ -1,4 +1,3 @@
-// backend/routes/incidents.js
 const express = require('express');
 const router = express.Router();
 const { query } = require('../config/database');
@@ -8,7 +7,7 @@ const { authenticateToken, requireAdmin } = require('../middleware/auth');
 router.get('/', async (req, res) => {
   try {
     const { type, status = 'activo' } = req.query;
-    
+
     let queryText = `
       SELECT 
         ir.id,
@@ -24,16 +23,16 @@ router.get('/', async (req, res) => {
       LEFT JOIN users u ON ir.user_id = u.id
       WHERE ir.status = $1
     `;
-    
+
     const params = [status];
-    
+
     if (type) {
       queryText += ` AND ir.incident_type = $2`;
       params.push(type);
     }
-    
+
     queryText += ` ORDER BY ir.created_at DESC`;
-    
+
     const result = await query(queryText, params);
     res.json(result.rows);
   } catch (error) {
@@ -91,16 +90,16 @@ router.get('/my-incidents', authenticateToken, async (req, res) => {
 router.post('/', authenticateToken, async (req, res) => {
   try {
     const { incident_type, description, latitude, longitude } = req.body;
-    
+
     if (!incident_type || !latitude || !longitude) {
       return res.status(400).json({ error: 'Tipo de incidente y ubicación son requeridos' });
     }
-    
+
     const validTypes = ['Robo', 'Asalto', 'Acoso', 'Vandalismo', 'Iluminación', 'Infraestructura', 'Sospechoso', 'Otro'];
     if (!validTypes.includes(incident_type)) {
       return res.status(400).json({ error: 'Tipo de incidente inválido' });
     }
-    
+
     const result = await query(
       `INSERT INTO incident_reports 
        (user_id, incident_type, description, latitude, longitude)
@@ -108,7 +107,7 @@ router.post('/', authenticateToken, async (req, res) => {
        RETURNING *`,
       [req.user.id, incident_type, description || null, latitude, longitude]
     );
-    
+
     res.status(201).json(result.rows[0]);
   } catch (error) {
     console.error('Error al crear incidente:', error);
@@ -120,7 +119,7 @@ router.post('/', authenticateToken, async (req, res) => {
 router.patch('/:id/resolve', authenticateToken, requireAdmin, async (req, res) => {
   try {
     const { id } = req.params;
-    
+
     const result = await query(
       `UPDATE incident_reports
        SET status = 'resuelto',
@@ -130,11 +129,11 @@ router.patch('/:id/resolve', authenticateToken, requireAdmin, async (req, res) =
        RETURNING *`,
       [req.user.id, id]
     );
-    
+
     if (result.rows.length === 0) {
       return res.status(404).json({ error: 'Incidente no encontrado' });
     }
-    
+
     res.json({ message: 'Incidente marcado como resuelto', incident: result.rows[0] });
   } catch (error) {
     console.error('Error al resolver incidente:', error);
@@ -146,23 +145,23 @@ router.patch('/:id/resolve', authenticateToken, requireAdmin, async (req, res) =
 router.delete('/:id', authenticateToken, async (req, res) => {
   try {
     const { id } = req.params;
-    
+
     // Verificar permisos
     const checkResult = await query(
       'SELECT user_id FROM incident_reports WHERE id = $1',
       [id]
     );
-    
+
     if (checkResult.rows.length === 0) {
       return res.status(404).json({ error: 'Incidente no encontrado' });
     }
-    
+
     // Admin puede eliminar cualquier incidente, usuario solo los suyos
     if (req.user.role === 'admin' || checkResult.rows[0].user_id === req.user.id) {
       await query('DELETE FROM incident_reports WHERE id = $1', [id]);
       return res.json({ message: 'Incidente eliminado correctamente' });
     }
-    
+
     res.status(403).json({ error: 'No tienes permiso para eliminar este incidente' });
   } catch (error) {
     console.error('Error al eliminar incidente:', error);
@@ -182,11 +181,11 @@ router.get('/stats', async (req, res) => {
        GROUP BY incident_type
        ORDER BY count DESC`
     );
-    
+
     const total = await query(
       "SELECT COUNT(*) as count FROM incident_reports WHERE status = 'activo'"
     );
-    
+
     res.json({
       total: parseInt(total.rows[0].count),
       byType: stats.rows

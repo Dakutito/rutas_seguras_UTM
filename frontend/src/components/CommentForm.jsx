@@ -17,9 +17,9 @@ const CommentForm = ({ emotion, location, onClose, isAdmin, user }) => {
 
     // 2. Preparar el objeto con los nombres exactos que espera tu backend/DB
     const reportData = {
-      emotion: emotion.emoji,          // Ejemplo: '😊'
-      emotionLabel: emotion.label,     // Ejemplo: 'Feliz'
-      emotionColor: emotion.color,     // Ejemplo: '#10b981'
+      emotion: emotion.emoji,
+      emotionLabel: emotion.label,
+      emotionColor: emotion.color,
       comment: comment.trim(),
       latitude: location.lat,
       longitude: location.lng
