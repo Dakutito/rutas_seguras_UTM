@@ -40,7 +40,7 @@ const MapaReporte = ({ user, viewOnly = false }) => {
       try {
         const data = await incidentsAPI.getCategories()
         const formatted = data.map(cat => ({
-          value: cat.name,
+          value: cat.id, // Usar ID ahora
           label: cat.name,
           icon: cat.icon,
           color: cat.color
@@ -100,7 +100,7 @@ const MapaReporte = ({ user, viewOnly = false }) => {
 
     try {
       await incidentsAPI.create({
-        incident_type: incidentType,
+        category_id: incidentType, // Ahora incidentType guarda el ID
         description: description.trim(),
         latitude: position.lat,
         longitude: position.lng
