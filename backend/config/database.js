@@ -66,7 +66,7 @@ const config = {
   // TIMEOUTS Y POOL
   connectionTimeoutMillis: 10000, // 10 segundos
   idleTimeoutMillis: 30000,
-  max: 10, // Reducido para Render free tier
+  max: 50, // Ajustado para escalabilidad segura (evita bloqueos de DB)
 
   // KEEP ALIVE (IMPORTANTE PARA SUPABASE)
   keepAlive: true,

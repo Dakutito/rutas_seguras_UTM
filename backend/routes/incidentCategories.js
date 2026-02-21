@@ -82,9 +82,8 @@ router.delete('/:id', authenticateToken, requireAdmin, async (req, res) => {
   try {
     const { id } = req.params;
 
-    // Verificar si hay reportes con esta categoría
     const incidents = await query(
-      'SELECT COUNT(*) as count FROM incident_reports WHERE incident_type = (SELECT name FROM incident_categories WHERE id = $1)',
+      'SELECT COUNT(*) as count FROM incident_reports WHERE category_id = $1',
       [id]
     );
 

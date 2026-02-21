@@ -11,7 +11,10 @@ router.get('/', async (req, res) => {
     let queryText = `
       SELECT 
         ir.id,
-        ir.incident_type,
+        ir.category_id,
+        ic.name as incident_type,
+        ic.icon as category_icon,
+        ic.color as category_color,
         ir.description,
         ir.latitude::float as lat,
         ir.longitude::float as lng,
@@ -21,6 +24,7 @@ router.get('/', async (req, res) => {
         u.email as user_email
       FROM incident_reports ir
       LEFT JOIN users u ON ir.user_id = u.id
+      LEFT JOIN incident_categories ic ON ir.category_id = ic.id
       WHERE ir.status = $1
     `;
 
@@ -47,11 +51,15 @@ router.get('/admin', authenticateToken, requireAdmin, async (req, res) => {
     const result = await query(
       `SELECT 
         ir.*,
+        ic.name as category_name,
+        ic.icon as category_icon,
+        ic.color as category_color,
         u.name as user_name,
         u.email as user_email,
         resolver.name as resolved_by_name
        FROM incident_reports ir
        LEFT JOIN users u ON ir.user_id = u.id
+       LEFT JOIN incident_categories ic ON ir.category_id = ic.id
        LEFT JOIN users resolver ON ir.resolved_by = resolver.id
        ORDER BY ir.created_at DESC`
     );
@@ -67,16 +75,20 @@ router.get('/my-incidents', authenticateToken, async (req, res) => {
   try {
     const result = await query(
       `SELECT 
-        id,
-        incident_type,
-        description,
-        latitude::float as lat,
-        longitude::float as lng,
-        created_at,
-        status
-       FROM incident_reports
-       WHERE user_id = $1
-       ORDER BY created_at DESC`,
+        ir.id,
+        ir.category_id,
+        ic.name as incident_type,
+        ic.icon as category_icon,
+        ic.color as category_color,
+        ir.description,
+        ir.latitude::float as lat,
+        ir.longitude::float as lng,
+        ir.created_at,
+        ir.status
+       FROM incident_reports ir
+       LEFT JOIN incident_categories ic ON ir.category_id = ic.id
+       WHERE ir.user_id = $1
+       ORDER BY ir.created_at DESC`,
       [req.user.id]
     );
     res.json(result.rows);
@@ -89,23 +101,25 @@ router.get('/my-incidents', authenticateToken, async (req, res) => {
 // CREAR NUEVO INCIDENTE
 router.post('/', authenticateToken, async (req, res) => {
   try {
-    const { incident_type, description, latitude, longitude } = req.body;
+    const { category_id, description, latitude, longitude } = req.body;
 
-    if (!incident_type || !latitude || !longitude) {
-      return res.status(400).json({ error: 'Tipo de incidente y ubicación son requeridos' });
+    if (!category_id || !latitude || !longitude) {
+      return res.status(400).json({ error: 'Categoría y ubicación son requeridos' });
     }
 
-    const validTypes = ['Robo', 'Asalto', 'Acoso', 'Vandalismo', 'Iluminación', 'Infraestructura', 'Sospechoso', 'Otro'];
-    if (!validTypes.includes(incident_type)) {
-      return res.status(400).json({ error: 'Tipo de incidente inválido' });
+    // Obtener el nombre de la categoría para compatibilidad (incident_type)
+    const categoryResult = await query('SELECT name FROM incident_categories WHERE id = $1', [category_id]);
+    if (categoryResult.rows.length === 0) {
+      return res.status(400).json({ error: 'Categoría inválida' });
     }
+    const incident_type = categoryResult.rows[0].name;
 
     const result = await query(
       `INSERT INTO incident_reports 
-       (user_id, incident_type, description, latitude, longitude)
-       VALUES ($1, $2, $3, $4, $5)
+       (user_id, category_id, incident_type, description, latitude, longitude)
+       VALUES ($1, $2, $3, $4, $5, $6)
        RETURNING *`,
-      [req.user.id, incident_type, description || null, latitude, longitude]
+      [req.user.id, category_id, incident_type, description || null, latitude, longitude]
     );
 
     res.status(201).json(result.rows[0]);
