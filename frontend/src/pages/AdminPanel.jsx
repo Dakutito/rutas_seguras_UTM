@@ -30,7 +30,7 @@ const AdminPanel = () => {
       const activeUsers = Array.isArray(users) ? users.filter(u => u.status === 'active').length : 0
       const hoy = new Date().toDateString()
       const todayCount = Array.isArray(reports) ? reports.filter(r => new Date(r.created_at).toDateString() === hoy).length : 0
-      const dangerCount = Array.isArray(reports) ? reports.filter(r => r.emotion === '😢' || r.emotion === '😡').length : 0
+      const dangerCount = Array.isArray(reports) ? reports.filter(r => r.emotion === '😢' || r.emotion === '😡' || r.is_incident).length : 0
 
       setStats({ totalUsers, activeUsers, reports: Array.isArray(reports) ? reports : [], dangerCount, todayCount })
 
@@ -54,7 +54,7 @@ const AdminPanel = () => {
           emotion,
           label: report.emotion_label,
           count: 0,
-          color: getDangerColor(emotion)
+          color: report.emotion_color || getDangerColor(emotion)
         }
       }
       emotionCount[emotion].count++
@@ -219,7 +219,8 @@ const AdminPanel = () => {
             ) : (
               <div style={{ display: 'flex', flexDirection: 'column', gap: '10px', maxHeight: '500px', overflowY: 'auto' }}>
                 {stats.reports.slice(0, 10).map(r => {
-                  const color = getDangerColor(r.emotion)
+                  const color = r.emotion_color || getDangerColor(r.emotion)
+                  const label = r.is_incident ? 'Incidente' : getDangerLabel(r.emotion)
                   return (
                     <div key={r.id} style={{ background: 'white', padding: '12px 14px', borderRadius: '8px', borderLeft: `5px solid ${color}` }}>
                       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
@@ -237,7 +238,7 @@ const AdminPanel = () => {
                         </div>
                         <div style={{ display: 'flex', flexDirection: 'column', gap: '6px', marginLeft: '12px' }}>
                           <span style={{ background: color + '20', color, padding: '3px 10px', borderRadius: '10px', fontSize: '11px', fontWeight: '600', whiteSpace: 'nowrap' }}>
-                            {getDangerLabel(r.emotion)}
+                            {label}
                           </span>
                           {/* BOTÓN DE UBICACIÓN */}
                           <button
