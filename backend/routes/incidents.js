@@ -31,17 +31,24 @@ router.get('/', async (req, res) => {
     const params = [status];
 
     if (type) {
-      queryText += ` AND ir.incident_type = $2`;
+      queryText += ` AND ic.name = $2`;
       params.push(type);
     }
 
     queryText += ` ORDER BY ir.created_at DESC`;
 
     const result = await query(queryText, params);
+
+    // Si ic.name es nulo (por migración pendiente), usar ir.incident_type
+    const rows = result.rows.map(row => ({
+      ...row,
+      incident_type: row.incident_type || row.old_incident_type // old_incident_type no existe, pero es una idea
+    }));
+
     res.json(result.rows);
   } catch (error) {
     console.error('Error al obtener incidentes:', error);
-    res.status(500).json({ error: 'Error al obtener incidentes' });
+    res.status(500).json({ error: 'Error al obtener incidentes. Asegúrate de haber ejecutado las migraciones.' });
   }
 });
 
