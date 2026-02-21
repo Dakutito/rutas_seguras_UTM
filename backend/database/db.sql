@@ -134,17 +134,19 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql;
 
--- 8. CATEGORÍAS POR DEFECTO
+-- 6. INSERTAR CATEGORÍAS POR DEFECTO
 INSERT INTO incident_categories (name, icon, color, display_order) VALUES
-('Robo', 'FiAlertTriangle', '#EF4444', 1),
-('Asalto', 'FiShieldOff', '#B91C1C', 2),
-('Acoso', 'FiUserX', '#EC4899', 3),
-('Vandalismo', 'FiZap', '#F59E0B', 4),
-('Iluminación Deficiente', 'FiSun', '#6366F1', 5),
-('Infraestructura Peligrosa', 'FiTool', '#8B5CF6', 6),
-('Persona Sospechosa', 'FiEye', '#10B981', 7),
-('Otro', 'FiMoreHorizontal', '#6B7280', 8)
-ON CONFLICT (name) DO NOTHING;
+('Robo', '🚨', '#ef4444', 1),
+('Asalto', '⚠️', '#dc2626', 2),
+('Acoso', '🚫', '#ff0000', 3),
+('Vandalismo', '🔨', '#8b5cf6', 4),
+('Iluminación Deficiente', '💡', '#fbbf24', 5),
+('Infraestructura Peligrosa', '🏗️', '#3b82f6', 6),
+('Persona Sospechosa', '👁️', '#f97316', 7),
+('Otro', '📋', '#10b981', 8)
+ON CONFLICT (name) DO UPDATE SET 
+    icon = EXCLUDED.icon,
+    color = EXCLUDED.color;
 
 -- 9. USUARIO ADMINISTRADOR (Contraseña: admin123)
 -- Nota: En Supabase las contraseñas suelen manejarse vía Auth, 
@@ -152,4 +154,3 @@ ON CONFLICT (name) DO NOTHING;
 INSERT INTO users (name, email, password, role, status)
 VALUES ('Administrador', 'admin@rutas.com', '$2a$10$YourHashedPasswordHere', 'admin', 'active')
 ON CONFLICT (email) DO NOTHING;
-
