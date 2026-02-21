@@ -65,33 +65,8 @@ const AdminIncidents = () => {
     }
   }
 
-  const getIncidentColor = (type) => {
-    const colors = {
-      'Robo': '#ef4444',
-      'Asalto': '#dc2626',
-      'Acoso': '#f59e0b',
-      'Vandalismo': '#8b5cf6',
-      'Iluminación': '#fbbf24',
-      'Infraestructura': '#6b7280',
-      'Sospechoso': '#f97316',
-      'Otro': '#10b981'
-    }
-    return colors[type] || '#6b7280'
-  }
-
-  const getIncidentIcon = (type) => {
-    const icons = {
-      'Robo': '🚨',
-      'Asalto': '⚠️',
-      'Acoso': '🚫',
-      'Vandalismo': '🔨',
-      'Iluminación': '💡',
-      'Infraestructura': '🏗️',
-      'Sospechoso': '👁️',
-      'Otro': '📋'
-    }
-    return icons[type] || '📍'
-  }
+  const getIncidentColor = (incident) => incident.category_color || '#6b7280'
+  const getIncidentIcon = (incident) => incident.category_icon || '📍'
 
   const filteredIncidents = incidents
     .filter(i => i.status === filter || filter === 'todos')
@@ -194,7 +169,7 @@ const AdminIncidents = () => {
               key={incident.id}
               style={{
                 background: 'white',
-                borderLeft: `6px solid ${getIncidentColor(incident.incident_type)}`,
+                borderLeft: `6px solid ${getIncidentColor(incident)}`,
                 padding: '18px',
                 borderRadius: '10px',
                 boxShadow: '0 2px 4px rgba(0,0,0,0.08)'
@@ -203,7 +178,7 @@ const AdminIncidents = () => {
               <div style={{ display: 'flex', justifyContent: 'space-between', gap: '16px' }}>
                 <div style={{ flex: 1 }}>
                   <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '12px' }}>
-                    <span style={{ fontSize: '32px' }}>{getIncidentIcon(incident.incident_type)}</span>
+                    <span style={{ fontSize: '32px' }}>{getIncidentIcon(incident)}</span>
                     <div>
                       <h3 style={{ margin: 0, fontSize: '18px', fontWeight: '700' }}>
                         {incident.incident_type}
