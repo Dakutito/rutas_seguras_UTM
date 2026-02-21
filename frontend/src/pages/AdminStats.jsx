@@ -53,10 +53,9 @@ const AdminStats = () => {
             <Link to="/admin" className="btn" style={{ background: '#6b7280', color: 'white' }}>← Volver al Panel</Link>
           </div>
 
-          <div style={{ textAlign: 'center', padding: '80px 20px', background: '#f9fafb', borderRadius: '16px', border: '2px dashed #e5e7eb' }}>
-            <div style={{ fontSize: '72px', marginBottom: '16px' }}>📊</div>
-            <h2 style={{ color: '#6b7280', fontSize: '22px', marginBottom: '10px' }}>No hay datos de analíticas aún</h2>
-            <p style={{ color: '#9ca3af', fontSize: '15px', maxWidth: '500px', margin: '0 auto' }}>
+          <div style={{ textAlign: 'center', padding: '80px 20px', borderRadius: '16px', border: '2px dashed #e5e7eb' }}>
+            <h2 style={{ fontSize: '22px', marginBottom: '10px' }}>No hay datos de analíticas aún</h2>
+            <p style={{ fontSize: '15px', maxWidth: '500px', margin: '0 auto' }}>
               Las analíticas se generarán automáticamente cuando los usuarios reporten sus emociones en el mapa.
               Aquí verás gráficos de emociones, duración y zonas de riesgo.
             </p>
