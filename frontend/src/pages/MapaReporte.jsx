@@ -116,9 +116,8 @@ const MapaReporte = ({ user, viewOnly = false }) => {
     }
   }
 
-  const getIncidentColor = (type) => {
-    const incident = incidentTypes.find(i => i.value === type)
-    return incident ? incident.color : '#6b7280'
+  const getIncidentColor = (incident) => {
+    return incident.category_color || '#6b7280'
   }
 
   return (
@@ -194,8 +193,8 @@ const MapaReporte = ({ user, viewOnly = false }) => {
                 center={[incident.lat, incident.lng]}
                 radius={50}
                 pathOptions={{
-                  fillColor: getIncidentColor(incident.incident_type),
-                  color: getIncidentColor(incident.incident_type),
+                  fillColor: getIncidentColor(incident),
+                  color: getIncidentColor(incident),
                   fillOpacity: 0.4
                 }}
               >

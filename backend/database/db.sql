@@ -4,13 +4,14 @@
 -- ==========================================
 
 -- 1. LIMPIEZA (Opcional, ten cuidado en producción)
+-- Si ya tienes usuarios creados y no quieres borrarlos, NO ejecutes la línea de 'users'
 DROP TABLE IF EXISTS activity_logs CASCADE;
 DROP TABLE IF EXISTS user_sessions CASCADE;
 DROP TABLE IF EXISTS risk_zones CASCADE;
 DROP TABLE IF EXISTS emotion_reports CASCADE;
 DROP TABLE IF EXISTS incident_reports CASCADE;
 DROP TABLE IF EXISTS incident_categories CASCADE;
-DROP TABLE IF EXISTS users CASCADE;
+-- DROP TABLE IF EXISTS users CASCADE; -- Descomenta solo si quieres borrar todas las cuentas
 
 -- 2. TABLA DE USUARIOS
 CREATE TABLE users (
