@@ -8,7 +8,8 @@ router.get('/general', async (req, res) => {
   try {
     // Total de reportes activos
     const totalReports = await query(
-      'SELECT COUNT(*) as count FROM emotion_reports WHERE expires_at > NOW()'
+      `SELECT (SELECT COUNT(*) FROM emotion_reports WHERE expires_at > NOW()) + 
+              (SELECT COUNT(*) FROM incident_reports WHERE status = 'activo') as count`
     );
 
     // Reportes por emoción
@@ -34,9 +35,8 @@ router.get('/general', async (req, res) => {
 
     // Reportes de hoy
     const todayReports = await query(
-      `SELECT COUNT(*) as count 
-       FROM emotion_reports 
-       WHERE DATE(created_at) = CURRENT_DATE`
+      `SELECT (SELECT COUNT(*) FROM emotion_reports WHERE DATE(created_at) = CURRENT_DATE) + 
+              (SELECT COUNT(*) FROM incident_reports WHERE DATE(created_at) = CURRENT_DATE) as count`
     );
 
     // Emociones positivas vs negativas
@@ -92,13 +92,15 @@ router.get('/admin', authenticateToken, requireAdmin, async (req, res) => {
 
     // Reportes por día (últimos 7 días)
     const reportsByDay = await query(
-      `SELECT 
-        DATE(created_at) as date,
-        COUNT(*) as count
-       FROM emotion_reports
-       WHERE created_at >= CURRENT_DATE - INTERVAL '7 days'
-       GROUP BY DATE(created_at)
-       ORDER BY date DESC`
+      `SELECT date, SUM(count) as count FROM (
+        SELECT DATE(created_at) as date, COUNT(*) as count FROM emotion_reports 
+        WHERE created_at >= CURRENT_DATE - INTERVAL '7 days' GROUP BY DATE(created_at)
+        UNION ALL
+        SELECT DATE(created_at) as date, COUNT(*) as count FROM incident_reports 
+        WHERE created_at >= CURRENT_DATE - INTERVAL '7 days' GROUP BY DATE(created_at)
+      ) combined
+      GROUP BY date
+      ORDER BY date DESC`
     );
 
     // Top 5 usuarios más activos
@@ -107,11 +109,10 @@ router.get('/admin', authenticateToken, requireAdmin, async (req, res) => {
         u.id,
         u.name,
         u.email,
-        COUNT(er.id) as report_count
+        (SELECT COUNT(*) FROM emotion_reports WHERE user_id = u.id) + 
+        (SELECT COUNT(*) FROM incident_reports WHERE user_id = u.id) as report_count
        FROM users u
-       LEFT JOIN emotion_reports er ON u.id = er.user_id
        WHERE u.role = 'user'
-       GROUP BY u.id, u.name, u.email
        ORDER BY report_count DESC
        LIMIT 5`
     );
