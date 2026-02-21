@@ -47,7 +47,7 @@ const AdminStats = () => {
         <div className="card">
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '30px' }}>
             <div>
-              <h1 style={{ color: '#1f2937', marginBottom: '6px' }}>Analíticas de Seguridad</h1>
+              <h1 style={{ marginBottom: '6px' }}>Analíticas de Seguridad</h1>
               <p style={{ color: '#6b7280', margin: 0 }}>Análisis del impacto emocional basado en reportes de usuarios</p>
             </div>
             <Link to="/admin" className="btn" style={{ background: '#6b7280', color: 'white' }}>← Volver al Panel</Link>
