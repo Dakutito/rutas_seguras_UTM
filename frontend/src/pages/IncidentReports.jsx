@@ -74,33 +74,9 @@ const IncidentReports = () => {
     return date.toLocaleDateString('es-ES', { day: '2-digit', month: 'short', year: 'numeric' })
   }
 
-  const getIncidentColor = (type) => {
-    const colors = {
-      'Robo': '#ef4444',
-      'Asalto': '#dc2626',
-      'Acoso': '#f59e0b',
-      'Vandalismo': '#8b5cf6',
-      'Iluminación': '#fbbf24',
-      'Infraestructura': '#6b7280',
-      'Sospechoso': '#f97316',
-      'Otro': '#10b981'
-    }
-    return colors[type] || '#6b7280'
-  }
-
-  const getIncidentIcon = (type) => {
-    const icons = {
-      'Robo': '🚨',
-      'Asalto': '⚠️',
-      'Acoso': '🚫',
-      'Vandalismo': '🔨',
-      'Iluminación': '💡',
-      'Infraestructura': '🏗️',
-      'Sospechoso': '👁️',
-      'Otro': '📋'
-    }
-    return icons[type] || '📍'
-  }
+  // Ya no necesitamos mapeos estáticos, usamos lo que viene de la DB
+  const getIncidentColor = (incident) => incident.category_color || '#6b7280'
+  const getIncidentIcon = (incident) => incident.category_icon || '📍'
 
   if (loading && incidentTypes.length === 0) {
     return (
@@ -222,7 +198,7 @@ const IncidentReports = () => {
               <div className='sub_Comienzareporte'
                 key={incident.id}
                 style={{
-                  borderLeft: `6px solid ${getIncidentColor(incident.incident_type)}`,
+                  borderLeft: `6px solid ${getIncidentColor(incident)}`,
                 }}
                 onMouseEnter={e => {
                   e.currentTarget.style.transform = 'translateY(-2px)'
@@ -237,7 +213,7 @@ const IncidentReports = () => {
                   <div style={{ flex: 1 }}>
                     <div className='subb_botonesdeladminreport'>
                       <span style={{ fontSize: '32px' }}>
-                        {getIncidentIcon(incident.incident_type)}
+                        {getIncidentIcon(incident)}
                       </span>
                       <div>
                         <h3>{incident.incident_type}</h3>
@@ -279,8 +255,8 @@ const IncidentReports = () => {
 
                   <div style={{ display: 'flex', flexDirection: 'column', gap: '10px', minWidth: '140px' }}>
                     <span style={{
-                      background: `${getIncidentColor(incident.incident_type)}20`,
-                      color: getIncidentColor(incident.incident_type),
+                      background: `${getIncidentColor(incident)}20`,
+                      color: getIncidentColor(incident),
                       padding: '6px 14px',
                       borderRadius: '20px',
                       fontSize: '12px',
