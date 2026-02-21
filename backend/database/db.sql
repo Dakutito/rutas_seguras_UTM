@@ -1,122 +1,63 @@
-CREATE DATABASE rutas_seguras_utm
-WITH
-OWNER = postgres
-ENCODING = 'UTF8'
-LC_COLLATE = 'es_ES.UTF-8'
-LC_CTYPE = 'es_ES.UTF-8'
-TABLESPACE = pg_default
-CONNECTION LIMIT = -1;
+-- ==========================================
+-- SCRIPT DE BASE DE DATOS - RUTAS SEGURAS UTM
+-- Compatible con Supabase / PostgreSQL
+-- ==========================================
 
-COMMENT ON DATABASE rutas_seguras_utm IS 'Base de datos para sistema de rutas seguras';
-
-\c rutas_seguras_utm;
-
-CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
-CREATE EXTENSION IF NOT EXISTS "pgcrypto";
-
--- =========================
--- LIMPIEZA
--- =========================
+-- 1. LIMPIEZA (Opcional, ten cuidado en producción)
 DROP TABLE IF EXISTS activity_logs CASCADE;
 DROP TABLE IF EXISTS user_sessions CASCADE;
 DROP TABLE IF EXISTS risk_zones CASCADE;
 DROP TABLE IF EXISTS emotion_reports CASCADE;
-DROP TABLE IF EXISTS email_verifications CASCADE;
+DROP TABLE IF EXISTS incident_reports CASCADE;
+DROP TABLE IF EXISTS incident_categories CASCADE;
 DROP TABLE IF EXISTS users CASCADE;
 
--- =========================
--- USERS
--- =========================
+-- 2. TABLA DE USUARIOS
 CREATE TABLE users (
     id SERIAL PRIMARY KEY,
     name VARCHAR(255) NOT NULL,
     email VARCHAR(255) UNIQUE NOT NULL,
     password VARCHAR(255) NOT NULL,
     role VARCHAR(50) DEFAULT 'user' CHECK (role IN ('user', 'admin')),
-    status VARCHAR(50) DEFAULT 'pending' CHECK (status IN ('active', 'suspended', 'pending')),
-    email_verified BOOLEAN DEFAULT FALSE,
+    status VARCHAR(50) DEFAULT 'active' CHECK (status IN ('active', 'suspended', 'pending')),
+    profile_photo VARCHAR(255),
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    profile_photo VARCHAR(255)
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
 CREATE INDEX idx_users_email ON users(email);
-CREATE INDEX idx_users_role ON users(role);
-CREATE INDEX idx_users_status ON users(status);
-CREATE INDEX idx_users_email_verified ON users(email_verified);
 
-COMMENT ON COLUMN users.status IS 'pending = sin verificar | active = activo | suspended = suspendido';
-
--- =========================
--- INCIDENT REPORTS (Reportes de Incidentes)
--- =========================
-
-CREATE TABLE incident_reports (
+-- 3. TABLA DE CATEGORÍAS DE INCIDENTES
+CREATE TABLE incident_categories (
     id SERIAL PRIMARY KEY,
-    user_id INTEGER REFERENCES users(id) ON DELETE CASCADE,
-    incident_type VARCHAR(50) NOT NULL CHECK (incident_type IN ('Robo', 'Asalto', 'Acoso', 'Vandalismo', 'Iluminación', 'Infraestructura', 'Sospechoso', 'Otro')),
-    description TEXT,
-    latitude DECIMAL(10,8) NOT NULL,
-    longitude DECIMAL(11,8) NOT NULL,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    status VARCHAR(20) DEFAULT 'activo' CHECK (status IN ('activo', 'resuelto', 'eliminado')),
-    resolved_by INTEGER REFERENCES users(id),
-    resolved_at TIMESTAMP
-);
-
-CREATE INDEX idx_incidents_type ON incident_reports(incident_type);
-CREATE INDEX idx_incidents_location ON incident_reports(latitude, longitude);
-CREATE INDEX idx_incidents_status ON incident_reports(status);
-CREATE INDEX idx_incidents_user ON incident_reports(user_id);
-CREATE INDEX idx_incidents_created ON incident_reports(created_at);
-
-COMMENT ON TABLE incident_reports IS 'Reportes de incidentes específicos (robos, asaltos, etc.)';
-COMMENT ON COLUMN incident_reports.incident_type IS 'Tipo de incidente reportado';
-COMMENT ON COLUMN incident_reports.status IS 'activo = pendiente | resuelto = atendido | eliminado = borrado por admin';
-
-//
--- 2. Crear tabla de categorías
-CREATE TABLE IF NOT EXISTS incident_categories (
-    id SERIAL PRIMARY KEY,
-    name VARCHAR(50) UNIQUE NOT NULL,
-    icon VARCHAR(10) NOT NULL,
+    name VARCHAR(100) UNIQUE NOT NULL,
+    icon VARCHAR(50) NOT NULL,
     color VARCHAR(20) NOT NULL,
     display_order INTEGER DEFAULT 0,
     is_active BOOLEAN DEFAULT TRUE,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
--- 3. Insertar categorías por defecto
-INSERT INTO incident_categories (name, icon, color, display_order) VALUES
-('Robo', '🚨', '#ef4444', 1),
-('Asalto', '⚠️', '#dc2626', 2),
-('Acoso', '🚫', '#f59e0b', 3),
-('Vandalismo', '🔨', '#8b5cf6', 4),
-('Iluminación', '💡', '#fbbf24', 5),
-('Infraestructura', '🏗️', '#6b7280', 6),
-('Sospechoso', '👁️', '#f97316', 7),
-('Otro', '📋', '#10b981', 8)
-ON CONFLICT (name) DO NOTHING;
-
-
--- =========================
--- EMAIL VERIFICATION
--- =========================
-CREATE TABLE email_verifications (
+-- 4. TABLA DE REPORTES DE INCIDENTES
+CREATE TABLE incident_reports (
     id SERIAL PRIMARY KEY,
     user_id INTEGER REFERENCES users(id) ON DELETE CASCADE,
-    verification_token VARCHAR(255) UNIQUE NOT NULL,
-    expires_at TIMESTAMP NOT NULL,
-    verified BOOLEAN DEFAULT FALSE,
+    category_id INTEGER REFERENCES incident_categories(id) ON DELETE SET NULL,
+    incident_type VARCHAR(50) NOT NULL, -- Compatibilidad con versiones previas
+    description TEXT,
+    latitude DECIMAL(10,8) NOT NULL,
+    longitude DECIMAL(11,8) NOT NULL,
+    status VARCHAR(20) DEFAULT 'activo' CHECK (status IN ('activo', 'resuelto', 'eliminado')),
+    resolved_by INTEGER REFERENCES users(id),
+    resolved_at TIMESTAMP,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
-CREATE INDEX idx_verification_user ON email_verifications(user_id);
-CREATE INDEX idx_verification_token ON email_verifications(verification_token);
+CREATE INDEX idx_incidents_category ON incident_reports(category_id);
+CREATE INDEX idx_incidents_location ON incident_reports(latitude, longitude);
+CREATE INDEX idx_incidents_status ON incident_reports(status);
 
--- =========================
--- EMOTION REPORTS
--- =========================
+-- 5. TABLA DE REPORTES DE EMOCIONES
 CREATE TABLE emotion_reports (
     id SERIAL PRIMARY KEY,
     user_id INTEGER REFERENCES users(id) ON DELETE CASCADE,
@@ -130,116 +71,84 @@ CREATE TABLE emotion_reports (
     expires_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP + INTERVAL '24 hours'
 );
 
-CREATE INDEX idx_reports_user ON emotion_reports(user_id);
-CREATE INDEX idx_reports_location ON emotion_reports(latitude, longitude);
-CREATE INDEX idx_reports_expires ON emotion_reports(expires_at);
+CREATE INDEX idx_emotions_location ON emotion_reports(latitude, longitude);
+CREATE INDEX idx_emotions_expires ON emotion_reports(expires_at);
 
--- =========================
--- RISK ZONES
--- =========================
+-- 6. TABLA DE ZONAS DE RIESGO
 CREATE TABLE risk_zones (
     id SERIAL PRIMARY KEY,
     latitude DECIMAL(10,8) NOT NULL,
     longitude DECIMAL(11,8) NOT NULL,
-    danger_level VARCHAR(20) DEFAULT 'bajo' CHECK (danger_level IN ('bajo','medio','alto')),
+    danger_level VARCHAR(20) DEFAULT 'bajo' CHECK (danger_level IN ('bajo', 'medio', 'alto')),
     report_count INTEGER DEFAULT 0,
-    last_emotion VARCHAR(10),
-    last_emotion_color VARCHAR(20),
+    last_event_type VARCHAR(50), -- 'emotion', 'incident' o 'mixed'
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     UNIQUE(latitude, longitude)
 );
 
-CREATE INDEX idx_zones_danger ON risk_zones(danger_level);
-
--- =========================
--- USER SESSIONS
--- =========================
-CREATE TABLE user_sessions (
-    id SERIAL PRIMARY KEY,
-    user_id INTEGER REFERENCES users(id) ON DELETE CASCADE,
-    token TEXT NOT NULL,
-    ip_address VARCHAR(50),
-    user_agent TEXT,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    expires_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP + INTERVAL '7 days'
-);
-
-CREATE INDEX idx_sessions_token ON user_sessions(token);
-
--- =========================
--- ACTIVITY LOGS
--- =========================
-CREATE TABLE activity_logs (
-    id SERIAL PRIMARY KEY,
-    user_id INTEGER REFERENCES users(id) ON DELETE SET NULL,
-    action VARCHAR(100) NOT NULL,
-    description TEXT,
-    ip_address VARCHAR(50),
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-);
-
--- =========================
--- FUNCTIONS
--- =========================
-CREATE OR REPLACE FUNCTION update_updated_at()
-RETURNS TRIGGER AS $$
-BEGIN
-    NEW.updated_at = NOW();
-    RETURN NEW;
-END;
-$$ LANGUAGE plpgsql;
-
-CREATE TRIGGER trg_users_updated
-BEFORE UPDATE ON users
-FOR EACH ROW
-EXECUTE FUNCTION update_updated_at();
-
-CREATE TABLE IF NOT EXISTS reports (
-    id SERIAL PRIMARY KEY,
-    user_id INTEGER REFERENCES users(id) ON DELETE CASCADE,
-    emotion TEXT,
-    comment TEXT,
-    lat DECIMAL,
-    lng DECIMAL,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-);
-
--- =========================
--- CLEAN EXPIRED TOKENS
--- =========================
-CREATE OR REPLACE FUNCTION delete_expired_verification_tokens()
+-- 7. FUNCIÓN PARA CALCULAR ZONAS DE RIESGO (INTEGRADA)
+CREATE OR REPLACE FUNCTION update_risk_zones()
 RETURNS void AS $$
 BEGIN
-    DELETE FROM email_verifications
-    WHERE expires_at < NOW() AND verified = FALSE;
+    TRUNCATE risk_zones;
+    
+    INSERT INTO risk_zones (latitude, longitude, danger_level, report_count, last_event_type, updated_at)
+    SELECT 
+        lat as latitude,
+        lng as longitude,
+        CASE 
+            WHEN score >= 10 THEN 'alto'
+            WHEN score >= 5 THEN 'medio'
+            ELSE 'bajo'
+        END as danger_level,
+        total_count as report_count,
+        'mixed' as last_event_type,
+        NOW() as updated_at
+    FROM (
+        SELECT 
+            ROUND(latitude::numeric, 3) as lat,
+            ROUND(longitude::numeric, 3) as lng,
+            SUM(weight) as score,
+            COUNT(*) as total_count
+        FROM (
+            -- Pesos para emociones (Ej: Tristeza/Enojo = 3, Ansiedad = 2)
+            SELECT latitude, longitude, 
+                CASE 
+                    WHEN emotion IN ('😢', '😡') THEN 3 
+                    WHEN emotion IN ('😰', '😨') THEN 2 
+                    ELSE 1 
+                END as weight
+            FROM emotion_reports
+            WHERE expires_at > NOW()
+            
+            UNION ALL
+            
+            -- Pesos para incidentes reales (Valen más: 5 puntos)
+            SELECT latitude, longitude, 5 as weight
+            FROM incident_reports
+            WHERE status = 'activo'
+        ) combined
+        GROUP BY ROUND(latitude::numeric, 3), ROUND(longitude::numeric, 3)
+    ) final_scores;
 END;
 $$ LANGUAGE plpgsql;
 
--- =========================
--- ADMIN USER
--- =========================
-INSERT INTO users (name, email, password, role, status, email_verified)
-VALUES (
-    'Administrador',
-    'admin@rutas.com',
-    crypt('admin123', gen_salt('bf')),
-    'admin',
-    'active',
-    TRUE
-) ON CONFLICT (email) DO NOTHING;
+-- 8. CATEGORÍAS POR DEFECTO
+INSERT INTO incident_categories (name, icon, color, display_order) VALUES
+('Robo', 'FiAlertTriangle', '#EF4444', 1),
+('Asalto', 'FiShieldOff', '#B91C1C', 2),
+('Acoso', 'FiUserX', '#EC4899', 3),
+('Vandalismo', 'FiZap', '#F59E0B', 4),
+('Iluminación Deficiente', 'FiSun', '#6366F1', 5),
+('Infraestructura Peligrosa', 'FiTool', '#8B5CF6', 6),
+('Persona Sospechosa', 'FiEye', '#10B981', 7),
+('Otro', 'FiMoreHorizontal', '#6B7280', 8)
+ON CONFLICT (name) DO NOTHING;
 
--- =========================
--- TEST USER
--- =========================
-INSERT INTO users (name, email, password, role, status, email_verified)
-VALUES (
-    'Usuario Prueba',
-    'test@rutas.com',
-    crypt('admin123', gen_salt('bf')),
-    'user',
-    'active',
-    TRUE
-) ON CONFLICT (email) DO NOTHING;
-
-ALTER TABLE users ADD COLUMN IF NOT EXISTS status TEXT DEFAULT 'active';
+-- 9. USUARIO ADMINISTRADOR (Contraseña: admin123)
+-- Nota: En Supabase las contraseñas suelen manejarse vía Auth, 
+-- pero esto sirve para insertar el perfil en la tabla 'users' de la app.
+INSERT INTO users (name, email, password, role, status)
+VALUES ('Administrador', 'admin@rutas.com', '$2a$10$YourHashedPasswordHere', 'admin', 'active')
+ON CONFLICT (email) DO NOTHING;
 
