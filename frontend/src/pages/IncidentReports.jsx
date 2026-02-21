@@ -20,7 +20,7 @@ const IncidentReports = () => {
     const loadCategories = async () => {
       try {
         const data = await incidentsAPI.getCategories()
-        setIncidentTypes(['Todos', ...data.map(cat => cat.name)])
+        setIncidentTypes([{ name: 'Todos', color: '#64748b', icon: '📋' }, ...data])
       } catch (error) {
         console.error('Error:', error)
       }
@@ -166,17 +166,17 @@ const IncidentReports = () => {
 
         {/* categoria de reporte */}
         <div className='categoriadereporte'>
-          {incidentTypes.map(type => (
+          {incidentTypes.map(cat => (
             <button
-              key={type}
-              onClick={() => setFilter(type)}
+              key={cat.name}
+              onClick={() => setFilter(cat.name)}
               style={{
-                background: filter === type ? getIncidentColor(type) : '',
-                color: filter === type ? 'white' : '',
-                fontWeight: filter === type ? '600' : '400',
+                background: filter === cat.name ? cat.color : '',
+                color: filter === cat.name ? 'white' : '',
+                fontWeight: filter === cat.name ? '600' : '400',
               }}
             >
-              {type !== 'Todos' && getIncidentIcon(type)} {type}
+              {cat.name !== 'Todos' && cat.icon} {cat.name}
             </button>
           ))}
         </div>
