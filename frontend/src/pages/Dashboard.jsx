@@ -2,8 +2,6 @@ import { useState, useEffect } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import '../styles/Components.css'
 
-import { reportsAPI } from '../services/api' // Importar API centralizada
-
 const Dashboard = ({ user }) => {
   const navigate = useNavigate()
   const [showHistorial, setShowHistorial] = useState(false)
@@ -11,26 +9,35 @@ const Dashboard = ({ user }) => {
   const [loading, setLoading] = useState(false)
   const [reportCount, setReportCount] = useState(0)
   const [impactLevel, setImpactLevel] = useState('High')
-
+  const [isDesktop, setIsDesktop] = useState(window.innerWidth > 768);
   useEffect(() => {
     loadUserReports()
+    const handleResize = () => setIsDesktop(window.innerWidth > 768);
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
   }, [])
 
   const loadUserReports = async () => {
     setLoading(true)
     try {
-      const data = await reportsAPI.getMyReports() // Usar servicio centralizado
-      setUserReports(data)
-      setReportCount(data.length)
+      const token = localStorage.getItem('token')
+      const response = await fetch('http://localhost:5000/api/reports/my-reports', {
+        headers: { 'Authorization': `Bearer ${token}` }
+      })
 
-      // Calcular impacto basado en reportes negativos
-      const negativeReports = data.filter(r => ['😢', '😡', '😰', '😨'].includes(r.emotion)).length
-      const total = data.length
-      if (total === 0) setImpactLevel('Low')
-      else if (negativeReports / total > 0.5) setImpactLevel('High')
-      else if (negativeReports / total > 0.2) setImpactLevel('Medium')
-      else setImpactLevel('Low')
+      if (response.ok) {
+        const data = await response.json()
+        setUserReports(data)
+        setReportCount(data.length)
 
+        // Calcular impacto basado en reportes negativos
+        const negativeReports = data.filter(r => ['😢', '😡', '😰', '😨'].includes(r.emotion)).length
+        const total = data.length
+        if (total === 0) setImpactLevel('Bajo')
+        else if (negativeReports / total > 0.5) setImpactLevel('Alto')
+        else if (negativeReports / total > 0.2) setImpactLevel('Medio')
+        else setImpactLevel('Bajo')
+      }
     } catch (error) {
       console.error('Error:', error)
     } finally {
@@ -42,8 +49,13 @@ const Dashboard = ({ user }) => {
     if (!window.confirm('¿Eliminar este reporte?')) return
 
     try {
-      await reportsAPI.delete(reportId) // Usar servicio centralizado
-      loadUserReports()
+      const token = localStorage.getItem('token')
+      const response = await fetch(`http://localhost:5000/api/reports/${reportId}`, {
+        method: 'DELETE',
+        headers: { 'Authorization': `Bearer ${token}` }
+      })
+
+      if (response.ok) loadUserReports()
     } catch (error) {
       console.error('Error:', error)
     }
@@ -79,7 +91,8 @@ const Dashboard = ({ user }) => {
 
           {loading ? <div style={{ textAlign: 'center', padding: '40px' }}>Cargando...</div> :
             userReports.length === 0 ? (
-              <div style={{ textAlign: 'center', padding: '60px', borderRadius: '12px' }}>
+              <div style={{ textAlign: 'center', padding: '60px', background: '#f9fafb', borderRadius: '12px' }}>
+                <div style={{ fontSize: '72px' }}>📭</div>
                 <h2 style={{ color: '#6b7280' }}>No tienes reportes aún</h2>
                 <Link to="/map" className="btn btn-primary" style={{ marginTop: '20px' }}>Ir al Mapa</Link>
               </div>
@@ -202,34 +215,43 @@ const Dashboard = ({ user }) => {
         {/* ========== CONTENIDO PRINCIPAL ========== */}
         <main className="dashboard-main">
 
-          {/* Sección de emociones */}
+          {/* Sección de emociones MODIFICANDO*/}
           <section className="emotion-section">
-            <div className="emotion-header">
-              <div>
-                <h2>Estado de Ánimo</h2>
-                <p>¿Cómo te sientes en este sector?</p>
-              </div>
-            </div>
-
-            <div className="emotions-grid">
-              {emotions.map((emotion, idx) => (
-                <Link
-                  key={idx}
-                  to="/map"
-                  className={`emotion-card-dashboard ${emotion.class}`}
-                  style={{ textDecoration: 'none', borderRadius: '15px' }}
-                >
-                  <div className="emotion-card-inner">
-                    <span className="emotion-emoji">{emotion.emoji}</span>
-                    <div className="emotion-info">
-                      <h3>{emotion.label}</h3>
-                      <span className="emotion-level">{emotion.level}</span>
-                    </div>
+            <details className="modern-details" open={isDesktop}>
+              <summary className="emotion-header-summary">
+                <div className="header-info">
+                  <div>
+                    <h2>Estado de Ánimo</h2>
+                    <p>¿Cómo te sientes en este sector? <span className="mobile-only">(Toca para expandir)</span></p>
                   </div>
-                </Link>
-              ))}
-            </div>
+                  <span className="toggle-icon">▾</span>
+                </div>
+              </summary>
+
+              <div className="emotions-grid-wrapper">
+                <div className="emotions-grid">
+                  {emotions.map((emotion, idx) => (
+                    <Link
+                      key={idx}
+                      to="/map"
+                      className={`emotion-card-dashboard ${emotion.class}`}
+                      style={{ textDecoration: 'none', borderRadius: '15px' }}
+                    >
+                      <div className="emotion-card-inner">
+                        <span className="emotion-emoji">{emotion.emoji}</span>
+                        <div className="emotion-info">
+                          <h3>{emotion.label}</h3>
+                          <span className="emotion-level">{emotion.level}</span>
+                        </div>
+                      </div>
+                    </Link>
+                  ))}
+                </div>
+              </div>
+            </details>
           </section>
+
+
 
           {/* Mapa en tiempo real */}
           <section className="map-preview-section">
