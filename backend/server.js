@@ -74,7 +74,7 @@ const incidentsRoutes = require('./routes/incidents');
 // Usar rutas
 app.use('/api/auth', authRoutes);
 app.use('/api/users', userRoutes);
-app.use('/api/reports', reportRoutes);
+app.use('/api/user-reports', reportRoutes);
 app.use('/api/zones', zoneRoutes);
 app.use('/api/stats', statsRoutes);
 app.use('/api/incidents', incidentsRoutes);
@@ -105,7 +105,7 @@ app.get('/', (req, res) => {
       health: '/api/health',
       auth: '/api/auth',
       users: '/api/users',
-      reports: '/api/reports',
+      reports: '/api/user-reports',
       zones: '/api/zones',
       stats: '/api/stats'
     }

@@ -133,7 +133,6 @@ const Navbar = ({ user, onLogout, isAdmin, darkMode, onToggleDarkMode }) => {
                   to="/reportes"
                   className="mobile-link"
                   onClick={closeMobileMenu}
-                  style={{ fontWeight: '600' }}
                 >
                   Reportes de Incidentes
                 </Link>
