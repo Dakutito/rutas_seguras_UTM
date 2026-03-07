@@ -8,7 +8,7 @@ const AdminStats = () => {
 
   useEffect(() => {
     loadStats()
-    const interval = setInterval(loadStats, 10000) // Actualizar cada 10s
+    const interval = setInterval(loadStats, 30000) // Actualizar cada 30s para optimizar rendimiento
     return () => clearInterval(interval)
   }, [])
 
