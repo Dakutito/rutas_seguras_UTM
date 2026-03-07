@@ -10,6 +10,7 @@ const AdminPanel = () => {
   const [loading, setLoading] = useState(true)
   const [emotionStats, setEmotionStats] = useState([])
   const [incidentStats, setIncidentStats] = useState([])
+  const [searchTerm, setSearchTerm] = useState('')
 
   // Definición de las 7 emociones base
   const BASE_EMOTIONS = ['😊', '😌', '😐', '😰', '😨', '😢', '😡'];
@@ -122,6 +123,15 @@ const AdminPanel = () => {
 
   // Filtrar reportes emocionales graves para la lista
   const graveReports = stats.reports.filter(r => !r.is_incident && GRAVE_EMOTIONS.includes(r.emotion))
+
+  // Filtrar por búsqueda (nombre o correo)
+  const filteredGraveReports = graveReports.filter(r => {
+    const search = searchTerm.toLowerCase()
+    return (
+      (r.user_name || '').toLowerCase().includes(search) ||
+      (r.user_email || '').toLowerCase().includes(search)
+    )
+  })
 
   return (
     <div className="container">
@@ -237,15 +247,44 @@ const AdminPanel = () => {
 
           {/* LISTA REPORTES GRAVES */}
           <div style={{ background: '#fff7ed', padding: '22px', borderRadius: '12px', flex: '1 1 100%' }}>
-            <h3 style={{ marginBottom: '16px', color: '#c2410c' }}>⚠️ Reportes Emocionales Graves</h3>
-            <p style={{ color: '#9a3412', fontSize: '13px', marginBottom: '15px' }}>
-              Filtrado por: Ansioso, Asustado, Triste y Enojado
-            </p>
-            {graveReports.length === 0 ? (
-              <div style={{ textAlign: 'center', padding: '40px' }}><p style={{ color: '#6b7280' }}>No hay alertas críticas</p></div>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px', flexWrap: 'wrap', gap: '15px' }}>
+              <div>
+                <h3 style={{ margin: 0, color: '#c2410c' }}>⚠️ Reportes Emocionales Graves</h3>
+                <p style={{ color: '#9a3412', fontSize: '13px', margin: '5px 0 0 0' }}>
+                  Filtrado por: Ansioso, Asustado, Triste y Enojado
+                </p>
+              </div>
+
+              {/* BARRA DE BÚSQUEDA */}
+              <div style={{ position: 'relative', width: '100%', maxWidth: '300px' }}>
+                <input
+                  type="text"
+                  placeholder="Buscar por usuario o correo..."
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                  style={{
+                    width: '100%',
+                    padding: '10px 15px 10px 35px',
+                    borderRadius: '8px',
+                    border: '1px solid #fed7aa',
+                    fontSize: '14px',
+                    outline: 'none',
+                    boxShadow: '0 2px 4px rgba(0,0,0,0.05)'
+                  }}
+                />
+                <span style={{ position: 'absolute', left: '12px', top: '50%', transform: 'translateY(-50%)', opacity: 0.5 }}>🔍</span>
+              </div>
+            </div>
+
+            {filteredGraveReports.length === 0 ? (
+              <div style={{ textAlign: 'center', padding: '40px' }}>
+                <p style={{ color: '#6b7280' }}>
+                  {searchTerm ? 'No se encontraron resultados para tu búsqueda' : 'No hay alertas críticas'}
+                </p>
+              </div>
             ) : (
               <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))', gap: '12px', maxHeight: '600px', overflowY: 'auto' }}>
-                {graveReports.map(r => {
+                {filteredGraveReports.map(r => {
                   const color = r.emotion_color || getDangerColor(r.emotion)
                   return (
                     <div key={r.id} style={{ background: 'white', padding: '14px', borderRadius: '8px', borderLeft: `5px solid ${color}`, boxShadow: '0 1px 3px rgba(0,0,0,0.1)' }}>
