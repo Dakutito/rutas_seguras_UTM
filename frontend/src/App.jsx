@@ -160,7 +160,7 @@ function App() {
 
         <Routes>
           {/* RUTAS PÚBLICAS */}
-          <Route path="/" element={<Home />} />
+          <Route path="/" element={user && isAdmin ? <Navigate to="/admin" replace /> : <Home />} />
           <Route path="/recursos" element={<RecursosEducativos />} />
           <Route path="/verify-email" element={<VerifyEmail />} />
 
