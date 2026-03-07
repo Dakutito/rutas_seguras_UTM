@@ -81,7 +81,6 @@ const AdminReports = ({ type }) => {
             <h1 style={{ color: cfg.color }}>{cfg.title}</h1>
             <p style={{ color: '#6b7280', fontSize: '14px' }}>{cfg.desc}</p>
           </div>
-          <button onClick={() => navigate('/admin')} className="btn" style={{ background: '#6366f1', color: 'white' }}>Inicio</button>
         </div>
 
         <input type="text" placeholder="Buscar..." value={search} onChange={(e) => setSearch(e.target.value)}

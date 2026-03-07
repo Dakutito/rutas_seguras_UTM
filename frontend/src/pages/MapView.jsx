@@ -4,7 +4,7 @@ import EmotionSelector from '../components/EmotionSelector'
 import CommentForm from '../components/CommentForm'
 import '../styles/MapView.css'
 
-const MapView = ({ isAdmin, user }) => {
+const MapView = ({ isAdmin, user, onInicio }) => {
   const [selectedEmotion, setSelectedEmotion] = useState(null)
   const [userLocation, setUserLocation] = useState(null)
   const [showReportForm, setShowReportForm] = useState(false)
@@ -35,13 +35,6 @@ const MapView = ({ isAdmin, user }) => {
         <div className="card">
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
             <h1 className="map-title" style={{ margin: 0 }}>Mapa Emocional UTM</h1>
-            <button
-              onClick={() => navigate('/admin')}
-              className="btn"
-              style={{ background: '#6366f1', color: 'white', padding: '10px 20px' }}
-            >
-              Inicio
-            </button>
           </div>
           <Map
             userLocation={userLocation}

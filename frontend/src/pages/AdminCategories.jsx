@@ -135,9 +135,6 @@ const AdminCategories = () => {
               Administra las categorías de incidentes del sistema
             </p>
           </div>
-          <Link to="/admin" className="btn" style={{ background: '#6b7280', color: 'white' }}>
-            ← Volver al Panel
-          </Link>
         </div>
 
         {/* Botón Nueva Categoría */}

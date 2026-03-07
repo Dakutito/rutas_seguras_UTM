@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { Link, useNavigate, useLocation } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import '../styles/AdminPanel.css'
 import { usersAPI, reportsAPI } from '../services/api'
 
@@ -8,10 +8,11 @@ import AdminUsers from './Adminusers'
 import AdminReports from './Adminreports'
 import AdminStats from './AdminStats'
 import AdminCategories from './AdminCategories'
+import MapView from './MapView'
+import MapaReporte from './MapaReporte'
 
-const AdminPanel = () => {
+const AdminPanel = ({ user }) => {
   const navigate = useNavigate()
-  const location = useLocation()
   const [stats, setStats] = useState({ totalUsers: 0, activeUsers: 0, reports: [], dangerCount: 0, todayCount: 0 })
   const [loading, setLoading] = useState(true)
   const [emotionStats, setEmotionStats] = useState([])
@@ -95,11 +96,11 @@ const AdminPanel = () => {
   if (loading) return <div className="admin-layout"><div className="admin-main"><div className="card" style={{ textAlign: 'center', padding: '60px' }}><h2>Cargando Panel...</h2></div></div></div>
 
   const cards = [
-    { title: 'Total Usuarios', value: stats.totalUsers, bg: '#6b7280', icon: '👥', view: 'users' },
-    { title: 'Usuarios Activos', value: stats.activeUsers, bg: '#3b82f6', icon: '👤', view: 'users' },
-    { title: 'Alertas Graves', value: stats.dangerCount, bg: '#ef4444', icon: '⚠️', view: 'danger' },
-    { title: 'Reportes Hoy', value: stats.todayCount, bg: '#10b981', icon: '📈', view: 'today' },
-    { title: 'Total Reportes', value: stats.reports.length, bg: '#818cf8', icon: '📋', view: 'reports' },
+    { title: 'Total Usuarios', value: stats.totalUsers, bg: '#6b7280', icon: '👥' },
+    { title: 'Usuarios Activos', value: stats.activeUsers, bg: '#3b82f6', icon: '👤' },
+    { title: 'Alertas Graves', value: stats.dangerCount, bg: '#ef4444', icon: '⚠️' },
+    { title: 'Reportes Hoy', value: stats.todayCount, bg: '#10b981', icon: '📈' },
+    { title: 'Total Reportes', value: stats.reports.length, bg: '#818cf8', icon: '📋' },
   ]
 
   const sidebarLinks = [
@@ -108,8 +109,10 @@ const AdminPanel = () => {
     { name: 'Usuario', view: 'users' },
     { name: 'Analíticas', view: 'stats' },
     { name: 'Categorías', view: 'categories' },
-    { name: 'Mapa Emocional', path: '/map' },
-    { name: 'Mapa incidente', path: '/admin/mapa-reportes' },
+    { name: 'Alertas Graves', view: 'danger' },
+    { name: 'Reportes Hoy', view: 'today' },
+    { name: 'Mapa Emocional', view: 'map_emotional' },
+    { name: 'Mapa incidente', view: 'map_incident' },
   ]
 
   // Componente para la vista de Dashboard (Home)
@@ -132,10 +135,7 @@ const AdminPanel = () => {
                   <div className="stat-item-header">
                     <div className="stat-item-left">
                       <span className="stat-item-icon">{stat.emotion}</span>
-                      <div>
-                        <div className="stat-item-name">{stat.label}</div>
-                        <div className="stat-item-count">{stat.count} reportes</div>
-                      </div>
+                      <div><div className="stat-item-name">{stat.label}</div><div className="stat-item-count">{stat.count} reportes</div></div>
                     </div>
                     <div className="stat-item-value">{getEmoPercentage(stat.count)}%</div>
                   </div>
@@ -143,7 +143,7 @@ const AdminPanel = () => {
                 </div>
               ))}
             </div>
-            <Link to="/map" className="admin-card-btn">Ver Mapa Emocional</Link>
+            <button onClick={() => setCurrentView('map_emotional')} className="admin-card-btn">Ver Mapa Emocional</button>
           </div>
 
           <div className="heatmap-card">
@@ -163,7 +163,7 @@ const AdminPanel = () => {
                 </div>
               ))}
             </div>
-            <Link to="/admin/mapa-reportes" className="admin-card-btn" style={{ background: '#ef4444' }}>Ver Mapa Incidentes</Link>
+            <button onClick={() => setCurrentView('map_incident')} className="admin-card-btn" style={{ background: '#ef4444' }}>Ver Mapa Incidentes</button>
           </div>
         </div>
 
@@ -193,7 +193,8 @@ const AdminPanel = () => {
                         <div style={{ fontSize: '11px', color: '#94a3b8', marginTop: '10px' }}>{formatTime(r.created_at)}</div>
                       </div>
                     </div>
-                    <button onClick={() => navigate(`/map?lat=${r.lat}&lng=${r.lng}&reportId=${r.id}`)}
+                    {/* El botón Localizar sigue navegando al mapa emocional, pero podemos hacerlo dinámico también */}
+                    <button onClick={() => setCurrentView('map_emotional')}
                       style={{ padding: '8px 15px', background: '#3b82f6', color: 'white', border: 'none', borderRadius: '8px', cursor: 'pointer', fontSize: '12px', fontWeight: '700' }}>Localizar</button>
                   </div>
                 </div>
@@ -214,6 +215,8 @@ const AdminPanel = () => {
       case 'today': return <AdminReports type="today" />
       case 'stats': return <AdminStats />
       case 'categories': return <AdminCategories />
+      case 'map_emotional': return <MapView isAdmin={true} user={user} onInicio={() => setCurrentView('home')} />
+      case 'map_incident': return <MapaReporte user={user} viewOnly={true} onInicio={() => setCurrentView('home')} />
       default: return <DashboardHome />
     }
   }
@@ -224,23 +227,27 @@ const AdminPanel = () => {
         <div className="sidebar-title">Panel de Administración</div>
         <nav className="sidebar-nav">
           {sidebarLinks.map(link => (
-            link.path ? (<Link key={link.name} to={link.path} className="sidebar-link">{link.name}</Link>) : (
-              <button key={link.name} className={`sidebar-link ${currentView === link.view ? 'active' : ''}`}
-                onClick={() => setCurrentView(link.view)} style={{ border: 'none', background: 'none', textAlign: 'left', width: '100%', cursor: 'pointer' }}>{link.name}</button>
-            )
+            <button key={link.name} className={`sidebar-link ${currentView === link.view ? 'active' : ''}`}
+              onClick={() => setCurrentView(link.view)}>
+              {link.name}
+            </button>
           ))}
         </nav>
       </aside>
 
       <main className="admin-main">
-        <div className="stats-grid">
-          {cards.map((c, i) => (
-            <div key={i} className="stat-card" style={{ background: c.bg, cursor: 'pointer' }} onClick={() => setCurrentView(c.view)}>
-              <div className="stat-info"><div className="stat-label">{c.title}</div><div className="stat-value">{c.value}</div></div>
-              <div className="stat-icon">{c.icon}</div>
-            </div>
-          ))}
-        </div>
+        {/* STATS GRID - Solo visible en HOME */}
+        {currentView === 'home' && (
+          <div className="stats-grid">
+            {cards.map((c, i) => (
+              <div key={i} className="stat-card" style={{ background: c.bg }}>
+                <div className="stat-info"><div className="stat-label">{c.title}</div><div className="stat-value">{c.value}</div></div>
+                <div className="stat-icon">{c.icon}</div>
+              </div>
+            ))}
+          </div>
+        )}
+
         <div className="view-content-area">{renderView()}</div>
       </main>
     </div>

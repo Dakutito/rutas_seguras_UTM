@@ -92,7 +92,6 @@ const AdminStats = () => {
               Basado en {stats.totalReports} reporte{stats.totalReports > 1 ? 's' : ''} activos
             </p>
           </div>
-          <Link to="/admin" className="btn" style={{ background: '#6b7280', color: 'white' }}>← Volver al Panel</Link>
         </div>
 
         {/* Resumen rápido */}

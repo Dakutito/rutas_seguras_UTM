@@ -75,9 +75,6 @@ const AdminUsers = () => {
             <h1>Gestión de Usuarios</h1>
             <p style={{ color: '#8898aa', marginTop: '5px' }}>{users.length} usuarios en la base de datos</p>
           </div>
-          <Link to="/admin" style={{ background: '#6c757d', color: 'white', padding: '10px 20px', borderRadius: '8px', textDecoration: 'none', fontSize: '14px' }}>
-            ← Volver al Panel
-          </Link>
         </div>
 
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '20px', marginBottom: '35px' }}>

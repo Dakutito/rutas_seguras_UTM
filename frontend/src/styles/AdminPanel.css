@@ -18,31 +18,37 @@
     position: sticky;
     top: 0;
     height: 100vh;
+    overflow-y: auto;
 }
 
 .sidebar-title {
     color: #f87171;
-    font-size: 24px;
-    font-weight: 700;
+    font-size: 22px;
+    font-weight: 800;
     padding: 0 25px;
-    margin-bottom: 40px;
+    margin-bottom: 30px;
     line-height: 1.2;
 }
 
 .sidebar-nav {
     display: flex;
     flex-direction: column;
-    gap: 8px;
+    gap: 4px;
 }
 
 .sidebar-link {
     display: block;
-    padding: 12px 25px;
-    color: #1e293b;
+    padding: 10px 25px;
+    color: #475569;
     text-decoration: none;
-    font-size: 20px;
-    font-weight: 500;
+    font-size: 16px;
+    font-weight: 600;
     transition: all 0.2s;
+    border: none;
+    background: none;
+    text-align: left;
+    width: 100%;
+    cursor: pointer;
 }
 
 .sidebar-link:hover {
@@ -59,9 +65,10 @@
 /* MAIN CONTENT */
 .admin-main {
     flex: 1;
-    padding: 40px;
-    max-width: 1200px;
+    padding: 30px 40px;
+    max-width: 1400px;
     margin: 0 auto;
+    width: calc(100% - 260px);
 }
 
 /* STATS CARDS */
@@ -69,27 +76,29 @@
     display: grid;
     grid-template-columns: repeat(5, 1fr);
     gap: 15px;
-    margin-bottom: 40px;
+    margin-bottom: 30px;
 }
 
 .stat-card {
     padding: 20px;
-    border-radius: 12px;
+    border-radius: 14px;
     color: white;
     display: flex;
     justify-content: space-between;
-    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
 }
 
 .stat-info .stat-label {
     font-size: 11px;
     opacity: 0.9;
     margin-bottom: 5px;
-    font-weight: 600;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
 }
 
 .stat-info .stat-value {
-    font-size: 36px;
+    font-size: 32px;
     font-weight: 800;
 }
 
@@ -114,14 +123,15 @@
 }
 
 .heatmap-card h2 {
-    font-size: 20px;
+    font-size: 18px;
     margin-top: 0;
     margin-bottom: 5px;
+    font-weight: 700;
 }
 
 .heatmap-subtitle {
     color: #64748b;
-    font-size: 13px;
+    font-size: 12px;
     margin-bottom: 25px;
 }
 
@@ -177,40 +187,49 @@
 
 /* PROGRESS BAR */
 .progress-container {
-    height: 4px;
+    height: 5px;
     background: #e2e8f0;
-    border-radius: 2px;
+    border-radius: 3px;
     overflow: hidden;
 }
 
 .progress-bar {
     height: 100%;
-    border-radius: 2px;
+    border-radius: 3px;
 }
 
 /* ACTION BUTTON */
 .admin-card-btn {
     width: 100%;
     margin-top: 25px;
-    background-color: #8b5cf6;
+    background-color: #6366f1;
     color: white;
     border: none;
-    padding: 14px;
+    padding: 12px;
     border-radius: 10px;
     font-weight: 700;
+    font-size: 14px;
     cursor: pointer;
-    transition: background 0.2s;
+    transition: all 0.2s;
     text-align: center;
     text-decoration: none;
     display: block;
 }
 
 .admin-card-btn:hover {
-    background-color: #7c3aed;
+    background-color: #4f46e5;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(99, 102, 241, 0.2);
+}
+
+/* VIEW CONTENT AREA */
+.view-content-area {
+    background: transparent;
+    width: 100%;
 }
 
 /* RESPONSIVE */
-@media (max-width: 1024px) {
+@media (max-width: 1200px) {
     .stats-grid {
         grid-template-columns: repeat(3, 1fr);
     }
@@ -225,6 +244,13 @@
         width: 100%;
         height: auto;
         position: relative;
+        border-right: none;
+        border-bottom: 1px solid #e2e8f0;
+    }
+
+    .admin-main {
+        width: 100%;
+        padding: 20px;
     }
 
     .admin-content-grid {
