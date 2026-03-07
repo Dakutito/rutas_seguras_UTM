@@ -1,14 +1,13 @@
-import { useState, useEffect } from 'react'
-import { Link, useNavigate } from 'react-router-dom'
-import '../styles/Components.css'
-
-import { reportsAPI } from '../services/api' // Importar API centralizada
+import { reportsAPI } from '../services/api'
+import ConfirmationModal from '../components/ConfirmationModal'
 
 const AdminReports = ({ type, onLocate }) => {
   const navigate = useNavigate()
   const [allReports, setAllReports] = useState([])
   const [search, setSearch] = useState('')
   const [loading, setLoading] = useState(true)
+  const [modalState, setModalState] = useState({ isOpen: false, reportId: null })
+  const [isDeleting, setIsDeleting] = useState(false)
 
   useEffect(() => {
     loadReports()
@@ -27,15 +26,25 @@ const AdminReports = ({ type, onLocate }) => {
     }
   }
 
-  const handleDelete = async (id) => {
-    if (!window.confirm('¿Eliminar este reporte?')) return
+  const handleDelete = async () => {
+    const id = modalState.reportId;
+    if (!id) return;
 
+    setIsDeleting(true);
     try {
       await reportsAPI.delete(id)
       setAllReports(allReports.filter(r => r.id !== id))
+      setModalState({ isOpen: false, reportId: null });
     } catch (error) {
       console.error("Error:", error)
+      alert("Error al eliminar el reporte");
+    } finally {
+      setIsDeleting(false);
     }
+  }
+
+  const openDeleteModal = (id) => {
+    setModalState({ isOpen: true, reportId: id });
   }
 
   // Función para ir a la ubicación del reporte
@@ -131,7 +140,7 @@ const AdminReports = ({ type, onLocate }) => {
                     Ubicación
                   </button>
                   <button
-                    onClick={() => handleDelete(r.id)}
+                    onClick={() => openDeleteModal(r.id)}
                     style={{
                       background: '#fee2e2',
                       color: '#ef4444',
@@ -143,7 +152,7 @@ const AdminReports = ({ type, onLocate }) => {
                       fontWeight: '600'
                     }}
                   >
-                    Eliminar
+                    Eliminar Reporte
                   </button>
                 </div>
               </div>
@@ -156,6 +165,17 @@ const AdminReports = ({ type, onLocate }) => {
             <h3 style={{ color: '#6b7280' }}>No hay reportes que coincidan</h3>
           </div>
         )}
+
+        <ConfirmationModal
+          isOpen={modalState.isOpen}
+          onClose={() => setModalState({ isOpen: false, reportId: null })}
+          onConfirm={handleDelete}
+          title="Eliminar Reporte"
+          message="¿Estás seguro de que deseas eliminar este reporte? Esta acción no se puede deshacer."
+          requiredText="ELIMINAR"
+          confirmButtonText="ELIMINAR REPORTE"
+          isLoading={isDeleting}
+        />
       </div>
     </div>
   )

@@ -10,6 +10,7 @@ import AdminStats from './AdminStats'
 import AdminCategories from './AdminCategories'
 import MapView from './MapView'
 import MapaReporte from './MapaReporte'
+import ConfirmationModal from '../components/ConfirmationModal'
 
 const AdminPanel = ({ user }) => {
   const navigate = useNavigate()
@@ -22,6 +23,8 @@ const AdminPanel = ({ user }) => {
   const [currentView, setCurrentView] = useState('home')
   const [searchTerm, setSearchTerm] = useState('')
   const [selectedCenter, setSelectedCenter] = useState(null)
+  const [modalState, setModalState] = useState({ isOpen: false, reportId: null })
+  const [isDeleting, setIsDeleting] = useState(false)
 
   const BASE_EMOTIONS = ['😊', '😌', '😐', '😰', '😨', '😢', '😡'];
   const GRAVE_EMOTIONS = ['😰', '😨', '😢', '😡'];
@@ -126,6 +129,31 @@ const AdminPanel = ({ user }) => {
     }
   }
 
+  const handleDeleteReport = async () => {
+    const id = modalState.reportId;
+    if (!id) return;
+
+    setIsDeleting(true);
+    try {
+      await reportsAPI.delete(id);
+      setStats(prev => ({
+        ...prev,
+        reports: prev.reports.filter(r => r.id !== id),
+        dangerCount: prev.reports.filter(r => (r.id !== id) && (GRAVE_EMOTIONS.includes(r.emotion) || r.is_incident)).length
+      }));
+      setModalState({ isOpen: false, reportId: null });
+      loadData(); // Recargar estadísticas completas
+    } catch (error) {
+      alert("Error al eliminar el reporte");
+    } finally {
+      setIsDeleting(false);
+    }
+  }
+
+  const openDeleteModal = (id) => {
+    setModalState({ isOpen: true, reportId: id });
+  }
+
   // Componente para la vista de Dashboard (Home)
   const DashboardHome = () => {
     const graveReports = stats.reports.filter(r => !r.is_incident && GRAVE_EMOTIONS.includes(r.emotion))
@@ -205,8 +233,12 @@ const AdminPanel = ({ user }) => {
                       </div>
                     </div>
                     {/* El botón Localizar sigue navegando al mapa emocional, pero podemos hacerlo dinámico también */}
-                    <button onClick={() => handleLocate(r)}
-                      style={{ padding: '8px 15px', background: '#3b82f6', color: 'white', border: 'none', borderRadius: '8px', cursor: 'pointer', fontSize: '12px', fontWeight: '700' }}>Localizar</button>
+                    <div style={{ display: 'flex', gap: '8px' }}>
+                      <button onClick={() => handleLocate(r)}
+                        style={{ padding: '8px 15px', background: '#3b82f6', color: 'white', border: 'none', borderRadius: '8px', cursor: 'pointer', fontSize: '12px', fontWeight: '700' }}>Localizar</button>
+                      <button onClick={() => openDeleteModal(r.id)}
+                        style={{ padding: '8px 15px', background: '#fee2e2', color: '#ef4444', border: 'none', borderRadius: '8px', cursor: 'pointer', fontSize: '12px', fontWeight: '700' }}>Eliminar</button>
+                    </div>
                   </div>
                 </div>
               ))}
@@ -263,6 +295,17 @@ const AdminPanel = ({ user }) => {
 
         <div className="view-content-area">{renderView()}</div>
       </main>
+
+      <ConfirmationModal
+        isOpen={modalState.isOpen}
+        onClose={() => setModalState({ isOpen: false, reportId: null })}
+        onConfirm={handleDeleteReport}
+        title="Eliminar Reporte Grave"
+        message="¿Estás seguro de que deseas eliminar este reporte crítico del sistema?"
+        requiredText="ELIMINAR"
+        confirmButtonText="ELIMINAR REPORTE"
+        isLoading={isDeleting}
+      />
     </div>
   )
 }
