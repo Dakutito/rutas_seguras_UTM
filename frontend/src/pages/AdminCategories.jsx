@@ -126,12 +126,10 @@ const AdminCategories = () => {
     <div className="container">
       <div className="card">
         {/* Header */}
-        <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '30px', flexWrap: 'wrap', gap: '12px' }}>
+        <div className="admin-categories-header">
           <div>
-            <h1 style={{ color: '#8b5cf6', marginBottom: '8px' }}>
-              Gestión de Categorías
-            </h1>
-            <p style={{ color: '#6b7280', fontSize: '14px', margin: 0 }}>
+            <h1>Gestión de Categorías</h1>
+            <p className="admin-desc-text">
               Administra las categorías de incidentes del sistema
             </p>
           </div>
@@ -157,90 +155,48 @@ const AdminCategories = () => {
 
         {/* Formulario Nueva Categoría */}
         {showNewForm && (
-          <form onSubmit={handleCreate} style={{
-            background: '#f0fdf4',
-            border: '2px solid #10b981',
-            padding: '20px',
-            borderRadius: '12px',
-            marginBottom: '30px'
-          }}>
-            <h3 style={{ marginTop: 0, color: '#047857' }}>Nueva Categoría</h3>
+          <form onSubmit={handleCreate} className="new-category-form">
+            <h3>Nueva Categoría</h3>
 
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '15px', marginBottom: '15px' }}>
+            <div className="form-grid-three">
               <div>
-                <label style={{ color: '#393939', display: 'block', fontWeight: '600', marginBottom: '6px', fontSize: '14px' }}>
-                  Nombre
-                </label>
+                <label>Nombre</label>
                 <input
                   type="text"
                   value={formData.name}
                   onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                   placeholder="Ej: Me siguen"
-                  style={{
-                    width: '100%',
-                    padding: '10px',
-                    border: '2px solid #d1d5db',
-                    borderRadius: '6px',
-                    fontSize: '14px'
-                  }}
+                  className="cat-input"
                   required
                 />
               </div>
 
               <div>
-                <label style={{ color: '#393939', display: 'block', fontWeight: '600', marginBottom: '6px', fontSize: '14px' }}>
-                  Ícono (Emoji)
-                </label>
+                <label>Ícono (Emoji)</label>
                 <input
                   type="text"
                   value={formData.icon}
                   onChange={(e) => setFormData({ ...formData, icon: e.target.value })}
                   placeholder="Ej: 🏃"
-                  style={{
-                    width: '100%',
-                    padding: '10px',
-                    border: '2px solid #d1d5db',
-                    borderRadius: '6px',
-                    fontSize: '14px'
-                  }}
+                  className="cat-input"
                   maxLength={2}
                   required
                 />
               </div>
 
               <div>
-                <label style={{ color: '#393939', display: 'block', fontWeight: '600', marginBottom: '6px', fontSize: '14px' }}>
-                  Color
-                </label>
+                <label>Color</label>
                 <input
                   type="color"
                   value={formData.color}
                   onChange={(e) => setFormData({ ...formData, color: e.target.value })}
-                  style={{
-                    width: '100%',
-                    height: '42px',
-                    border: '2px solid #d1d5db',
-                    borderRadius: '6px',
-                    cursor: 'pointer'
-                  }}
+                  className="cat-color-picker"
                   required
                 />
               </div>
             </div>
 
-            <button
-              type="submit"
-              disabled={loading}
-              style={{
-                padding: '12px 24px',
-                background: '#10b981',
-                color: 'white',
-                border: 'none',
-                borderRadius: '8px',
-                cursor: loading ? 'not-allowed' : 'pointer',
-                fontWeight: '700'
-              }}
-            >
+            <button type="submit" disabled={loading} className="cat-submit-btn">
               {loading ? 'Guardando...' : 'Crear Categoría'}
             </button>
           </form>
@@ -259,37 +215,25 @@ const AdminCategories = () => {
               {editingCategory === cat.id ? (
                 // MODO EDICIÓN
                 <div>
-                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '12px', marginBottom: '12px' }}>
+                  <div className="form-grid-three" style={{ marginBottom: '12px' }}>
                     <input
                       type="text"
                       defaultValue={cat.name}
                       id={`name-${cat.id}`}
-                      style={{
-                        padding: '10px',
-                        border: '2px solid #d1d5db',
-                        borderRadius: '6px'
-                      }}
+                      className="cat-input"
                     />
                     <input
                       type="text"
                       defaultValue={cat.icon}
                       id={`icon-${cat.id}`}
                       maxLength={2}
-                      style={{
-                        padding: '10px',
-                        border: '2px solid #d1d5db',
-                        borderRadius: '6px'
-                      }}
+                      className="cat-input"
                     />
                     <input
                       type="color"
                       defaultValue={cat.color}
                       id={`color-${cat.id}`}
-                      style={{
-                        height: '42px',
-                        border: '2px solid #d1d5db',
-                        borderRadius: '6px'
-                      }}
+                      className="cat-color-picker"
                     />
                   </div>
 
@@ -331,15 +275,11 @@ const AdminCategories = () => {
               ) : (
                 // MODO VISTA
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '15px' }}>
-                    <span style={{ fontSize: '32px' }}>{cat.icon}</span>
+                  <div className="cat-item-info">
+                    <span className="cat-icon-display">{cat.icon}</span>
                     <div>
-                      <h3 style={{ margin: 0, fontSize: '18px', fontWeight: '700' }}>
-                        {cat.name}
-                      </h3>
-                      <p style={{ margin: 0, fontSize: '12px', color: '#6b7280' }}>
-                        Color: {cat.color}
-                      </p>
+                      <h3 className="cat-name-display">{cat.name}</h3>
+                      <p className="admin-desc-text">Color: {cat.color}</p>
                     </div>
                   </div>
 
@@ -382,11 +322,9 @@ const AdminCategories = () => {
         </div>
 
         {categories.length === 0 && (
-          <div style={{ textAlign: 'center', padding: '60px', background: '#f9fafb', borderRadius: '12px' }}>
-            <h3 style={{ color: '#6b7280' }}>No hay categorías creadas</h3>
-            <p style={{ color: '#9ca3af', fontSize: '14px' }}>
-              Crea tu primera categoría usando el botón "Nueva Categoría"
-            </p>
+          <div className="empty-state-card">
+            <h3>No hay categorías creadas</h3>
+            <p>Crea tu primera categoría usando el botón "Nueva Categoría"</p>
           </div>
         )}
 

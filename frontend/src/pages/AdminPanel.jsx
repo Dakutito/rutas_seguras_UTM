@@ -178,30 +178,30 @@ const AdminPanel = ({ user }) => {
           </div>
         </div>
 
-        <div style={{ background: '#fff7ed', padding: '25px', borderRadius: '16px', border: '1px solid #fed7aa' }}>
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px', flexWrap: 'wrap', gap: '15px' }}>
+        <div className="danger-zone-container">
+          <div className="danger-zone-header">
             <div>
-              <h2 style={{ margin: 0, color: '#c2410c', fontSize: '20px' }}>⚠️ Reportes Emocionales Graves</h2>
-              <p style={{ color: '#9a3412', fontSize: '13px', margin: '5px 0 0 0' }}>Filtrado por: Ansioso, Asustado, Triste y Enojado</p>
+              <h2 className="danger-zone-title">⚠️ Reportes Emocionales Graves</h2>
+              <p className="danger-zone-subtitle">Filtrado por: Ansioso, Asustado, Triste y Enojado</p>
             </div>
-            <div style={{ position: 'relative', width: '100%', maxWidth: '350px' }}>
+            <div className="search-box-container">
               <input type="text" placeholder="Buscar por usuario o correo..." value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)}
-                style={{ width: '100%', padding: '12px 15px 12px 40px', borderRadius: '10px', border: '1px solid #fed7aa', fontSize: '14px', outline: 'none' }} />
-              <span style={{ position: 'absolute', left: '15px', top: '50%', transform: 'translateY(-50%)', opacity: 0.5 }}>🔍</span>
+                className="admin-search-input" />
+              <span className="search-icon">🔍</span>
             </div>
           </div>
           {filteredGraveReports.length === 0 ? (<div style={{ textAlign: 'center', padding: '40px' }}><p style={{ color: '#6b7280' }}>No hay alertas críticas</p></div>) : (
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(320px, 1fr))', gap: '15px' }}>
+            <div className="danger-reports-grid">
               {filteredGraveReports.map(r => (
-                <div key={r.id} style={{ background: 'white', padding: '15px', borderRadius: '12px', borderLeft: `5px solid ${getDangerColor(r.emotion)}`, boxShadow: '0 2px 5px rgba(0,0,0,0.05)' }}>
+                <div key={r.id} className="danger-report-card" style={{ borderLeft: `5px solid ${getDangerColor(r.emotion)}` }}>
                   <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
                     <div style={{ display: 'flex', gap: '12px' }}>
-                      <span style={{ fontSize: '28px' }}>{r.emotion}</span>
+                      <span className="emotion-icon">{r.emotion}</span>
                       <div>
-                        <div style={{ fontWeight: '800', fontSize: '15px', color: '#1e293b' }}>{r.emotion_label}</div>
-                        <div style={{ fontSize: '13px', color: '#475569' }}>{r.user_name || 'Anónimo'}</div>
-                        {r.comment && <div style={{ fontSize: '13px', color: '#64748b', marginTop: '5px', fontStyle: 'italic' }}>"{r.comment}"</div>}
-                        <div style={{ fontSize: '11px', color: '#94a3b8', marginTop: '10px' }}>{formatTime(r.created_at)}</div>
+                        <div className="report-emotion-label">{r.emotion_label}</div>
+                        <div className="report-user-name">{r.user_name || 'Anónimo'}</div>
+                        {r.comment && <div className="report-comment">"{r.comment}"</div>}
+                        <div className="report-time">{formatTime(r.created_at)}</div>
                       </div>
                     </div>
                     {/* El botón Localizar sigue navegando al mapa emocional, pero podemos hacerlo dinámico también */}
