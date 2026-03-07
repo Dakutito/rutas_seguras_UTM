@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { reportsAPI } from '../services/api'
+import { reportsAPI, incidentsAPI } from '../services/api'
 import ConfirmationModal from '../components/ConfirmationModal'
 
 const AdminReports = ({ type, onLocate }) => {
@@ -8,7 +8,7 @@ const AdminReports = ({ type, onLocate }) => {
   const [allReports, setAllReports] = useState([])
   const [search, setSearch] = useState('')
   const [loading, setLoading] = useState(true)
-  const [modalState, setModalState] = useState({ isOpen: false, reportId: null })
+  const [modalState, setModalState] = useState({ isOpen: false, reportId: null, isBulk: false })
   const [isDeleting, setIsDeleting] = useState(false)
 
   useEffect(() => {
@@ -29,24 +29,50 @@ const AdminReports = ({ type, onLocate }) => {
   }
 
   const handleDelete = async () => {
-    const id = modalState.reportId;
-    if (!id) return;
-
     setIsDeleting(true);
     try {
-      await reportsAPI.delete(id)
-      setAllReports(allReports.filter(r => r.id !== id))
-      setModalState({ isOpen: false, reportId: null });
+      if (modalState.isBulk) {
+        // Eliminar todos los fitrados
+        const reportsToDelete = filteredBySearch;
+        await Promise.all(reportsToDelete.map(r => {
+          if (r.is_incident) {
+            return incidentsAPI.delete(r.id);
+          } else {
+            return reportsAPI.delete(r.id);
+          }
+        }));
+        setAllReports(allReports.filter(r => !reportsToDelete.find(rd => rd.id === r.id)));
+      } else {
+        // Eliminar uno solo
+        const id = modalState.reportId;
+        if (!id) return;
+
+        // Buscar el reporte para saber si es incidente o emoción
+        const report = allReports.find(r => r.id === id);
+        if (report && report.is_incident) {
+          await incidentsAPI.delete(id);
+        } else {
+          await reportsAPI.delete(id);
+        }
+
+        setAllReports(allReports.filter(r => r.id !== id))
+      }
+      setModalState({ isOpen: false, reportId: null, isBulk: false });
     } catch (error) {
       console.error("Error:", error)
-      alert("Error al eliminar el reporte");
+      alert("Error al eliminar los reportes");
     } finally {
       setIsDeleting(false);
     }
   }
 
   const openDeleteModal = (id) => {
-    setModalState({ isOpen: true, reportId: id });
+    setModalState({ isOpen: true, reportId: id, isBulk: false });
+  }
+
+  const openBulkDeleteModal = () => {
+    if (filteredBySearch.length === 0) return;
+    setModalState({ isOpen: true, reportId: null, isBulk: true });
   }
 
   // Función para ir a la ubicación del reporte
@@ -100,6 +126,15 @@ const AdminReports = ({ type, onLocate }) => {
             <h1 style={{ color: cfg.color }}>{cfg.title}</h1>
             <p className="admin-desc-text">{cfg.desc}</p>
           </div>
+          {filteredBySearch.length > 0 && (
+            <button
+              onClick={openBulkDeleteModal}
+              className="admin-danger-btn-bulk"
+              style={{ alignSelf: 'center' }}
+            >
+              🗑️ Eliminar Todo ({filteredBySearch.length})
+            </button>
+          )}
         </div>
 
         <input type="text" placeholder="Buscar..." value={search} onChange={(e) => setSearch(e.target.value)}
@@ -170,12 +205,14 @@ const AdminReports = ({ type, onLocate }) => {
 
         <ConfirmationModal
           isOpen={modalState.isOpen}
-          onClose={() => setModalState({ isOpen: false, reportId: null })}
+          onClose={() => setModalState({ isOpen: false, reportId: null, isBulk: false })}
           onConfirm={handleDelete}
-          title="Eliminar Reporte"
-          message="¿Estás seguro de que deseas eliminar este reporte? Esta acción no se puede deshacer."
-          requiredText="ELIMINAR"
-          confirmButtonText="ELIMINAR REPORTE"
+          title={modalState.isBulk ? "Eliminar Todos los Reportes" : "Eliminar Reporte"}
+          message={modalState.isBulk
+            ? `¿Estás seguro de que deseas eliminar permanentemente estos ${filteredBySearch.length} reportes?`
+            : "¿Estás seguro de que deseas eliminar este reporte? Esta acción no se puede deshacer."}
+          requiredText={modalState.isBulk ? "ELIMINAR" : null}
+          confirmButtonText={modalState.isBulk ? "ELIMINAR TODO" : "SÍ, ELIMINAR"}
           isLoading={isDeleting}
         />
       </div>

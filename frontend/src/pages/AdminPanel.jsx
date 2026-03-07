@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import '../styles/AdminPanel.css'
-import { usersAPI, reportsAPI } from '../services/api'
+import { usersAPI, reportsAPI, incidentsAPI } from '../services/api'
 
 // Importar sub-componentes para el modo dinámico
 import AdminUsers from './Adminusers'
@@ -23,7 +23,7 @@ const AdminPanel = ({ user }) => {
   const [currentView, setCurrentView] = useState('home')
   const [searchTerm, setSearchTerm] = useState('')
   const [selectedCenter, setSelectedCenter] = useState(null)
-  const [modalState, setModalState] = useState({ isOpen: false, reportId: null })
+  const [modalState, setModalState] = useState({ isOpen: false, reportId: null, isBulk: false })
   const [isDeleting, setIsDeleting] = useState(false)
 
   const BASE_EMOTIONS = ['😊', '😌', '😐', '😰', '😨', '😢', '😡'];
@@ -97,29 +97,6 @@ const AdminPanel = ({ user }) => {
     return total > 0 ? ((count / total) * 100).toFixed(1) : 0
   }
 
-  if (loading) return <div className="admin-layout"><div className="admin-main"><div className="card" style={{ textAlign: 'center', padding: '60px' }}><h2>Cargando Panel...</h2></div></div></div>
-
-  const cards = [
-    { title: 'Total Usuarios', value: stats.totalUsers, bg: '#6b7280', icon: '👥' },
-    { title: 'Usuarios Activos', value: stats.activeUsers, bg: '#3b82f6', icon: '👤' },
-    { title: 'Alertas Graves', value: stats.dangerCount, bg: '#ef4444', icon: '⚠️' },
-    { title: 'Reportes Hoy', value: stats.todayCount, bg: '#10b981', icon: '📈' },
-    { title: 'Total Reportes', value: stats.reports.length, bg: '#818cf8', icon: '📋' },
-  ]
-
-  const sidebarLinks = [
-    { name: 'Home', view: 'home' },
-    { name: 'Reportes Total Hoy', view: 'today' },
-    { name: 'Reporte Incidente', view: 'incident_reports' },
-    { name: 'Reporte Emoción', view: 'emotion_reports' },
-    { name: 'Usuario', view: 'users' },
-    { name: 'Analíticas', view: 'stats' },
-    { name: 'Categorías', view: 'categories' },
-    { name: 'Alertas Graves', view: 'danger' },
-    { name: 'Mapa Emocional', view: 'map_emotional' },
-    { name: 'Mapa incidente', view: 'map_incident' },
-  ]
-
   const handleLocate = (report) => {
     setSelectedCenter({ lat: report.lat, lng: report.lng })
     if (report.is_incident) {
@@ -130,19 +107,42 @@ const AdminPanel = ({ user }) => {
   }
 
   const handleDeleteReport = async () => {
-    const id = modalState.reportId;
-    if (!id) return;
-
     setIsDeleting(true);
     try {
-      await reportsAPI.delete(id);
-      setStats(prev => ({
-        ...prev,
-        reports: prev.reports.filter(r => r.id !== id),
-        dangerCount: prev.reports.filter(r => (r.id !== id) && (GRAVE_EMOTIONS.includes(r.emotion) || r.is_incident)).length
-      }));
-      setModalState({ isOpen: false, reportId: null });
-      loadData(); // Recargar estadísticas completas
+      if (modalState.isBulk) {
+        const graveReports = stats.reports.filter(r => !r.is_incident && GRAVE_EMOTIONS.includes(r.emotion));
+        await Promise.all(graveReports.map(r => {
+          if (r.is_incident) {
+            return incidentsAPI.delete(r.id);
+          } else {
+            return reportsAPI.delete(r.id);
+          }
+        }));
+        setStats(prev => ({
+          ...prev,
+          reports: prev.reports.filter(r => !graveReports.find(gr => gr.id === r.id)),
+          dangerCount: prev.reports.filter(r => !graveReports.find(gr => gr.id === r.id) && (GRAVE_EMOTIONS.includes(r.emotion) || r.is_incident)).length
+        }));
+      } else {
+        const id = modalState.reportId;
+        if (!id) return;
+
+        // Buscar el reporte para saber si es incidente o emoción
+        const report = stats.reports.find(r => r.id === id);
+        if (report && report.is_incident) {
+          await incidentsAPI.delete(id);
+        } else {
+          await reportsAPI.delete(id);
+        }
+
+        setStats(prev => ({
+          ...prev,
+          reports: prev.reports.filter(r => r.id !== id),
+          dangerCount: prev.reports.filter(r => (r.id !== id) && (GRAVE_EMOTIONS.includes(r.emotion) || r.is_incident)).length
+        }));
+      }
+      setModalState({ isOpen: false, reportId: null, isBulk: false });
+      loadData();
     } catch (error) {
       alert("Error al eliminar el reporte");
     } finally {
@@ -151,7 +151,11 @@ const AdminPanel = ({ user }) => {
   }
 
   const openDeleteModal = (id) => {
-    setModalState({ isOpen: true, reportId: id });
+    setModalState({ isOpen: true, reportId: id, isBulk: false });
+  }
+
+  const openBulkDeleteModal = () => {
+    setModalState({ isOpen: true, reportId: null, isBulk: true });
   }
 
   // Componente para la vista de Dashboard (Home)
@@ -212,10 +216,17 @@ const AdminPanel = ({ user }) => {
               <h2 className="danger-zone-title">⚠️ Reportes Emocionales Graves</h2>
               <p className="danger-zone-subtitle">Filtrado por: Ansioso, Asustado, Triste y Enojado</p>
             </div>
-            <div className="search-box-container">
-              <input type="text" placeholder="Buscar por usuario o correo..." value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)}
-                className="admin-search-input" />
-              <span className="search-icon">🔍</span>
+            <div style={{ display: 'flex', gap: '12px', alignItems: 'center' }}>
+              {filteredGraveReports.length > 0 && (
+                <button onClick={openBulkDeleteModal} className="admin-danger-btn-bulk">
+                  🗑️ Eliminar Todas
+                </button>
+              )}
+              <div className="search-box-container">
+                <input type="text" placeholder="Buscar por usuario o correo..." value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)}
+                  className="admin-search-input" />
+                <span className="search-icon">🔍</span>
+              </div>
             </div>
           </div>
           {filteredGraveReports.length === 0 ? (<div style={{ textAlign: 'center', padding: '40px' }}><p style={{ color: '#6b7280' }}>No hay alertas críticas</p></div>) : (
@@ -232,7 +243,6 @@ const AdminPanel = ({ user }) => {
                         <div className="report-time">{formatTime(r.created_at)}</div>
                       </div>
                     </div>
-                    {/* El botón Localizar sigue navegando al mapa emocional, pero podemos hacerlo dinámico también */}
                     <div style={{ display: 'flex', gap: '8px' }}>
                       <button onClick={() => handleLocate(r)}
                         style={{ padding: '8px 15px', background: '#3b82f6', color: 'white', border: 'none', borderRadius: '8px', cursor: 'pointer', fontSize: '12px', fontWeight: '700' }}>Localizar</button>
@@ -266,6 +276,29 @@ const AdminPanel = ({ user }) => {
     }
   }
 
+  const sidebarLinks = [
+    { name: 'Home', view: 'home' },
+    { name: 'Reportes Total Hoy', view: 'today' },
+    { name: 'Reporte Incidente', view: 'incident_reports' },
+    { name: 'Reporte Emoción', view: 'emotion_reports' },
+    { name: 'Usuario', view: 'users' },
+    { name: 'Analíticas', view: 'stats' },
+    { name: 'Categorías', view: 'categories' },
+    { name: 'Alertas Graves', view: 'danger' },
+    { name: 'Mapa Emocional', view: 'map_emotional' },
+    { name: 'Mapa incidente', view: 'map_incident' },
+  ]
+
+  if (loading) return <div className="admin-layout"><div className="admin-main"><div className="card" style={{ textAlign: 'center', padding: '60px' }}><h2>Cargando Panel...</h2></div></div></div>
+
+  const cards = [
+    { title: 'Total Usuarios', value: stats.totalUsers, bg: '#6b7280', icon: '👥' },
+    { title: 'Usuarios Activos', value: stats.activeUsers, bg: '#3b82f6', icon: '👤' },
+    { title: 'Alertas Graves', value: stats.dangerCount, bg: '#ef4444', icon: '⚠️' },
+    { title: 'Reportes Hoy', value: stats.todayCount, bg: '#10b981', icon: '📈' },
+    { title: 'Total Reportes', value: stats.reports.length, bg: '#818cf8', icon: '📋' },
+  ]
+
   return (
     <div className="admin-layout">
       <aside className="admin-sidebar" style={{ zIndex: 100 }}>
@@ -298,12 +331,14 @@ const AdminPanel = ({ user }) => {
 
       <ConfirmationModal
         isOpen={modalState.isOpen}
-        onClose={() => setModalState({ isOpen: false, reportId: null })}
+        onClose={() => setModalState({ isOpen: false, reportId: null, isBulk: false })}
         onConfirm={handleDeleteReport}
-        title="Eliminar Reporte Grave"
-        message="¿Estás seguro de que deseas eliminar este reporte crítico del sistema?"
-        requiredText="ELIMINAR"
-        confirmButtonText="ELIMINAR REPORTE"
+        title={modalState.isBulk ? "Eliminar Todas las Alertas" : "Eliminar Reporte Grave"}
+        message={modalState.isBulk
+          ? "¿Estás seguro de que deseas eliminar todas las alertas emocionales críticas?"
+          : "¿Estás seguro de que deseas eliminar este reporte crítico del sistema?"}
+        requiredText={modalState.isBulk ? "ELIMINAR" : null}
+        confirmButtonText={modalState.isBulk ? "ELIMINAR TODAS" : "SÍ, ELIMINAR"}
         isLoading={isDeleting}
       />
     </div>
