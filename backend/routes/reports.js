@@ -6,45 +6,62 @@ const { authenticateToken } = require('../middleware/auth');
 // OBTENER TODOS LOS REPORTES CON INFO DEL USUARIO (Para Admin)
 router.get('/', async (req, res) => {
   try {
-    const result = await query(
-      `SELECT * FROM (
-        SELECT 
-          er.id, 
-          er.emotion, 
-          er.emotion_label, 
-          er.emotion_color, 
-          er.comment,
-          er.latitude::float as lat, 
-          er.longitude::float as lng, 
-          er.created_at,
-          u.name as user_name,
-          u.email as user_email,
-          FALSE as is_incident
-        FROM emotion_reports er
-        LEFT JOIN users u ON er.user_id = u.id
-        WHERE er.expires_at > NOW()
+    const { type } = req.query; // 'emotion' o 'incident'
 
-        UNION ALL
+    const emotionsQuery = `
+      SELECT 
+        er.id, 
+        er.emotion, 
+        er.emotion_label, 
+        er.emotion_color, 
+        er.comment,
+        er.latitude::float as lat, 
+        er.longitude::float as lng, 
+        er.created_at,
+        u.name as user_name,
+        u.email as user_email,
+        FALSE as is_incident
+      FROM emotion_reports er
+      LEFT JOIN users u ON er.user_id = u.id
+      WHERE er.expires_at > NOW()
+    `;
 
-        SELECT 
-          ir.id, 
-          ic.icon as emotion, 
-          ic.name as emotion_label, 
-          ic.color as emotion_color, 
-          ir.description as comment,
-          ir.latitude::float as lat, 
-          ir.longitude::float as lng, 
-          ir.created_at,
-          u.name as user_name,
-          u.email as user_email,
-          TRUE as is_incident
-        FROM incident_reports ir
-        JOIN incident_categories ic ON ir.category_id = ic.id
-        LEFT JOIN users u ON ir.user_id = u.id
-        WHERE ir.status = 'activo'
-      ) combined
-      ORDER BY created_at DESC`
-    );
+    const incidentsQuery = `
+      SELECT 
+        ir.id, 
+        ic.icon as emotion, 
+        ic.name as emotion_label, 
+        ic.color as emotion_color, 
+        ir.description as comment,
+        ir.latitude::float as lat, 
+        ir.longitude::float as lng, 
+        ir.created_at,
+        u.name as user_name,
+        u.email as user_email,
+        TRUE as is_incident
+      FROM incident_reports ir
+      JOIN incident_categories ic ON ir.category_id = ic.id
+      LEFT JOIN users u ON ir.user_id = u.id
+      WHERE ir.status = 'activo'
+    `;
+
+    let finalQuery = '';
+    if (type === 'emotion') {
+      finalQuery = `${emotionsQuery} ORDER BY created_at DESC`;
+    } else if (type === 'incident') {
+      finalQuery = `${incidentsQuery} ORDER BY created_at DESC`;
+    } else {
+      finalQuery = `
+        SELECT * FROM (
+          ${emotionsQuery}
+          UNION ALL
+          ${incidentsQuery}
+        ) combined
+        ORDER BY created_at DESC
+      `;
+    }
+
+    const result = await query(finalQuery);
     res.json(result.rows);
   } catch (error) {
     console.error('Error al obtener reportes:', error);
