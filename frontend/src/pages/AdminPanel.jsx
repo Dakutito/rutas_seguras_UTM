@@ -21,6 +21,7 @@ const AdminPanel = ({ user }) => {
   // Estado para la vista dinámica
   const [currentView, setCurrentView] = useState('home')
   const [searchTerm, setSearchTerm] = useState('')
+  const [selectedCenter, setSelectedCenter] = useState(null)
 
   const BASE_EMOTIONS = ['😊', '😌', '😐', '😰', '😨', '😢', '😡'];
   const GRAVE_EMOTIONS = ['😰', '😨', '😢', '😡'];
@@ -105,15 +106,25 @@ const AdminPanel = ({ user }) => {
 
   const sidebarLinks = [
     { name: 'Home', view: 'home' },
-    { name: 'Reporte', view: 'reports' },
+    { name: 'Reportes Total Hoy', view: 'today' },
+    { name: 'Reporte Incidente', view: 'incident_reports' },
+    { name: 'Reporte Emoción', view: 'emotion_reports' },
     { name: 'Usuario', view: 'users' },
     { name: 'Analíticas', view: 'stats' },
     { name: 'Categorías', view: 'categories' },
     { name: 'Alertas Graves', view: 'danger' },
-    { name: 'Reportes Hoy', view: 'today' },
     { name: 'Mapa Emocional', view: 'map_emotional' },
     { name: 'Mapa incidente', view: 'map_incident' },
   ]
+
+  const handleLocate = (report) => {
+    setSelectedCenter({ lat: report.lat, lng: report.lng })
+    if (report.is_incident) {
+      setCurrentView('map_incident')
+    } else {
+      setCurrentView('map_emotional')
+    }
+  }
 
   // Componente para la vista de Dashboard (Home)
   const DashboardHome = () => {
@@ -194,7 +205,7 @@ const AdminPanel = ({ user }) => {
                       </div>
                     </div>
                     {/* El botón Localizar sigue navegando al mapa emocional, pero podemos hacerlo dinámico también */}
-                    <button onClick={() => setCurrentView('map_emotional')}
+                    <button onClick={() => handleLocate(r)}
                       style={{ padding: '8px 15px', background: '#3b82f6', color: 'white', border: 'none', borderRadius: '8px', cursor: 'pointer', fontSize: '12px', fontWeight: '700' }}>Localizar</button>
                   </div>
                 </div>
@@ -210,13 +221,15 @@ const AdminPanel = ({ user }) => {
     switch (currentView) {
       case 'home': return <DashboardHome />
       case 'users': return <AdminUsers />
-      case 'reports': return <AdminReports type="all-reports" />
-      case 'danger': return <AdminReports type="danger" />
-      case 'today': return <AdminReports type="today" />
+      case 'incident_reports': return <AdminReports type="incidents" onLocate={handleLocate} />
+      case 'emotion_reports': return <AdminReports type="emotions" onLocate={handleLocate} />
+      case 'reports': return <AdminReports type="all-reports" onLocate={handleLocate} />
+      case 'danger': return <AdminReports type="danger" onLocate={handleLocate} />
+      case 'today': return <AdminReports type="today" onLocate={handleLocate} />
       case 'stats': return <AdminStats />
       case 'categories': return <AdminCategories />
-      case 'map_emotional': return <MapView isAdmin={true} user={user} onInicio={() => setCurrentView('home')} />
-      case 'map_incident': return <MapaReporte user={user} viewOnly={true} onInicio={() => setCurrentView('home')} />
+      case 'map_emotional': return <MapView isAdmin={true} user={user} onInicio={() => setCurrentView('home')} center={selectedCenter} />
+      case 'map_incident': return <MapaReporte user={user} viewOnly={true} onInicio={() => setCurrentView('home')} center={selectedCenter} />
       default: return <DashboardHome />
     }
   }

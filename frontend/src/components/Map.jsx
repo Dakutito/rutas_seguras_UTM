@@ -19,15 +19,16 @@ function ChangeView({ center }) {
   return null;
 }
 
-const Map = ({ userLocation, onZoneClick, isAdmin = false, user }) => {
+const Map = ({ userLocation, onZoneClick, isAdmin = false, user, center }) => {
   const [reports, setReports] = useState([]);
 
   const fetchReports = async () => {
     try {
       if (isAdmin) {
         // Admin ve TODOS los reportes de tipo EMOCIÓN
-        const data = await reportsAPI.getAll('emotion')
-        setReports(Array.isArray(data) ? data : []);
+        const data = await reportsAPI.getAll()
+        // Filtrar solo los que NO son incidentes (emociones)
+        setReports(Array.isArray(data) ? data.filter(r => !r.is_incident) : []);
       } else if (user) {
         // Usuario normal solo ve SUS PROPIOS reportes
         const data = await reportsAPI.getMyReports()
@@ -49,9 +50,15 @@ const Map = ({ userLocation, onZoneClick, isAdmin = false, user }) => {
   }, [isAdmin, user]);
 
   return (
-    <MapContainer className='tamañodelMapa' style={{ position: 'sticky' }} center={[-1.0234, -80.4667]} zoom={15}>
+    <MapContainer className='tamañodelMapa' style={{ position: 'sticky' }} center={center ? [center.lat, center.lng] : [-1.0234, -80.4667]} zoom={15}>
       <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
-      {userLocation && <ChangeView center={[userLocation.lat, userLocation.lng]} />}
+
+      {/* Priorizar center (de una lista) sobre userLocation */}
+      {center ? (
+        <ChangeView center={[center.lat, center.lng]} />
+      ) : (
+        userLocation && <ChangeView center={[userLocation.lat, userLocation.lng]} />
+      )}
 
       {/* Mostrar círculos: TODOS para admin, SOLO PROPIOS para usuario */}
       {reports.map((report) => (

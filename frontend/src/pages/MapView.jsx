@@ -4,7 +4,7 @@ import EmotionSelector from '../components/EmotionSelector'
 import CommentForm from '../components/CommentForm'
 import '../styles/MapView.css'
 
-const MapView = ({ isAdmin, user, onInicio }) => {
+const MapView = ({ isAdmin, user, onInicio, center }) => {
   const [selectedEmotion, setSelectedEmotion] = useState(null)
   const [userLocation, setUserLocation] = useState(null)
   const [showReportForm, setShowReportForm] = useState(false)
@@ -39,6 +39,7 @@ const MapView = ({ isAdmin, user, onInicio }) => {
           <Map
             userLocation={userLocation}
             onZoneClick={setSelectedZone}
+            center={center}
             isAdmin={isAdmin}
             user={user}
           />

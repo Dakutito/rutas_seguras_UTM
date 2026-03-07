@@ -4,7 +4,7 @@ import '../styles/Components.css'
 
 import { reportsAPI } from '../services/api' // Importar API centralizada
 
-const AdminReports = ({ type }) => {
+const AdminReports = ({ type, onLocate }) => {
   const navigate = useNavigate()
   const [allReports, setAllReports] = useState([])
   const [search, setSearch] = useState('')
@@ -40,10 +40,16 @@ const AdminReports = ({ type }) => {
 
   // Función para ir a la ubicación del reporte
   const goToReportLocation = (report) => {
-    navigate(`/map?lat=${report.lat}&lng=${report.lng}&reportId=${report.id}`)
+    if (onLocate) {
+      onLocate(report)
+    } else {
+      navigate(`/map?lat=${report.lat}&lng=${report.lng}&reportId=${report.id}`)
+    }
   }
 
   const getFilteredByType = () => {
+    if (type === 'incidents') return allReports.filter(r => r.is_incident)
+    if (type === 'emotions') return allReports.filter(r => !r.is_incident)
     if (type === 'danger') return allReports.filter(r => r.emotion === '😢' || r.emotion === '😡')
     if (type === 'today') {
       const hoy = new Date().toDateString()
@@ -63,6 +69,8 @@ const AdminReports = ({ type }) => {
 
   const config = {
     'all-reports': { title: 'Todos los Reportes', color: '#8b5cf6', desc: 'Historial completo de la data base' },
+    'incidents': { title: 'Reportes de Incidentes', color: '#ef4444', desc: 'Lista de incidentes de seguridad reportados' },
+    'emotions': { title: 'Reportes de Emociones', color: '#6366f1', desc: 'Lista de estados emocionales de usuarios' },
     'danger': { title: 'Zonas en Peligro', color: '#ef4444', desc: 'Reportes críticos del sistema' },
     'today': { title: 'Reportes de Hoy', color: '#10b981', desc: 'Actividad de las últimas 24 horas' },
   }

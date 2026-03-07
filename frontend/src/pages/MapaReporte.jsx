@@ -24,7 +24,7 @@ function LocationMarker({ position, setPosition }) {
   return position === null ? null : <Marker position={position} />
 }
 
-const MapaReporte = ({ user, viewOnly = false, onInicio }) => {
+const MapaReporte = ({ user, viewOnly = false, onInicio, center: initialCenter }) => {
   const navigate = useNavigate()
   const [position, setPosition] = useState(null)
   const [showReportMobile, setShowReportMobile] = useState(false)
@@ -37,6 +37,17 @@ const MapaReporte = ({ user, viewOnly = false, onInicio }) => {
   const [selectedFilters, setSelectedFilters] = useState([]) // Array vacío = todos
   const [isDesktop, setIsDesktop] = useState(window.innerWidth > 768)
   const [toast, setToast] = useState(null) // { message, type: 'success'|'error'|'warning' }
+
+  // Helper para cambiar vista
+  function ChangeView({ center }) {
+    const map = useMapEvents({})
+    useEffect(() => {
+      if (center) {
+        map.setView([center.lat, center.lng], 17)
+      }
+    }, [center, map])
+    return null
+  }
 
   // Toast notification
   const showToast = (message, type = 'success') => {
@@ -300,11 +311,12 @@ const MapaReporte = ({ user, viewOnly = false, onInicio }) => {
             {/* Mapa */}
             <div className="map-container-wrapper">
               <MapContainer
-                center={userLocation ? [userLocation.lat, userLocation.lng] : [-1.0234, -80.4667]}
+                center={initialCenter ? [initialCenter.lat, initialCenter.lng] : (userLocation ? [userLocation.lat, userLocation.lng] : [-1.0234, -80.4667])}
                 zoom={15}
                 className="full-map-reporte"
               >
                 <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
+                <ChangeView center={initialCenter} />
                 {!viewOnly && <LocationMarker position={position} setPosition={setPosition} />}
                 {filteredIncidents.map(incident => (
                   <Circle
