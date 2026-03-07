@@ -157,14 +157,6 @@ const Navbar = ({ user, onLogout, isAdmin, darkMode, onToggleDarkMode }) => {
                 )}
 
                 <button
-                  onClick={onToggleDarkMode}
-                  className="dark-mode-toggle-mobile"
-                >
-                  <span className="dark-mode-icon">{darkMode ? '☀️' : '🌙'}</span>
-                  {darkMode ? 'Modo Claro' : 'Modo Oscuro'}
-                </button>
-
-                <button
                   onClick={handleLogout}
                   className="nav-btn nav-btn-logout-mobile"
                 >
@@ -190,6 +182,16 @@ const Navbar = ({ user, onLogout, isAdmin, darkMode, onToggleDarkMode }) => {
                 </Link>
               </>
             )}
+
+            {/* TOGGLE MODO OSCURO (SIEMPRE VISIBLE EN MÓVIL) */}
+            <button
+              onClick={onToggleDarkMode}
+              className="dark-mode-toggle-mobile"
+              style={{ marginTop: '10px' }}
+            >
+              <span className="dark-mode-icon">{darkMode ? '☀️' : '🌙'}</span>
+              {darkMode ? 'Modo Claro' : 'Modo Oscuro'}
+            </button>
           </div>
         </div>
 

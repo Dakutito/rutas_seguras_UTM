@@ -10,16 +10,50 @@ body {
   color: var(--text-primary);
 }
 
+/* --- ESTADO DE ANIMO DASHBOARD --- */
+.modern-details {
+  border-radius: 15px;
+  overflow: hidden;
+  transition: all 0.3s ease;
+}
+
+.emotion-header-summary {
+  list-style: none;
+  cursor: pointer;
+  outline: none;
+}
+
+.emotion-header-summary::-webkit-details-marker {
+  display: none;
+}
+
+.header-info {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.toggle-icon {
+  font-size: 1.5rem;
+  transition: transform 0.3s;
+}
+
+.modern-details[open] .toggle-icon {
+  transform: rotate(180deg);
+}
+
 
 /* categoria de reporte*/
-.categoriadereporte{
+.categoriadereporte {
   display: flex;
   gap: 10px;
   margin-bottom: 25px;
   overflow-x: auto;
   padding-bottom: 10px;
 }
-.categoriadereporte button{
+
+.categoriadereporte button {
   padding: 10px 20px;
   border: none;
   border-radius: 15px;
@@ -28,26 +62,30 @@ body {
   white-space: nowrap;
   transition: all 0.2s;
 }
+
 /* hiatorial de reporte del usuario*/
-.historialreportetotaluser{
+.historialreportetotaluser {
   margin-bottom: 20px;
   padding: 16px;
   background: #f0f9ff;
   border-radius: 8px;
 }
-.subcontenidohistorialreportetotaluser{
+
+.subcontenidohistorialreportetotaluser {
   display: flex;
   flex-direction: column;
   gap: 14px;
 }
-.sub_subcontenidohistorialreportetotaluser{
+
+.sub_subcontenidohistorialreportetotaluser {
   background: white;
   border: 2px solid #e5e7eb;
   border-left-width: 6px;
   padding: 18px;
   border-radius: 10px;
 }
-.sub_sub_subcontenidohistorialreportetotaluser{
+
+.sub_sub_subcontenidohistorialreportetotaluser {
   padding: 12px;
   background: #f9fafb;
   border-radius: 6px;
@@ -55,22 +93,25 @@ body {
 }
 
 /*CommentForm reporte emoción*/
-.tardemotion{
+.tardemotion {
   margin: 0 auto;
   padding: 20px;
   background-color: #f9fafb;
   border-radius: 15px;
 }
-.tardemotion_user{
+
+.tardemotion_user {
   font-weight: 700;
   font-size: 18px;
   color: #1f2937;
 }
-.tardemotion_ubi_us{
+
+.tardemotion_ubi_us {
   font-size: 13px;
   color: #6b7280;
 }
-.tardemotionboton{
+
+.tardemotionboton {
   flex: 1;
   padding: 12px;
   cursor: pointer;
@@ -80,44 +121,50 @@ body {
 }
 
 /* incidente reporte apartaado reporte*/
-.Comienzareporte{
+.Comienzareporte {
   display: flex;
   flex-direction: column;
   gap: 14px;
 }
-.sub_Comienzareporte{
+
+.sub_Comienzareporte {
   background: white;
   padding: 18px;
   border-radius: 10px;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.08);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.08);
   transition: transform 0.2s, box-shadow 0.2s;
 }
-.subb_botonesdeladminreport{
+
+.subb_botonesdeladminreport {
   display: flex;
   align-items: center;
   gap: 12px;
   margin-bottom: 10px;
 }
-.subb_botonesdeladminreport h3 p{
-    margin: 0;
-    font-size: 18px;
-    color: #1f2937;
-    font-weight: 700;
+
+.subb_botonesdeladminreport h3 p {
+  margin: 0;
+  font-size: 18px;
+  color: #1f2937;
+  font-weight: 700;
 }
-.sub_subb_comentario{
+
+.sub_subb_comentario {
   background: #f9fafb;
   padding: 12px;
   border-radius: 8px;
   margin-bottom: 12px;
 }
-.sub_subb_comentario p{
+
+.sub_subb_comentario p {
   margin: 0;
   font-size: 14px;
   color: #374151;
   line-height: 1.5;
 }
+
 /*Info del usuario - Email SOLO para admin*/
-.adminemailreporte{
+.adminemailreporte {
   display: flex;
   flex-direction: column;
   gap: 6px;
@@ -127,62 +174,70 @@ body {
   padding: 10px;
   border-radius: 6px;
 }
-.sud_adminemailreporte{
+
+.sud_adminemailreporte {
   display: flex;
   align-items: center;
   gap: 8px;
 }
-.sud_adminemailreporte span{
+
+.sud_adminemailreporte span {
   font-family: monospace;
   font-size: 11px;
 }
-.sud_adminemailreporte strong{
+
+.sud_adminemailreporte strong {
   color: #374151;
 }
 
 /* gestion de categoria admin*/
-.categoriaadinmodooscuro{
+.categoriaadinmodooscuro {
   background: white;
   padding: 18px;
   border-radius: 10px;
 }
+
 /* gestion usuarios admin */
-.gestionuseradinmodooscuro{
+.gestionuseradinmodooscuro {
   max-width: 1200px;
   margin: 0 auto;
   background: white;
   border-radius: 15px;
   padding: 30px;
-  box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
 }
-.sub_gestionuseradinmodooscuro{
+
+.sub_gestionuseradinmodooscuro {
   display: flex;
   justify-content: space-between;
   align-items: flex-start;
   margin-bottom: 30px;
 }
-.sub_gestionuseradinmodooscuro h1{
+
+.sub_gestionuseradinmodooscuro h1 {
   font-size: 28px;
   color: #1a2b4b;
   margin: 0;
 }
 
 /* panel camio a mdo oscuro*/
-.mapacaloradmindeuser{
+.mapacaloradmindeuser {
   background: white;
   padding: 24px;
   border-radius: 12px;
   border: 2px solid #e5e7eb;
 }
+
 /* reportes del user al panel de admin*/
-.reportedeuseraladmi{
+.reportedeuseraladmi {
   background: white;
   padding: 16px;
   border-radius: 10px;
-  box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
 }
+
 /* analisis de emociones*/
-.analisisemocionuser{
+.analisisemocionuser {
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -190,23 +245,26 @@ body {
   flex-wrap: wrap;
   gap: 12px;
 }
-.sub_analisisemocionuser h1{
+
+.sub_analisisemocionuser h1 {
   margin-bottom: 6px;
   color: #1f2937;
 }
-.sub_distribuiremouser h2{
+
+.sub_distribuiremouser h2 {
   margin-bottom: 18px;
   font-size: 18px;
   color: #1f2937;
 }
-.sub_sub_distribuiremouser{
+
+.sub_sub_distribuiremouser {
   background: #f9fafb;
   padding: 22px;
   border-radius: 12px;
 }
 
 /* ubicacion del incidente*/
-.navbarsububicacion{
+.navbarsububicacion {
   padding: 20px;
   background: #f9fafb;
   border-bottom: 2px solid #e5e7eb;
@@ -214,12 +272,14 @@ body {
   justify-content: space-between;
   align-items: center;
 }
-.navbarsububicacion h2{
+
+.navbarsububicacion h2 {
   margin: 0;
   font-size: 20px;
   color: #1f2937;
 }
-.navbarsububicacion button{
+
+.navbarsububicacion button {
   background: #ef4444;
   color: white;
   border: none;
@@ -228,47 +288,56 @@ body {
   cursor: pointer;
   font-weight: 600;
 }
-.conenidodelmapaubicac{
+
+.conenidodelmapaubicac {
   padding: 20px;
   background: white;
 }
-.conenidodelmapaubicac p{
+
+.conenidodelmapaubicac p {
   margin-bottom: 16px;
   color: #6b7280;
   font-size: 14px;
 }
-.conenidodelmapaubicac p strong{
+
+.conenidodelmapaubicac p strong {
   color: #1f2937;
 }
-.cuandonohayreporte{
+
+.cuandonohayreporte {
   text-align: center;
   padding: 80px 20px;
   background: #f9fafb;
   border-radius: 12px;
 }
-.cuandonohayreporte h3{
+
+.cuandonohayreporte h3 {
   color: #6b7280;
   margin-bottom: 10px;
 }
-.cuandonohayreporte p{
+
+.cuandonohayreporte p {
   color: #9ca3af;
   font-size: 14px;
 }
 
 /*userconfi*/
-.userconfiggh1{
+.userconfiggh1 {
   margin-bottom: 30px;
   color: #1f2937;
 }
-.userconfiggh1_email{
+
+.userconfiggh1_email {
   margin-bottom: 20px;
 }
-.userconfiggh1_email label{
+
+.userconfiggh1_email label {
   display: block;
   font-weight: 600;
   margin-bottom: 8px;
 }
-.userconfiggh1_email input{
+
+.userconfiggh1_email input {
   width: 100%;
   padding: 12px;
   border: 1px solid #d1d5db;
@@ -276,11 +345,13 @@ body {
   background: white;
   color: #4b5563;
 }
-.userconfiggh1_email small{
+
+.userconfiggh1_email small {
   color: #6b7280;
   font-size: 12px;
 }
-.zonapelicgrocuenta{
+
+.zonapelicgrocuenta {
   background: #fef2f2;
   border: 2px solid #fee2e2;
   border-radius: 12px;
