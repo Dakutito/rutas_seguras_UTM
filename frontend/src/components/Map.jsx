@@ -25,8 +25,8 @@ const Map = ({ userLocation, onZoneClick, isAdmin = false, user }) => {
   const fetchReports = async () => {
     try {
       if (isAdmin) {
-        // Admin ve TODOS los reportes
-        const data = await reportsAPI.getAll()
+        // Admin ve TODOS los reportes de tipo EMOCIÓN
+        const data = await reportsAPI.getAll('emotion')
         setReports(Array.isArray(data) ? data : []);
       } else if (user) {
         // Usuario normal solo ve SUS PROPIOS reportes

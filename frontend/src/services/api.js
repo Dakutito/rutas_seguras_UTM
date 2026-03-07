@@ -179,9 +179,10 @@ export const reportsAPI = {
     return handleResponse(response);
   },
 
-  // Obtener todos los reportes activos
-  getAll: async () => {
-    const response = await fetch(`${API_URL}/api/user-reports`);
+  // Obtener todos los reportes activos (soporta ?type=emotion o ?type=incident)
+  getAll: async (type = '') => {
+    const url = type ? `${API_URL}/api/user-reports?type=${type}` : `${API_URL}/api/user-reports`;
+    const response = await fetch(url);
     return handleResponse(response);
   },
 
