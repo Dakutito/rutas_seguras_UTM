@@ -171,7 +171,7 @@ export const usersAPI = {
 export const reportsAPI = {
   // Crear reporte
   create: async (reportData) => {
-    const response = await fetch(`${API_URL}/api/reports`, {
+    const response = await fetch(`${API_URL}/api/user-reports`, {
       method: 'POST',
       headers: authHeaders(),
       body: JSON.stringify(reportData)
@@ -181,13 +181,13 @@ export const reportsAPI = {
 
   // Obtener todos los reportes activos
   getAll: async () => {
-    const response = await fetch(`${API_URL}/api/reports`);
+    const response = await fetch(`${API_URL}/api/user-reports`);
     return handleResponse(response);
   },
 
   // Obtener mis reportes
   getMyReports: async () => {
-    const response = await fetch(`${API_URL}/api/reports/my-reports`, {
+    const response = await fetch(`${API_URL}/api/user-reports/my-reports`, {
       headers: authHeaders()
     });
     return handleResponse(response);
@@ -195,7 +195,7 @@ export const reportsAPI = {
 
   // Obtener reportes de un usuario
   getByUser: async (userId) => {
-    const response = await fetch(`${API_URL}/api/reports/user/${userId}`, {
+    const response = await fetch(`${API_URL}/api/user-reports/user/${userId}`, {
       headers: authHeaders()
     });
     return handleResponse(response);
@@ -203,7 +203,7 @@ export const reportsAPI = {
 
   // Eliminar reporte
   delete: async (reportId) => {
-    const response = await fetch(`${API_URL}/api/reports/${reportId}`, {
+    const response = await fetch(`${API_URL}/api/user-reports/${reportId}`, {
       method: 'DELETE',
       headers: authHeaders()
     });
@@ -212,7 +212,7 @@ export const reportsAPI = {
 
   // Limpiar reportes expirados (admin)
   cleanup: async () => {
-    const response = await fetch(`${API_URL}/api/reports/cleanup`, {
+    const response = await fetch(`${API_URL}/api/user-reports/cleanup`, {
       method: 'POST',
       headers: authHeaders()
     });

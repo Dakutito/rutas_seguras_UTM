@@ -1,6 +1,6 @@
-import { useState, useEffect } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import '../styles/Components.css'
+import { API_URL } from '../services/api'
 
 const Dashboard = ({ user }) => {
   const navigate = useNavigate()
@@ -8,7 +8,7 @@ const Dashboard = ({ user }) => {
   const [userReports, setUserReports] = useState([])
   const [loading, setLoading] = useState(false)
   const [reportCount, setReportCount] = useState(0)
-  const [impactLevel, setImpactLevel] = useState('High')
+  const [impactLevel, setImpactLevel] = useState('Bajo')
   const [isDesktop, setIsDesktop] = useState(window.innerWidth > 768);
   useEffect(() => {
     loadUserReports()
@@ -21,7 +21,7 @@ const Dashboard = ({ user }) => {
     setLoading(true)
     try {
       const token = localStorage.getItem('token')
-      const response = await fetch('http://localhost:5000/api/reports/my-reports', {
+      const response = await fetch(`${API_URL}/api/user-reports/my-reports`, {
         headers: { 'Authorization': `Bearer ${token}` }
       })
 
@@ -50,7 +50,7 @@ const Dashboard = ({ user }) => {
 
     try {
       const token = localStorage.getItem('token')
-      const response = await fetch(`http://localhost:5000/api/reports/${reportId}`, {
+      const response = await fetch(`${API_URL}/api/user-reports/${reportId}`, {
         method: 'DELETE',
         headers: { 'Authorization': `Bearer ${token}` }
       })
