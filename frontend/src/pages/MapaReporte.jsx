@@ -238,6 +238,9 @@ const MapaReporte = ({ user, viewOnly = false }) => {
 
               <div className="header-actions-map">
                 <div className="nav-buttons-map">
+                  <button onClick={() => navigate('/admin')} className="btn-secondary-map" style={{ background: '#6366f1', color: 'white' }}>
+                    Inicio
+                  </button>
                   <button onClick={() => navigate('/reportes')} className="btn-secondary-map">
                     Ver Lista
                   </button>

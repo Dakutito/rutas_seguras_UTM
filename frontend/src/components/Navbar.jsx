@@ -37,15 +37,14 @@ const Navbar = ({ user, onLogout, isAdmin, darkMode, onToggleDarkMode }) => {
         <div className="nav-links desktop-menu">
           {user ? (
             <>
-              {/* Si es admin NO mostrar Dashboard, solo Mapa + Reportes + Admin */}
-              {!isAdmin && <Link to="/dashboard" className="nav-link">Dashboard</Link>}
-
-              <Link to="/map" className="nav-link">Mapa Emocional</Link>
-
-              {/* NUEVO: Link a Reportes de Incidentes */}
-              <Link to="/reportes" className="nav-link" style={{ fontWeight: '600' }}>
-                Reportes
-              </Link>
+              {/* Si es admin NO mostrar Dashboard, solo Admin */}
+              {!isAdmin && (
+                <>
+                  <Link to="/dashboard" className="nav-link">Dashboard</Link>
+                  <Link to="/map" className="nav-link">Mapa Emocional</Link>
+                  <Link to="/reportes" className="nav-link" style={{ fontWeight: '600' }}>Reportes</Link>
+                </>
+              )}
 
               {isAdmin && (
                 <Link to="/admin" className="nav-link admin-link">
@@ -111,31 +110,12 @@ const Navbar = ({ user, onLogout, isAdmin, darkMode, onToggleDarkMode }) => {
               <>
                 {/* Si es admin NO mostrar Dashboard */}
                 {!isAdmin && (
-                  <Link
-                    to="/dashboard"
-                    className="mobile-link"
-                    onClick={closeMobileMenu}
-                  >
-                    Dashboard
-                  </Link>
+                  <>
+                    <Link to="/dashboard" className="mobile-link" onClick={closeMobileMenu}>Dashboard</Link>
+                    <Link to="/map" className="mobile-link" onClick={closeMobileMenu}>Mapa Emocional</Link>
+                    <Link to="/reportes" className="mobile-link" onClick={closeMobileMenu}>Reportes de Incidentes</Link>
+                  </>
                 )}
-
-                <Link
-                  to="/map"
-                  className="mobile-link"
-                  onClick={closeMobileMenu}
-                >
-                  Mapa Emocional
-                </Link>
-
-                {/* NUEVO: Link móvil a Reportes */}
-                <Link
-                  to="/reportes"
-                  className="mobile-link"
-                  onClick={closeMobileMenu}
-                >
-                  Reportes de Incidentes
-                </Link>
 
                 {/* Configuracion usuario*/}
                 <Link
