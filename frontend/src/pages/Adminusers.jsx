@@ -1,14 +1,13 @@
-import { useState, useEffect } from 'react'
-import { Link } from 'react-router-dom'
-import '../styles/Components.css'
-
 import { usersAPI } from '../services/api'
+import ConfirmationModal from '../components/ConfirmationModal'
 
 const AdminUsers = () => {
   const [users, setUsers] = useState([])
   const [search, setSearch] = useState('')
   const [filter, setFilter] = useState('todos')
   const [loading, setLoading] = useState(true)
+  const [modalState, setModalState] = useState({ isOpen: false, userId: null })
+  const [isDeleting, setIsDeleting] = useState(false)
 
   // 1. CARGA REAL DESDE LA BASE DE DATOS
   const loadUsers = async () => {
@@ -40,14 +39,24 @@ const AdminUsers = () => {
   };
 
   // 3. ELIMINAR USUARIO DE LA DB
-  const handleDelete = async (id) => {
-    if (!window.confirm('¿Estás seguro de eliminar este usuario de la base de datos?')) return;
+  const handleDelete = async () => {
+    const id = modalState.userId;
+    if (!id) return;
+
+    setIsDeleting(true);
     try {
       await usersAPI.delete(id)
       loadUsers();
+      setModalState({ isOpen: false, userId: null });
     } catch (error) {
       alert("Error al eliminar el usuario");
+    } finally {
+      setIsDeleting(false);
     }
+  };
+
+  const openDeleteModal = (id) => {
+    setModalState({ isOpen: true, userId: id });
   };
 
   // Lógica de filtrado
@@ -151,7 +160,7 @@ const AdminUsers = () => {
                       <button onClick={() => handleToggleStatus(user.id, user.status)} style={{ background: '#f59e0b', color: 'white', border: 'none', padding: '7px 12px', borderRadius: '6px', cursor: 'pointer' }}>
                         {user.status === 'active' ? 'Suspender' : 'Activar'}
                       </button>
-                      <button onClick={() => handleDelete(user.id)} style={{ background: '#ef4444', color: 'white', border: 'none', padding: '7px 12px', borderRadius: '6px', cursor: 'pointer' }}>Eliminar</button>
+                      <button onClick={() => openDeleteModal(user.id)} style={{ background: '#ef4444', color: 'white', border: 'none', padding: '7px 12px', borderRadius: '6px', cursor: 'pointer' }}>Eliminar</button>
                     </div>
                   </td>
                 </tr>
@@ -159,6 +168,17 @@ const AdminUsers = () => {
             </tbody>
           </table>
         </div>
+
+        <ConfirmationModal
+          isOpen={modalState.isOpen}
+          onClose={() => setModalState({ isOpen: false, userId: null })}
+          onConfirm={handleDelete}
+          title="Eliminar Usuario"
+          message="¿Estás seguro de que deseas eliminar permanentemente a este usuario de la base de datos?"
+          requiredText="ELIMINAR"
+          confirmButtonText="ELIMINAR USUARIO"
+          isLoading={isDeleting}
+        />
       </div>
     </div>
   )

@@ -25,6 +25,7 @@ import AdminIncidents from './pages/AdminIncidents'
 
 import UserSettings from './pages/UserSettings'
 import AdminCategories from './pages/AdminCategories'
+import { usersAPI } from './services/api'
 
 
 function App() {
@@ -67,6 +68,39 @@ function App() {
   const toggleDarkMode = () => {
     setDarkMode(prev => !prev)
   }
+
+  useEffect(() => {
+    if (!user || user.role === 'admin') return;
+
+    const checkStatus = async () => {
+      try {
+        const profile = await usersAPI.getProfile();
+        if (profile.status === 'suspended') {
+          alert('Tu cuenta ha sido suspendida por el administrador. Serás desconectado.');
+          handleLogout();
+        } else {
+          // Actualizar datos locales si hubo cambios
+          const updatedUser = { ...user, ...profile };
+          if (JSON.stringify(user) !== JSON.stringify(updatedUser)) {
+            setUser(updatedUser);
+            localStorage.setItem('user', JSON.stringify(updatedUser));
+          }
+        }
+      } catch (error) {
+        if (error.data?.error?.includes('suspendida')) {
+          alert('Tu cuenta ha sido suspendida. Contacta al administrador.');
+          handleLogout();
+        } else if (error.message.includes('401') || error.message.includes('403')) {
+          // Token inválido o expirado, cerrar sesión silenciosamente
+          handleLogout();
+        }
+      }
+    };
+
+    // Verificar cada 10 segundos
+    const interval = setInterval(checkStatus, 10000);
+    return () => clearInterval(interval);
+  }, [user]);
 
   useEffect(() => {
     try {
