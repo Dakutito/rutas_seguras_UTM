@@ -249,9 +249,14 @@ const MapaReporte = ({ user, viewOnly = false, onInicio, center: initialCenter }
 
               <div className="header-actions-map">
                 <div className="nav-buttons-map">
-                  <button onClick={() => navigate('/reportes')} className="btn-secondary-map">
-                    Ver Lista
+                  <button onClick={onInicio || (() => navigate('/admin'))} className="btn-secondary-map" style={{ background: '#6366f1', color: 'white' }}>
+                    Inicio
                   </button>
+                  {!onInicio && (
+                    <button onClick={() => navigate('/reportes')} className="btn-secondary-map">
+                      Ver Lista
+                    </button>
+                  )}
 
                   {/* BOTÓN MÓVIL PARA ABRIR FORMULARIO */}
                   {!viewOnly && !isDesktop && (

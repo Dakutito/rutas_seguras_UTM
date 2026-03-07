@@ -221,11 +221,11 @@ const AdminPanel = ({ user }) => {
     switch (currentView) {
       case 'home': return <DashboardHome />
       case 'users': return <AdminUsers />
-      case 'incident_reports': return <AdminReports type="incidents" onLocate={handleLocate} />
-      case 'emotion_reports': return <AdminReports type="emotions" onLocate={handleLocate} />
-      case 'reports': return <AdminReports type="all-reports" onLocate={handleLocate} />
-      case 'danger': return <AdminReports type="danger" onLocate={handleLocate} />
-      case 'today': return <AdminReports type="today" onLocate={handleLocate} />
+      case 'incident_reports': return <AdminReports key="incidents" type="incidents" onLocate={handleLocate} />
+      case 'emotion_reports': return <AdminReports key="emotions" type="emotions" onLocate={handleLocate} />
+      case 'reports': return <AdminReports key="all" type="all-reports" onLocate={handleLocate} />
+      case 'danger': return <AdminReports key="danger" type="danger" onLocate={handleLocate} />
+      case 'today': return <AdminReports key="today" type="today" onLocate={handleLocate} />
       case 'stats': return <AdminStats />
       case 'categories': return <AdminCategories />
       case 'map_emotional': return <MapView isAdmin={true} user={user} onInicio={() => setCurrentView('home')} center={selectedCenter} />
