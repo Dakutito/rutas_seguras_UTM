@@ -20,7 +20,7 @@ const MapView = ({ isAdmin, user }) => {
             lng: position.coords.longitude
           })
         },
-        (error) => alert( "Activa el GPS para reportar tu ubicación"),
+        (error) => alert("Activa el GPS para reportar tu ubicación"),
         { enableHighAccuracy: true }
       )
     }
@@ -33,7 +33,16 @@ const MapView = ({ isAdmin, user }) => {
     return (
       <div className="container">
         <div className="card">
-          <h1 className="map-title">Mapa Emocional UTM</h1>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
+            <h1 className="map-title" style={{ margin: 0 }}>Mapa Emocional UTM</h1>
+            <button
+              onClick={() => navigate('/admin')}
+              className="btn"
+              style={{ background: '#6366f1', color: 'white', padding: '10px 20px' }}
+            >
+              Inicio
+            </button>
+          </div>
           <Map
             userLocation={userLocation}
             onZoneClick={setSelectedZone}
@@ -54,67 +63,67 @@ const MapView = ({ isAdmin, user }) => {
             onZoneClick={setSelectedZone}
             user={user}
           />
-          
-<div className="map-interactive-content">
-  <div className='map-sub-interactive-content'>
-    <h3 style={{marginBottom:'15px'}}>¿Cómo te sientes ahora?</h3>
-    <span>Registra tu estado emocional para contribuir al mapa de bienestar</span>
-    
-    {/* Tarjeta de bienestar */}
-    <div className="wellness-card">
-      <div className="wellness-icon">🌟</div>
-      <div className="wellness-text">
-        <strong>Cada emoción cuenta</strong>
-        <small>Tu reporte ayuda a construir un campus más consciente</small>
-      </div>
-    </div>
-    
-    {/* Ubicación */}
-    <div className="location-status">
-      <div className="location-info">
-        <strong>Ubicación</strong>
-        <span>
-          {userLocation
-            ? `Activada (${userLocation.lat.toFixed(4)}, ${userLocation.lng.toFixed(4)})`
-            : 'No activada'
-          }
-        </span>
-      </div>
-      {!userLocation && (
-        <button onClick={getLocation} className="location-btn">
-          Activar Ubicación
-        </button>
-      )}
-    </div>
-    
-    {/* Selector de emociones */}
-    <div className="emotion-section">
-      <EmotionSelector onSelect={setSelectedEmotion} />
-    </div>
-    
-    {/* Botón de reporte */}
-    {selectedEmotion && userLocation && !showReportForm && (
-      <button
-        onClick={() => setShowReportForm(true)} 
-        className="report-btn"
-      >
-        <span className="emotion-icon">{selectedEmotion.emoji}</span>
-        Reportar {selectedEmotion.label}
-        <span className="arrow">→</span>
-      </button>
-    )}
-    
-    {/* Estado del reporte */}
-    {selectedEmotion && userLocation && (
-      <div className="report-status">
-        <div className="status-dot"></div>
-        <span>
-          Listo para reportar <strong>{selectedEmotion.label.toLowerCase()}</strong> en tu ubicación actual
-        </span>
-      </div>
-    )}
-  </div>
-</div>
+
+          <div className="map-interactive-content">
+            <div className='map-sub-interactive-content'>
+              <h3 style={{ marginBottom: '15px' }}>¿Cómo te sientes ahora?</h3>
+              <span>Registra tu estado emocional para contribuir al mapa de bienestar</span>
+
+              {/* Tarjeta de bienestar */}
+              <div className="wellness-card">
+                <div className="wellness-icon">🌟</div>
+                <div className="wellness-text">
+                  <strong>Cada emoción cuenta</strong>
+                  <small>Tu reporte ayuda a construir un campus más consciente</small>
+                </div>
+              </div>
+
+              {/* Ubicación */}
+              <div className="location-status">
+                <div className="location-info">
+                  <strong>Ubicación</strong>
+                  <span>
+                    {userLocation
+                      ? `Activada (${userLocation.lat.toFixed(4)}, ${userLocation.lng.toFixed(4)})`
+                      : 'No activada'
+                    }
+                  </span>
+                </div>
+                {!userLocation && (
+                  <button onClick={getLocation} className="location-btn">
+                    Activar Ubicación
+                  </button>
+                )}
+              </div>
+
+              {/* Selector de emociones */}
+              <div className="emotion-section">
+                <EmotionSelector onSelect={setSelectedEmotion} />
+              </div>
+
+              {/* Botón de reporte */}
+              {selectedEmotion && userLocation && !showReportForm && (
+                <button
+                  onClick={() => setShowReportForm(true)}
+                  className="report-btn"
+                >
+                  <span className="emotion-icon">{selectedEmotion.emoji}</span>
+                  Reportar {selectedEmotion.label}
+                  <span className="arrow">→</span>
+                </button>
+              )}
+
+              {/* Estado del reporte */}
+              {selectedEmotion && userLocation && (
+                <div className="report-status">
+                  <div className="status-dot"></div>
+                  <span>
+                    Listo para reportar <strong>{selectedEmotion.label.toLowerCase()}</strong> en tu ubicación actual
+                  </span>
+                </div>
+              )}
+            </div>
+          </div>
         </div>
 
         {showReportForm && (

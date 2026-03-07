@@ -1,21 +1,28 @@
 import { useState, useEffect } from 'react'
-import { Link, useNavigate } from 'react-router-dom'
-import '../styles/Components.css'
+import { Link, useNavigate, useLocation } from 'react-router-dom'
+import '../styles/AdminPanel.css'
+import { usersAPI, reportsAPI } from '../services/api'
 
-import { usersAPI, reportsAPI } from '../services/api' // Importar API centralizada
+// Importar sub-componentes para el modo dinámico
+import AdminUsers from './Adminusers'
+import AdminReports from './Adminreports'
+import AdminStats from './AdminStats'
+import AdminCategories from './AdminCategories'
 
 const AdminPanel = () => {
   const navigate = useNavigate()
+  const location = useLocation()
   const [stats, setStats] = useState({ totalUsers: 0, activeUsers: 0, reports: [], dangerCount: 0, todayCount: 0 })
   const [loading, setLoading] = useState(true)
   const [emotionStats, setEmotionStats] = useState([])
   const [incidentStats, setIncidentStats] = useState([])
+
+  // Estado para la vista dinámica
+  const [currentView, setCurrentView] = useState('home')
   const [searchTerm, setSearchTerm] = useState('')
 
-  // Definición de las 7 emociones base
   const BASE_EMOTIONS = ['😊', '😌', '😐', '😰', '😨', '😢', '😡'];
-  // Definición de emociones graves
-  const GRAVE_EMOTIONS = ['😰', '😨', '😢', '😡']; // Ansioso, Asustado, Triste, Enojado
+  const GRAVE_EMOTIONS = ['😰', '😨', '😢', '😡'];
 
   useEffect(() => {
     loadData()
@@ -37,8 +44,6 @@ const AdminPanel = () => {
       const dangerCount = Array.isArray(reports) ? reports.filter(r => GRAVE_EMOTIONS.includes(r.emotion) || r.is_incident).length : 0
 
       setStats({ totalUsers, activeUsers, reports: Array.isArray(reports) ? reports : [], dangerCount, todayCount })
-
-      // Calcular estadísticas de emociones e incidentes
       calculateStats(Array.isArray(reports) ? reports : [])
     } catch (error) {
       console.error('Error:', error)
@@ -47,66 +52,32 @@ const AdminPanel = () => {
     }
   }
 
-  // Función para calcular estadísticas de emociones e incidentes por separado
   const calculateStats = (reports) => {
     const emotionCount = {}
     const incidentCount = {}
 
     reports.forEach(report => {
       if (report.is_incident) {
-        // Es un incidente
-        const type = report.emotion_label // En incidentes guardamos el nombre en emotion_label
+        const type = report.emotion_label
         if (!incidentCount[type]) {
-          incidentCount[type] = {
-            label: type,
-            icon: report.emotion,
-            count: 0,
-            color: report.emotion_color || '#ef4444'
-          }
+          incidentCount[type] = { label: type, icon: report.emotion, count: 0, color: report.emotion_color || '#ef4444' }
         }
         incidentCount[type].count++
       } else if (BASE_EMOTIONS.includes(report.emotion)) {
-        // Es una de las 7 emociones base
         const emotion = report.emotion
         if (!emotionCount[emotion]) {
-          emotionCount[emotion] = {
-            emotion,
-            label: report.emotion_label,
-            count: 0,
-            color: report.emotion_color || getDangerColor(emotion)
-          }
+          emotionCount[emotion] = { emotion, label: report.emotion_label, count: 0, color: getDangerColor(emotion) }
         }
         emotionCount[emotion].count++
       }
     })
 
-    const emoArray = Object.values(emotionCount).sort((a, b) => b.count - a.count)
-    const incArray = Object.values(incidentCount).sort((a, b) => b.count - a.count)
-
-    setEmotionStats(emoArray)
-    setIncidentStats(incArray)
+    setEmotionStats(Object.values(emotionCount).sort((a, b) => b.count - a.count))
+    setIncidentStats(Object.values(incidentCount).sort((a, b) => b.count - a.count))
   }
 
-  // Función para ir al mapa con un reporte específico
-  const goToReportLocation = (report) => {
-    // Si es incidente ir al mapa de reportes, si es emoción al mapa emocional
-    const route = report.is_incident ? '/admin/mapa-reportes' : '/map'
-    navigate(`${route}?lat=${report.lat}&lng=${report.lng}&reportId=${report.id}`)
-  }
-
-  const getDangerColor = (e) => ({ '😊': '#10b981', '😌': '#34d399', '😐': '#a3e635', '😰': '#fbbf24', '😨': '#f59e0b', '😢': '#f97316', '😡': '#ef4444' }[e] || '#6b7280')
-  const getDangerLabel = (e) => ({ '😊': 'Bajo', '😌': 'Bajo', '😐': 'Bajo', '😰': 'Medio', '😨': 'Medio', '😢': 'Alto', '😡': 'Alto' }[e] || 'Bajo')
+  const getDangerColor = (e) => ({ '😊': '#10b981', '😌': '#34d399', '😐': '#a3e635', '😰': '#fbbf24', '😨': '#f59e0b', '😢': '#f97316', '😡': '#ef4444' }[e] || '#6366f1')
   const formatTime = (d) => { const diff = (new Date() - new Date(d)) / 1000; return diff < 60 ? 'Hace unos segundos' : diff < 3600 ? `Hace ${Math.floor(diff / 60)} min` : diff < 86400 ? `Hace ${Math.floor(diff / 3600)}h` : `Hace ${Math.floor(diff / 86400)} días` }
-
-  if (loading) return <div className="container"><div className="card" style={{ textAlign: 'center', padding: '60px' }}><div style={{ fontSize: '48px' }}>⏳</div><h2>Conectando...</h2></div></div>
-
-  const cards = [
-    { title: 'Total Usuarios', value: stats.totalUsers, bg: '#6b7280', icon: '👥', route: null },
-    { title: 'Usuarios Activos', value: stats.activeUsers, bg: '#3b82f6', icon: '👤', route: '/admin/users' },
-    { title: 'Alertas Graves', value: stats.dangerCount, bg: '#ef4444', icon: '⚠️', route: '/admin/danger' },
-    { title: 'Reportes Hoy', value: stats.todayCount, bg: '#10b981', icon: '📈', route: '/admin/today' },
-    { title: 'Total Reportes', value: stats.reports.length, bg: '#8b5cf6', icon: '📋', route: '/admin/all-reports' },
-  ]
 
   const getTotalEmotions = () => emotionStats.reduce((sum, stat) => sum + stat.count, 0)
   const getTotalIncidents = () => incidentStats.reduce((sum, stat) => sum + stat.count, 0)
@@ -121,195 +92,157 @@ const AdminPanel = () => {
     return total > 0 ? ((count / total) * 100).toFixed(1) : 0
   }
 
-  // Filtrar reportes emocionales graves para la lista
-  const graveReports = stats.reports.filter(r => !r.is_incident && GRAVE_EMOTIONS.includes(r.emotion))
+  if (loading) return <div className="admin-layout"><div className="admin-main"><div className="card" style={{ textAlign: 'center', padding: '60px' }}><h2>Cargando Panel...</h2></div></div></div>
 
-  // Filtrar por búsqueda (nombre o correo)
-  const filteredGraveReports = graveReports.filter(r => {
-    const search = searchTerm.toLowerCase()
+  const cards = [
+    { title: 'Total Usuarios', value: stats.totalUsers, bg: '#6b7280', icon: '👥', view: 'users' },
+    { title: 'Usuarios Activos', value: stats.activeUsers, bg: '#3b82f6', icon: '👤', view: 'users' },
+    { title: 'Alertas Graves', value: stats.dangerCount, bg: '#ef4444', icon: '⚠️', view: 'danger' },
+    { title: 'Reportes Hoy', value: stats.todayCount, bg: '#10b981', icon: '📈', view: 'today' },
+    { title: 'Total Reportes', value: stats.reports.length, bg: '#818cf8', icon: '📋', view: 'reports' },
+  ]
+
+  const sidebarLinks = [
+    { name: 'Home', view: 'home' },
+    { name: 'Reporte', view: 'reports' },
+    { name: 'Usuario', view: 'users' },
+    { name: 'Analíticas', view: 'stats' },
+    { name: 'Categorías', view: 'categories' },
+    { name: 'Mapa Emocional', path: '/map' },
+    { name: 'Mapa incidente', path: '/admin/mapa-reportes' },
+  ]
+
+  // Componente para la vista de Dashboard (Home)
+  const DashboardHome = () => {
+    const graveReports = stats.reports.filter(r => !r.is_incident && GRAVE_EMOTIONS.includes(r.emotion))
+    const filteredGraveReports = graveReports.filter(r => {
+      const search = searchTerm.toLowerCase()
+      return (r.user_name || '').toLowerCase().includes(search) || (r.user_email || '').toLowerCase().includes(search)
+    })
+
     return (
-      (r.user_name || '').toLowerCase().includes(search) ||
-      (r.user_email || '').toLowerCase().includes(search)
-    )
-  })
+      <>
+        <div className="admin-content-grid" style={{ marginBottom: '30px' }}>
+          <div className="heatmap-card">
+            <h2 style={{ color: '#8b5cf6' }}>Mapa de Calor - Emociones</h2>
+            <div className="heatmap-subtitle">Base de 7 emociones principales • Total: {getTotalEmotions()}</div>
+            <div className="heatmap-list">
+              {emotionStats.length === 0 ? (<div style={{ color: '#64748b' }}>No hay emociones registradas</div>) : emotionStats.map((stat, idx) => (
+                <div key={idx} className="stat-item" style={{ borderLeft: `4px solid ${stat.color}` }}>
+                  <div className="stat-item-header">
+                    <div className="stat-item-left">
+                      <span className="stat-item-icon">{stat.emotion}</span>
+                      <div>
+                        <div className="stat-item-name">{stat.label}</div>
+                        <div className="stat-item-count">{stat.count} reportes</div>
+                      </div>
+                    </div>
+                    <div className="stat-item-value">{getEmoPercentage(stat.count)}%</div>
+                  </div>
+                  <div className="progress-container"><div className="progress-bar" style={{ width: `${getEmoPercentage(stat.count)}%`, background: stat.color }}></div></div>
+                </div>
+              ))}
+            </div>
+            <Link to="/map" className="admin-card-btn">Ver Mapa Emocional</Link>
+          </div>
 
-  return (
-    <div className="container">
-      <div className="card">
-        <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '30px', flexWrap: 'wrap', gap: '12px' }}>
-          <h1 style={{ color: '#f86b6b', margin: 0 }}>Panel de Administración</h1>
-          <div style={{ display: 'flex', gap: '10px', flexWrap: 'wrap' }}>
-            <Link to="/admin/users" className="btn" style={{ background: '#3b82f6', color: 'white' }}>Usuarios</Link>
-            <Link to="/admin/stats" className="btn" style={{ background: '#8b5cf6', color: 'white' }}>Analíticas</Link>
-            <Link to="/admin/categorias" className="btn" style={{ background: '#5cb6f6', color: 'white' }}>Categorías</Link>
-            <Link to="/map" className="btn" style={{ background: '#f59e0b', color: 'white' }}>Mapa Emocional</Link>
-            <Link to="/admin/mapa-reportes" className="btn" style={{ background: '#10b981', color: 'white' }}>Mapa Incidentes</Link>
+          <div className="heatmap-card">
+            <h2 style={{ color: '#ef4444' }}>Mapa de Calor - Incidentes</h2>
+            <div className="heatmap-subtitle">Reportes de seguridad ciudadana • Total: {getTotalIncidents()}</div>
+            <div className="heatmap-list">
+              {incidentStats.length === 0 ? (<div style={{ color: '#64748b' }}>No hay incidentes registrados</div>) : incidentStats.map((stat, idx) => (
+                <div key={idx} className="stat-item" style={{ borderLeft: `4px solid ${stat.color}` }}>
+                  <div className="stat-item-header">
+                    <div className="stat-item-left">
+                      <span className="stat-item-icon">{stat.icon}</span>
+                      <div><div className="stat-item-name">{stat.label}</div><div className="stat-item-count">{stat.count} reportes</div></div>
+                    </div>
+                    <div className="stat-item-value">{getIncPercentage(stat.count)}%</div>
+                  </div>
+                  <div className="progress-container"><div className="progress-bar" style={{ width: `${getIncPercentage(stat.count)}%`, background: stat.color }}></div></div>
+                </div>
+              ))}
+            </div>
+            <Link to="/admin/mapa-reportes" className="admin-card-btn" style={{ background: '#ef4444' }}>Ver Mapa Incidentes</Link>
           </div>
         </div>
 
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))', gap: '18px', marginBottom: '36px' }}>
-          {cards.map((c, i) => (
-            <div key={i} onClick={() => c.route && navigate(c.route)} style={{ background: c.bg, color: 'white', padding: '22px', borderRadius: '12px', cursor: c.route ? 'pointer' : 'default', transition: 'transform 0.2s' }}
-              onMouseEnter={e => c.route && (e.currentTarget.style.transform = 'translateY(-4px)')}
-              onMouseLeave={e => c.route && (e.currentTarget.style.transform = 'translateY(0)')}>
-              <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-                <div>
-                  <div style={{ fontSize: '14px', opacity: 0.9, marginBottom: '6px' }}>{c.title}</div>
-                  <div style={{ fontSize: '40px', fontWeight: 'bold' }}>{c.value}</div>
+        <div style={{ background: '#fff7ed', padding: '25px', borderRadius: '16px', border: '1px solid #fed7aa' }}>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px', flexWrap: 'wrap', gap: '15px' }}>
+            <div>
+              <h2 style={{ margin: 0, color: '#c2410c', fontSize: '20px' }}>⚠️ Reportes Emocionales Graves</h2>
+              <p style={{ color: '#9a3412', fontSize: '13px', margin: '5px 0 0 0' }}>Filtrado por: Ansioso, Asustado, Triste y Enojado</p>
+            </div>
+            <div style={{ position: 'relative', width: '100%', maxWidth: '350px' }}>
+              <input type="text" placeholder="Buscar por usuario o correo..." value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)}
+                style={{ width: '100%', padding: '12px 15px 12px 40px', borderRadius: '10px', border: '1px solid #fed7aa', fontSize: '14px', outline: 'none' }} />
+              <span style={{ position: 'absolute', left: '15px', top: '50%', transform: 'translateY(-50%)', opacity: 0.5 }}>🔍</span>
+            </div>
+          </div>
+          {filteredGraveReports.length === 0 ? (<div style={{ textAlign: 'center', padding: '40px' }}><p style={{ color: '#6b7280' }}>No hay alertas críticas</p></div>) : (
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(320px, 1fr))', gap: '15px' }}>
+              {filteredGraveReports.map(r => (
+                <div key={r.id} style={{ background: 'white', padding: '15px', borderRadius: '12px', borderLeft: `5px solid ${getDangerColor(r.emotion)}`, boxShadow: '0 2px 5px rgba(0,0,0,0.05)' }}>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
+                    <div style={{ display: 'flex', gap: '12px' }}>
+                      <span style={{ fontSize: '28px' }}>{r.emotion}</span>
+                      <div>
+                        <div style={{ fontWeight: '800', fontSize: '15px', color: '#1e293b' }}>{r.emotion_label}</div>
+                        <div style={{ fontSize: '13px', color: '#475569' }}>{r.user_name || 'Anónimo'}</div>
+                        {r.comment && <div style={{ fontSize: '13px', color: '#64748b', marginTop: '5px', fontStyle: 'italic' }}>"{r.comment}"</div>}
+                        <div style={{ fontSize: '11px', color: '#94a3b8', marginTop: '10px' }}>{formatTime(r.created_at)}</div>
+                      </div>
+                    </div>
+                    <button onClick={() => navigate(`/map?lat=${r.lat}&lng=${r.lng}&reportId=${r.id}`)}
+                      style={{ padding: '8px 15px', background: '#3b82f6', color: 'white', border: 'none', borderRadius: '8px', cursor: 'pointer', fontSize: '12px', fontWeight: '700' }}>Localizar</button>
+                  </div>
                 </div>
-                <div style={{ fontSize: '42px', opacity: 0.25 }}>{c.icon}</div>
-              </div>
+              ))}
+            </div>
+          )}
+        </div>
+      </>
+    )
+  }
+
+  const renderView = () => {
+    switch (currentView) {
+      case 'home': return <DashboardHome />
+      case 'users': return <AdminUsers />
+      case 'reports': return <AdminReports type="all-reports" />
+      case 'danger': return <AdminReports type="danger" />
+      case 'today': return <AdminReports type="today" />
+      case 'stats': return <AdminStats />
+      case 'categories': return <AdminCategories />
+      default: return <DashboardHome />
+    }
+  }
+
+  return (
+    <div className="admin-layout">
+      <aside className="admin-sidebar" style={{ zIndex: 100 }}>
+        <div className="sidebar-title">Panel de Administración</div>
+        <nav className="sidebar-nav">
+          {sidebarLinks.map(link => (
+            link.path ? (<Link key={link.name} to={link.path} className="sidebar-link">{link.name}</Link>) : (
+              <button key={link.name} className={`sidebar-link ${currentView === link.view ? 'active' : ''}`}
+                onClick={() => setCurrentView(link.view)} style={{ border: 'none', background: 'none', textAlign: 'left', width: '100%', cursor: 'pointer' }}>{link.name}</button>
+            )
+          ))}
+        </nav>
+      </aside>
+
+      <main className="admin-main">
+        <div className="stats-grid">
+          {cards.map((c, i) => (
+            <div key={i} className="stat-card" style={{ background: c.bg, cursor: 'pointer' }} onClick={() => setCurrentView(c.view)}>
+              <div className="stat-info"><div className="stat-label">{c.title}</div><div className="stat-value">{c.value}</div></div>
+              <div className="stat-icon">{c.icon}</div>
             </div>
           ))}
         </div>
-
-        <div style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'space-between', gap: '20px' }}>
-
-          {/* SECCIÓN EMOCIONES */}
-          <div className='mapacaloradmindeuser'>
-            <h2 style={{ color: '#8b5cf6' }}>Mapa de Calor - Emociones</h2>
-            <p style={{ margin: 0, color: '#6b7280', fontSize: '14px', marginBottom: '20px' }}>
-              Base de 7 emociones principales • Total: {getTotalEmotions()}
-            </p>
-
-            {emotionStats.length === 0 ? (
-              <div style={{ textAlign: 'center', padding: '40px', background: '#f9fafb', borderRadius: '8px' }}>
-                <p style={{ color: '#6b7280', margin: 0 }}>No hay emociones registradas</p>
-              </div>
-            ) : (
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
-                {emotionStats.map((stat, idx) => (
-                  <div key={idx} style={{ background: '#f9fafb', padding: '14px', borderRadius: '8px', borderLeft: `6px solid ${stat.color}` }}>
-                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px' }}>
-                      <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-                        <span style={{ fontSize: '28px' }}>{stat.emotion}</span>
-                        <div>
-                          <div style={{ fontWeight: '700', fontSize: '15px' }}>{stat.label}</div>
-                          <div style={{ fontSize: '12px', color: '#6b7280' }}>{stat.count} reportes</div>
-                        </div>
-                      </div>
-                      <span style={{ background: `${stat.color}20`, color: stat.color, padding: '4px 10px', borderRadius: '15px', fontSize: '12px', fontWeight: 'bold' }}>
-                        {getEmoPercentage(stat.count)}%
-                      </span>
-                    </div>
-                    <div style={{ width: '100%', height: '6px', background: '#e5e7eb', borderRadius: '3px', overflow: 'hidden' }}>
-                      <div style={{ width: `${getEmoPercentage(stat.count)}%`, height: '100%', background: stat.color }}></div>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            )}
-
-            <Link to="/map" className="btn" style={{ width: '100%', marginTop: '20px', background: '#8b5cf6', color: 'white', textAlign: 'center' }}>
-              Ver Mapa Emocional
-            </Link>
-          </div>
-
-          {/* SECCIÓN INCIDENTES */}
-          <div className='mapacaloradmindeuser'>
-            <h2 style={{ color: '#ef4444' }}>Mapa de Calor - Incidentes</h2>
-            <p style={{ margin: 0, color: '#6b7280', fontSize: '14px', marginBottom: '20px' }}>
-              Reportes de seguridad ciudadana • Total: {getTotalIncidents()}
-            </p>
-
-            {incidentStats.length === 0 ? (
-              <div style={{ textAlign: 'center', padding: '40px', background: '#f9fafb', borderRadius: '8px' }}>
-                <p style={{ color: '#6b7280', margin: 0 }}>No hay incidentes reportados</p>
-              </div>
-            ) : (
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
-                {incidentStats.map((stat, idx) => (
-                  <div key={idx} style={{ background: '#f9fafb', padding: '14px', borderRadius: '8px', borderLeft: `6px solid ${stat.color}` }}>
-                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px' }}>
-                      <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-                        <span style={{ fontSize: '28px' }}>{stat.icon}</span>
-                        <div>
-                          <div style={{ fontWeight: '700', fontSize: '15px' }}>{stat.label}</div>
-                          <div style={{ fontSize: '12px', color: '#6b7280' }}>{stat.count} reportes</div>
-                        </div>
-                      </div>
-                      <span style={{ background: `${stat.color}20`, color: stat.color, padding: '4px 10px', borderRadius: '15px', fontSize: '12px', fontWeight: 'bold' }}>
-                        {getIncPercentage(stat.count)}%
-                      </span>
-                    </div>
-                    <div style={{ width: '100%', height: '6px', background: '#e5e7eb', borderRadius: '3px', overflow: 'hidden' }}>
-                      <div style={{ width: `${getIncPercentage(stat.count)}%`, height: '100%', background: stat.color }}></div>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            )}
-
-            <Link to="/admin/mapa-reportes" className="btn" style={{ width: '100%', marginTop: '20px', background: '#ef4444', color: 'white', textAlign: 'center' }}>
-              Ver Mapa de Incidentes
-            </Link>
-          </div>
-
-          {/* LISTA REPORTES GRAVES */}
-          <div style={{ background: '#fff7ed', padding: '22px', borderRadius: '12px', flex: '1 1 100%' }}>
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px', flexWrap: 'wrap', gap: '15px' }}>
-              <div>
-                <h3 style={{ margin: 0, color: '#c2410c' }}>⚠️ Reportes Emocionales Graves</h3>
-                <p style={{ color: '#9a3412', fontSize: '13px', margin: '5px 0 0 0' }}>
-                  Filtrado por: Ansioso, Asustado, Triste y Enojado
-                </p>
-              </div>
-
-              {/* BARRA DE BÚSQUEDA */}
-              <div style={{ position: 'relative', width: '100%', maxWidth: '300px' }}>
-                <input
-                  type="text"
-                  placeholder="Buscar por usuario o correo..."
-                  value={searchTerm}
-                  onChange={(e) => setSearchTerm(e.target.value)}
-                  style={{
-                    width: '100%',
-                    padding: '10px 15px 10px 35px',
-                    borderRadius: '8px',
-                    border: '1px solid #fed7aa',
-                    fontSize: '14px',
-                    outline: 'none',
-                    boxShadow: '0 2px 4px rgba(0,0,0,0.05)'
-                  }}
-                />
-                <span style={{ position: 'absolute', left: '12px', top: '50%', transform: 'translateY(-50%)', opacity: 0.5 }}>🔍</span>
-              </div>
-            </div>
-
-            {filteredGraveReports.length === 0 ? (
-              <div style={{ textAlign: 'center', padding: '40px' }}>
-                <p style={{ color: '#6b7280' }}>
-                  {searchTerm ? 'No se encontraron resultados para tu búsqueda' : 'No hay alertas críticas'}
-                </p>
-              </div>
-            ) : (
-              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))', gap: '12px', maxHeight: '600px', overflowY: 'auto' }}>
-                {filteredGraveReports.map(r => {
-                  const color = r.emotion_color || getDangerColor(r.emotion)
-                  return (
-                    <div key={r.id} style={{ background: 'white', padding: '14px', borderRadius: '8px', borderLeft: `5px solid ${color}`, boxShadow: '0 1px 3px rgba(0,0,0,0.1)' }}>
-                      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
-                        <div style={{ display: 'flex', gap: '10px' }}>
-                          <span style={{ fontSize: '24px' }}>{r.emotion}</span>
-                          <div>
-                            <div style={{ color: '#1f2937', fontWeight: '700', fontSize: '14px' }}>{r.emotion_label}</div>
-                            <div style={{ fontSize: '12px', color: '#4b5563' }}>{r.user_name || 'Anónimo'}</div>
-                            {r.comment && <div style={{ fontSize: '12px', color: '#6b7280', marginTop: '4px', fontStyle: 'italic' }}>"{r.comment}"</div>}
-                            <div style={{ fontSize: '11px', color: '#9ca3af', marginTop: '8px' }}>{formatTime(r.created_at)}</div>
-                          </div>
-                        </div>
-                        <button onClick={() => goToReportLocation(r)} style={{ padding: '6px 12px', background: '#3b82f6', color: 'white', border: 'none', borderRadius: '6px', cursor: 'pointer', fontSize: '11px', fontWeight: '600' }}>
-                          Localizar
-                        </button>
-                      </div>
-                    </div>
-                  )
-                })}
-              </div>
-            )}
-          </div>
-        </div>
-      </div>
+        <div className="view-content-area">{renderView()}</div>
+      </main>
     </div>
   )
 }
