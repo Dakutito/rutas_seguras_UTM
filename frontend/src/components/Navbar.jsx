@@ -45,13 +45,6 @@ const Navbar = ({ user, onLogout, isAdmin, darkMode, onToggleDarkMode }) => {
                   <Link to="/reportes" className="nav-link" style={{ fontWeight: '600' }}>Reportes</Link>
                 </>
               )}
-
-              {isAdmin && (
-                <Link to="/admin" className="nav-link admin-link">
-                  Administrador
-                </Link>
-              )}
-
               <button onClick={handleLogout} className="nav-btn nav-btn-logout">
                 Cerrar Sesión
               </button>

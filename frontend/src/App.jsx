@@ -231,7 +231,7 @@ function App() {
             path="/admin"
             element={
               user && isAdmin ? (
-                <AdminPanel />
+                <AdminPanel user={user} />
               ) : user ? (
                 <Navigate to="/dashboard" replace />
               ) : (
