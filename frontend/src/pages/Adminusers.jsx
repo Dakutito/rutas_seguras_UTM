@@ -73,63 +73,63 @@ const AdminUsers = () => {
         <div className='sub_gestionuseradinmodooscuro'>
           <div>
             <h1>Gestión de Usuarios</h1>
-            <p style={{ color: '#8898aa', marginTop: '5px' }}>{users.length} usuarios en la base de datos</p>
+            <p className="admin-desc-text">{users.length} usuarios en la base de datos</p>
           </div>
         </div>
 
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '20px', marginBottom: '35px' }}>
-          <div style={{ background: '#3b82f6', color: 'white', padding: '25px', borderRadius: '12px', textAlign: 'center' }}>
-            <h2 style={{ fontSize: '32px', margin: 0 }}>{users.length}</h2>
-            <p style={{ fontSize: '13px', opacity: 0.9, margin: 0 }}>Total Usuarios</p>
+        <div className="admin-stats-grid-simple">
+          <div className="admin-stat-card-blue">
+            <h2 className="admin-stat-num">{users.length}</h2>
+            <p className="admin-stat-label-simple">Total Usuarios</p>
           </div>
-          <div style={{ background: '#10b981', color: 'white', padding: '25px', borderRadius: '12px', textAlign: 'center' }}>
-            <h2 style={{ fontSize: '32px', margin: 0 }}>{activeCount}</h2>
-            <p style={{ fontSize: '13px', opacity: 0.9, margin: 0 }}>Activos</p>
+          <div className="admin-stat-card-green">
+            <h2 className="admin-stat-num">{activeCount}</h2>
+            <p className="admin-stat-label-simple">Activos</p>
           </div>
-          <div style={{ background: '#ef4444', color: 'white', padding: '25px', borderRadius: '12px', textAlign: 'center' }}>
-            <h2 style={{ fontSize: '32px', margin: 0 }}>{suspendedCount}</h2>
-            <p style={{ fontSize: '13px', opacity: 0.9, margin: 0 }}>Suspendidos</p>
+          <div className="admin-stat-card-red">
+            <h2 className="admin-stat-num">{suspendedCount}</h2>
+            <p className="admin-stat-label-simple">Suspendidos</p>
           </div>
-          <div style={{ background: '#8b5cf6', color: 'white', padding: '25px', borderRadius: '12px', textAlign: 'center' }}>
-            <h2 style={{ fontSize: '32px', margin: 0 }}>{totalReports}</h2>
-            <p style={{ fontSize: '13px', opacity: 0.9, margin: 0 }}>Reportes Totales</p>
+          <div className="admin-stat-card-purple">
+            <h2 className="admin-stat-num">{totalReports}</h2>
+            <p className="admin-stat-label-simple">Reportes Totales</p>
           </div>
         </div>
 
-        <div style={{ display: 'flex', gap: '15px', marginBottom: '25px' }}>
+        <div className="admin-filter-bar">
           <input
             type="text"
             placeholder="Buscar en la base de datos..."
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            style={{ flex: 1, padding: '12px 20px', borderRadius: '10px', border: '1px solid #e0e6ed', outline: 'none' }}
+            className="admin-search-input-full"
           />
-          <div style={{ display: 'flex', background: '#f8fafc', padding: '5px', borderRadius: '10px' }}>
+          <div className="admin-filter-pills">
             {['todos', 'activos', 'suspendidos'].map(f => (
-              <button keyz={f} onClick={() => setFilter(f)} style={{ padding: '8px 20px', border: 'none', borderRadius: '8px', cursor: 'pointer', background: filter === f ? '#4f46e5' : 'transparent', color: filter === f ? 'white' : '#64748b' }}>
+              <button key={f} onClick={() => setFilter(f)} className={`filter-pill ${filter === f ? 'active' : ''}`}>
                 {f}
               </button>
             ))}
           </div>
         </div>
 
-        <div style={{ overflowX: 'auto' }}>
-          <table style={{ width: '100%', borderCollapse: 'collapse' }}>
+        <div className="admin-table-wrapper">
+          <table className="admin-users-table">
             <thead>
-              <tr style={{ color: '#8898aa', fontSize: '12px', textAlign: 'left', borderBottom: '1px solid #f0f2f5' }}>
-                <th style={{ padding: '15px' }}>#</th>
-                <th style={{ padding: '15px' }}>NOMBRE</th>
-                <th style={{ padding: '15px' }}>CORREO</th>
-                <th style={{ padding: '15px' }}>REGISTRADO</th>
-                <th style={{ padding: '15px' }}>ESTADO</th>
-                <th style={{ padding: '15px' }}>REPORTES</th>
-                <th style={{ padding: '15px' }}>ACCIONES</th>
+              <tr className="table-header-row">
+                <th>#</th>
+                <th>NOMBRE</th>
+                <th>CORREO</th>
+                <th>REGISTRADO</th>
+                <th>ESTADO</th>
+                <th>REPORTES</th>
+                <th>ACCIONES</th>
               </tr>
             </thead>
             <tbody>
               {filtered.map((user, idx) => (
-                <tr key={user.id} style={{ borderBottom: '1px solid #f8fafc', fontSize: '14px' }}>
-                  <td style={{ padding: '15px', color: '#8898aa' }}>{idx + 1}</td>
+                <tr key={user.id} className="table-data-row">
+                  <td className="table-cell-idx">{idx + 1}</td>
                   <td style={{ padding: '15px' }}>
                     <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
                       <div style={{ width: '35px', height: '35px', borderRadius: '50%', background: '#4f46e5', color: 'white', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 'bold' }}>

@@ -95,22 +95,17 @@ const AdminStats = () => {
         </div>
 
         {/* Resumen rápido */}
-        <div style={{
-          display: 'grid',
-          gridTemplateColumns: 'repeat(auto-fit, minmax(160px, 1fr))',
-          gap: '14px',
-          marginBottom: '34px'
-        }}>
+        <div className="stats-summary-grid">
           {[
-            { label: 'Total Reportes', value: stats.totalReports, color: '#4f46e5', icon: '📊' },
-            { label: 'Reportes Hoy', value: stats.todayReports, color: '#10b981', icon: '📈' },
-            { label: 'Emociones Positivas', value: stats.positiveCount, color: '#10b981', icon: '😊' },
-            { label: 'Emociones Negativas', value: stats.negativeCount, color: '#ef4444', icon: '😢' },
+            { label: 'Total Reportes', value: stats.totalReports, className: 'stats-summary-card purple', icon: '📊' },
+            { label: 'Reportes Hoy', value: stats.todayReports, className: 'stats-summary-card green', icon: '📈' },
+            { label: 'Emociones Positivas', value: stats.positiveCount, className: 'stats-summary-card green-light', icon: '😊' },
+            { label: 'Emociones Negativas', value: stats.negativeCount, className: 'stats-summary-card red', icon: '😢' },
           ].map((s, i) => (
-            <div key={i} style={{ background: s.color, color: 'white', padding: '18px', borderRadius: '10px', textAlign: 'center' }}>
-              <div style={{ fontSize: '28px' }}>{s.icon}</div>
-              <div style={{ fontSize: '28px', fontWeight: 'bold', margin: '4px 0' }}>{s.value}</div>
-              <div style={{ fontSize: '12px', opacity: 0.85 }}>{s.label}</div>
+            <div key={i} className={s.className}>
+              <div className="stats-summary-icon">{s.icon}</div>
+              <div className="stats-summary-value">{s.value}</div>
+              <div className="stats-summary-label">{s.label}</div>
             </div>
           ))}
         </div>
@@ -131,20 +126,14 @@ const AdminStats = () => {
                 return (
                   <div key={emotion.emotion_label} style={{ marginBottom: '14px' }}>
                     <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '5px' }}>
-                      <span style={{ fontSize: '16px', fontWeight: '500' }}>
+                      <span className="emotion-stat-label">
                         {emotion.emotion_label}
                       </span>
-                      <span style={{ fontWeight: '600', color: '#374151' }}>
+                      <span className="emotion-stat-count">
                         {emotion.count} ({percentage.toFixed(1)}%)
                       </span>
                     </div>
-                    <div style={{
-                      width: '100%',
-                      height: '12px',
-                      background: '#e5e7eb',
-                      borderRadius: '6px',
-                      overflow: 'hidden'
-                    }}>
+                    <div className="stats-progress-container">
                       <div style={{
                         width: `${percentage}%`,
                         height: '100%',
@@ -165,35 +154,19 @@ const AdminStats = () => {
           <h2>
             Análisis de Impacto Emocional
           </h2>
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '20px' }}>
-            <div style={{ background: '#d1fae5', padding: '24px', borderRadius: '12px', textAlign: 'center' }}>
-              <div style={{ fontSize: '14px', color: '#065f46', fontWeight: '600', marginBottom: '8px' }}>
-                Emociones Positivas
-              </div>
-              <div style={{ fontSize: '48px', fontWeight: 'bold', color: '#10b981' }}>
-                {stats.positiveCount}
-              </div>
-              <div style={{ fontSize: '13px', color: '#047857', marginTop: '6px' }}>
-                {stats.totalReports > 0 ? ((stats.positiveCount / stats.totalReports) * 100).toFixed(1) : 0}% del total
-              </div>
-              <div style={{ fontSize: '12px', color: '#6b7280', marginTop: '4px' }}>
-                Feliz, Tranquilo y Neutral
-              </div>
+          <div className="impact-analysis-grid">
+            <div className="impact-box-positive">
+              <div className="impact-label">Emociones Positivas</div>
+              <div className="impact-value">{stats.positiveCount}</div>
+              <div className="impact-percent">{stats.totalReports > 0 ? ((stats.positiveCount / stats.totalReports) * 100).toFixed(1) : 0}% del total</div>
+              <div className="impact-desc">Feliz, Tranquilo y Neutral</div>
             </div>
 
-            <div style={{ background: '#fee2e2', padding: '24px', borderRadius: '12px', textAlign: 'center' }}>
-              <div style={{ fontSize: '14px', color: '#991b1b', fontWeight: '600', marginBottom: '8px' }}>
-                Emociones Negativas
-              </div>
-              <div style={{ fontSize: '48px', fontWeight: 'bold', color: '#ef4444' }}>
-                {stats.negativeCount}
-              </div>
-              <div style={{ fontSize: '13px', color: '#dc2626', marginTop: '6px' }}>
-                {stats.totalReports > 0 ? ((stats.negativeCount / stats.totalReports) * 100).toFixed(1) : 0}% del total
-              </div>
-              <div style={{ fontSize: '12px', color: '#6b7280', marginTop: '4px' }}>
-                Ansioso, Asustado, Triste y Enojado
-              </div>
+            <div className="impact-box-negative">
+              <div className="impact-label">Emociones Negativas</div>
+              <div className="impact-value">{stats.negativeCount}</div>
+              <div className="impact-percent">{stats.totalReports > 0 ? ((stats.negativeCount / stats.totalReports) * 100).toFixed(1) : 0}% del total</div>
+              <div className="impact-desc">Ansioso, Asustado, Triste y Enojado</div>
             </div>
           </div>
         </div>
@@ -202,44 +175,14 @@ const AdminStats = () => {
           <h2 >
             Zonas por Nivel de Peligro
           </h2>
-          <div style={{
-            display: 'grid',
-            gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))',
-            gap: '16px'
-          }}>
+          <div className="danger-levels-grid">
             {['bajo', 'medio', 'alto'].map(level => {
               const count = stats.zonesByDanger[level] || 0
-              const colors = {
-                'bajo': { bg: '#d1fae5', text: '#065f46', border: '#10b981' },
-                'medio': { bg: '#fef3c7', text: '#92400e', border: '#fbbf24' },
-                'alto': { bg: '#fee2e2', text: '#991b1b', border: '#ef4444' }
-              }
               return (
-                <div
-                  key={level}
-                  style={{
-                    background: colors[level].bg,
-                    border: `2px solid ${colors[level].border}`,
-                    padding: '20px',
-                    borderRadius: '12px',
-                    textAlign: 'center'
-                  }}
-                >
-                  <div style={{
-                    fontSize: '14px',
-                    color: colors[level].text,
-                    fontWeight: '600',
-                    textTransform: 'uppercase',
-                    marginBottom: '8px'
-                  }}>
-                    Peligro {level}
-                  </div>
-                  <div style={{ fontSize: '40px', fontWeight: 'bold', color: colors[level].text }}>
-                    {count}
-                  </div>
-                  <div style={{ fontSize: '12px', color: colors[level].text, marginTop: '4px' }}>
-                    {count === 1 ? 'zona' : 'zonas'}
-                  </div>
+                <div key={level} className={`danger-level-card ${level}`}>
+                  <div className="danger-level-label">Peligro {level}</div>
+                  <div className="danger-level-value">{count}</div>
+                  <div className="danger-level-unit">{count === 1 ? 'zona' : 'zonas'}</div>
                 </div>
               )
             })}
@@ -247,14 +190,7 @@ const AdminStats = () => {
         </div>
 
         {/* Información adicional */}
-        <div style={{
-          marginTop: '30px',
-          padding: '16px',
-          background: '#eff6ff',
-          borderRadius: '8px',
-          fontSize: '13px',
-          color: '#1e40af'
-        }}>
+        <div className="stats-info-note">
           <strong>Nota:</strong> Los datos se actualizan automáticamente cada 10 segundos.
           Las zonas de peligro se calculan en base a la concentración de emociones negativas.
         </div>

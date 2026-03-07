@@ -87,12 +87,12 @@ const AdminReports = ({ type, onLocate }) => {
         <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '24px', flexWrap: 'wrap', gap: '12px' }}>
           <div>
             <h1 style={{ color: cfg.color }}>{cfg.title}</h1>
-            <p style={{ color: '#6b7280', fontSize: '14px' }}>{cfg.desc}</p>
+            <p className="admin-desc-text">{cfg.desc}</p>
           </div>
         </div>
 
         <input type="text" placeholder="Buscar..." value={search} onChange={(e) => setSearch(e.target.value)}
-          style={{ width: '100%', padding: '12px', marginBottom: '20px', borderRadius: '8px', border: '2px solid #e5e7eb' }} />
+          className="admin-search-input-list" />
 
         <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
           {filteredBySearch.map(r => (
@@ -102,11 +102,11 @@ const AdminReports = ({ type, onLocate }) => {
                   <span style={{ fontSize: '32px' }}>{r.emotion}</span>
                   <div style={{ flex: 1 }}>
                     <div style={{ fontWeight: 'bold' }}>{r.emotion_label}</div>
-                    <div style={{ fontSize: '12px', color: '#9ca3af' }}>{new Date(r.created_at).toLocaleString()}</div>
-                    <div style={{ margin: '10px 0', padding: '8px', borderRadius: '6px', fontSize: '14px' }}>
+                    <div className="report-time">{new Date(r.created_at).toLocaleString()}</div>
+                    <div className="report-comment-box">
                       "{r.comment || 'Sin comentario'}"
                     </div>
-                    <div style={{ fontSize: '12px', color: '#6b7280' }}>
+                    <div className="report-author-info">
                       Usuario: {r.user_name || 'Anónimo'} ({r.user_email || 'sin email'}) | 📍 {parseFloat(r.lat).toFixed(4)}, {parseFloat(r.lng).toFixed(4)}
                     </div>
                   </div>
