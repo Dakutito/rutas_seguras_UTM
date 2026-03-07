@@ -97,8 +97,8 @@ function App() {
       }
     };
 
-    // Verificar cada 10 segundos
-    const interval = setInterval(checkStatus, 10000);
+    // Verificar cada 5 segundos
+    const interval = setInterval(checkStatus, 5000);
     return () => clearInterval(interval);
   }, [user]);
 

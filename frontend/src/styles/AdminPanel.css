@@ -8,6 +8,42 @@
     color: var(--text-primary);
 }
 
+/* Botones de acción general */
+.admin-danger-btn-bulk {
+    background: #fee2e2;
+    color: #ef4444;
+    border: 1px solid #fecaca;
+    padding: 8px 16px;
+    border-radius: 8px;
+    font-size: 13px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.2s;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.admin-danger-btn-bulk:hover {
+    background: #fecaca;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 6px -1px rgba(239, 68, 68, 0.1);
+}
+
+.admin-danger-btn-bulk:active {
+    transform: translateY(0);
+}
+
+[data-theme='dark'] .admin-danger-btn-bulk {
+    background: rgba(239, 68, 68, 0.1);
+    border-color: rgba(239, 68, 68, 0.2);
+}
+
+[data-theme='dark'] .admin-danger-btn-bulk:hover {
+    background: rgba(239, 68, 68, 0.2);
+}
+
+/* SEARCH BOX */
 /* SIDEBAR */
 .admin-sidebar {
     width: 260px;
