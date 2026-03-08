@@ -756,6 +756,12 @@ footer {
 
 /* Responsive */
 @media (max-width: 480px) {
+  .footerhome {
+    display: flex;
+    flex-direction: column;
+    padding: 20px;
+  }
+
   .section {
     padding: 25px 20px;
   }
