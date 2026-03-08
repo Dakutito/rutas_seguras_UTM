@@ -132,7 +132,7 @@ const Home = () => {
           </p>
           <div className="actions" style={{ justifyContent: 'center' }}>
             <div>
-              <Link to="/register" className="btn btn-primary" style={{ padding: '15px 40px', fontSize: '18px' }}>
+              <Link to="/register" className="btn" style={{ backgroundColor: '#667eea', color: '#fff' }}>
                 Crear Cuenta
               </Link>
             </div>
