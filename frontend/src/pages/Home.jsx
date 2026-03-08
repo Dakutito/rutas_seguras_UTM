@@ -1,6 +1,8 @@
 import { Link } from 'react-router-dom'
 import { getUser } from '../services/authService'
 import '../styles/home.css'
+import QRSection from '../components/QRSection'
+import { FiMap, FiHeart, FiBell, FiZap, FiShield, FiBookOpen } from 'react-icons/fi'
 
 const Home = () => {
   const user = getUser()
@@ -19,7 +21,7 @@ const Home = () => {
             y ciudadanía digital para la comunidad universitaria y el cantón Portoviejo.
           </p>
           <div className="actions">
-            <Link to="/mapa-reportes" className="btn btn-primary">
+            <Link to="/mapa-reportes" className="btn" style={{ backgroundColor: '#667eea', color: '#fff' }}>
               Ver Mapa
             </Link>
             <Link to="/map-reporte" className="btn btn-outline">
@@ -43,7 +45,7 @@ const Home = () => {
             <div className="emotion" style={{ background: '#F3F4F6', border: '3px solid #D1D5DC' }}><span>😐</span><h4>Neutral</h4></div>
 
           </div>
-          <Link to="/map" className="btn btn-primary" style={{ padding: '15px 40px', fontSize: '18px' }}>
+          <Link to="/map" className="btn" style={{ backgroundColor: '#667eea', color: '#fff', padding: '15px 40px', fontSize: '18px' }}>
             Registrar Emoción
           </Link>
         </div>
@@ -58,53 +60,60 @@ const Home = () => {
 
         <div className="cards">
           <div className="cardss">
-            <Link to="/mapa-reportes" style={{
-              textDecoration: 'none',
-              color: 'inherit'
-            }}>
-              <div className="icon"></div>
+            <Link to="/mapa-reportes" className="card-link" style={{ textDecoration: 'none' }}>
+              <div className="icon-wrapper blue">
+                <FiMap />
+              </div>
               <h4>Mapeo de Rutas Seguras</h4>
               <p>Visualiza zonas seguras e incidentes reportados en tiempo real.</p>
             </Link>
           </div>
 
           <div className="cardss">
-            <Link to="/map" style={{
-              textDecoration: 'none',
-              color: 'inherit'
-            }}>
-              <div className="icon"></div>
+            <Link to="/map" className="card-link" style={{ textDecoration: 'none' }}>
+              <div className="icon-wrapper red">
+                <FiHeart />
+              </div>
               <h4>Bienestar Emocional</h4>
               <p>Registra tu estado emocional y contribuye al mapa comunitario.</p>
             </Link>
           </div>
 
           <div className="cardss">
-            <Link to="/map-reporte" style={{
-              textDecoration: 'none',
-              color: 'inherit'
-            }}>
-              <div className="icon"></div>
+            <Link to="/map-reporte" className="card-link" style={{ textDecoration: 'none' }}>
+              <div className="icon-wrapper orange">
+                <FiBell />
+              </div>
               <h4>Sistema de Reportes</h4>
               <p>Reporta incidentes de seguridad para alertar a la comunidad.</p>
             </Link>
           </div>
 
           <div className="cardss">
-            <div className="icon"></div>
-            <h4>Iniciativas Ciudadanas</h4>
-            <p>Propón proyectos comunitarios para mejorar la seguridad.</p>
+            <Link to="/home" className="card-link" style={{ textDecoration: 'none' }}>
+              <div className="icon-wrapper green">
+                <FiZap />
+              </div>
+              <h4>Iniciativas Ciudadanas</h4>
+              <p>Propón proyectos comunitarios para mejorar la seguridad.</p>
+            </Link>
           </div>
 
           <div className="cardss">
-            <div className="icon"></div>
-            <h4>Embajadores Digitales</h4>
-            <p>Universitarios promoviendo buenas prácticas digitales.</p>
+            <Link to="/home" className="card-link" style={{ textDecoration: 'none' }}>
+              <div className="icon-wrapper purple">
+                <FiShield />
+              </div>
+              <h4>Embajadores Digitales</h4>
+              <p >Universitarios promoviendo buenas prácticas digitales.</p>
+            </Link>
           </div>
 
           <div className="cardss">
-            <Link to="/recursos" style={{ textDecoration: 'none', color: 'inherit' }}>
-              <div className="icon"></div>
+            <Link to="/recursos" className="card-link" style={{ textDecoration: 'none' }}>
+              <div className="icon-wrapper indigo">
+                <FiBookOpen />
+              </div>
               <h4>Recursos Educativos</h4>
               <p>Aprende sobre seguridad urbana y bienestar emocional.</p>
             </Link>
@@ -112,6 +121,8 @@ const Home = () => {
 
         </div>
       </section>
+
+      <QRSection />
       {!user && (
         <section className="cta">
           <h2>Únete a la comunidad segura</h2>
@@ -121,9 +132,9 @@ const Home = () => {
           </p>
           <div className="actions" style={{ justifyContent: 'center' }}>
             <div>
-                <Link to="/register" className="btn btn-primary" style={{ padding: '15px 40px', fontSize: '18px' }}>
-                  Crear Cuenta
-                </Link>
+              <Link to="/register" className="btn btn-primary" style={{ padding: '15px 40px', fontSize: '18px' }}>
+                Crear Cuenta
+              </Link>
             </div>
           </div>
         </section>

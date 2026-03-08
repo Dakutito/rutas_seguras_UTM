@@ -169,45 +169,45 @@ const Dashboard = ({ user }) => {
           {/* Acciones rápidas */}
           <h2>ACCIONES RÁPIDAS</h2>
           <div className="quick-actions">
-            <Link to="/map" className="action-btn btn-primary">
+            <button onClick={() => navigate('/map')} className="action-btn btn-primary">
               <div className="action-btn-content">
                 <div className="action-btn-icon">😊</div>
                 <span>Reportar Emoción</span>
               </div>
               <span className="action-btn-arrow">›</span>
-            </Link>
+            </button>
 
             <button onClick={() => setShowHistorial(true)} className="action-btn btn-tertiary">
               <div className="action-btn-content">
                 <div className="action-btn-icon">📋</div>
-                <span>Mis Reportes Emocionales</span>
+                <span>Reportes Emocionales</span>
               </div>
               <span className="action-btn-arrow">›</span>
             </button>
 
-            <Link to="/map-reporte" className="action-btn btn-secondary">
+            <button onClick={() => navigate('/map-reporte')} className="action-btn btn-secondary">
               <div className="action-btn-content">
                 <div className="action-btn-icon">⚠️</div>
                 <span>Reportar incidente</span>
               </div>
               <span className="action-btn-arrow">›</span>
-            </Link>
+            </button>
 
-            <Link to="/" className="action-btn btn-secondary">
+            <button onClick={() => navigate('/')} className="action-btn btn-secondary">
               <div className="action-btn-content">
                 <div className="action-btn-icon">🤖</div>
                 <span>Asistente Emocional</span>
               </div>
               <span className="action-btn-arrow">›</span>
-            </Link>
+            </button>
 
-            <Link to="/settings" className="action-btn btn-secondary">
+            <button onClick={() => navigate('/settings')} className="action-btn btn-secondary">
               <div className="action-btn-content">
                 <div className="action-btn-icon">⚙️</div>
                 <span>Mi Configuración</span>
               </div>
               <span className="action-btn-arrow">›</span>
-            </Link>
+            </button>
 
 
           </div>
