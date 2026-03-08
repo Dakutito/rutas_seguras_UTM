@@ -110,6 +110,7 @@
 
 /* MAIN CONTENT */
 .admin-main {
+    padding: 20px;
     flex: 1;
     max-width: 1400px;
     margin: 0 auto;

@@ -150,7 +150,7 @@ const AdminCategories = () => {
             marginBottom: '24px'
           }}
         >
-          {showNewForm ? '✕ Cancelar' : '➕ Nueva Categoría'}
+          {showNewForm ? '✕ Cancelar' : 'Nueva Categoría'}
         </button>
 
         {/* Formulario Nueva Categoría */}

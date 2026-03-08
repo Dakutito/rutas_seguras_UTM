@@ -32,7 +32,7 @@ const RecursosEducativos = () => {
             Conoce cómo funciona la plataforma y cómo puedes contribuir a crear
             una comunidad más segura en Portoviejo.
           </p>
-          <button className="btn-vervideo">Ver video (5 min)</button>
+          <button className="btn-vervideo" onClick={() => navigate('/recursos/introduccion')}>Ver video (5 min)</button>
         </div>
       </div>
 
@@ -71,24 +71,28 @@ const RecursosEducativos = () => {
               title="Guía de Seguridad Urbana"
               desc="Consejos prácticos para desplazarte de forma segura"
               tag="Guía"
+              onClick={() => navigate('/recursos/seguridad-urbana')}
             />
             <Card
               img="/img/Seguridad/reporincident.png"
               title="Cómo reportar incidentes"
               desc="Tutorial paso a paso del sistema de reportes"
               tag="Tutorial"
+              onClick={() => navigate('/recursos/reportar-incidentes')}
             />
             <Card
               img="/img/Seguridad/numeemer.png"
               title="Números de emergencia"
               desc="ECU 911, Policía, Bomberos"
               tag="Referencia"
+              onClick={() => navigate('/recursos/numeros-emergencia')}
             />
             <Card
               img="/img/Seguridad/img_mapa.png"
               title="Rutas seguras en Portoviejo"
               desc="Mapa interactivo de zonas seguras"
               tag="Mapa"
+              onClick={() => navigate('/recursos/rutas-portoviejo')}
             />
           </div>
         )}
@@ -100,24 +104,28 @@ const RecursosEducativos = () => {
               title="Manejo del estrés académico"
               desc="Técnicas de relajación y mindfulness"
               tag="Curso"
+              onClick={() => navigate('/recursos/manejo-estres')}
             />
             <Card
               img="/img/Bienestar/PrimerAuxilio.png"
               title="Primeros auxilios emocionales"
               desc="Cómo ayudar a alguien en crisis emocional"
               tag="Guía"
+              onClick={() => navigate('/recursos/primeros-auxilios')}
             />
             <Card
               img="/img/Bienestar/ApoyoPsicolo.png"
               title="Líneas de apoyo psicológico"
               desc="Servicios gratuitos de salud mental"
               tag="Referencia"
+              onClick={() => navigate('/recursos/apoyo-psicologico')}
             />
             <Card
               img="/img/Bienestar/BienestarDigi.png"
               title="Bienestar digital"
               desc="Balance saludable con la tecnología"
               tag="Artículo"
+              onClick={() => navigate('/recursos/bienestar-digital')}
             />
           </div>
         )}
@@ -129,18 +137,21 @@ const RecursosEducativos = () => {
               title="Ciudadanía digital"
               desc="Uso responsable de plataformas digitales"
               tag="Guía"
+              onClick={() => navigate('/recursos/ciudadania-digital')}
             />
             <Card
               img="/img/Digital/preveestafa.png"
               title="Prevención de estafas"
               desc="Cómo identificar fraudes en línea"
               tag="Seguridad"
+              onClick={() => navigate('/recursos/prevencion-estafas')}
             />
             <Card
               img="/img/Digital/Protestafa.png"
               title="Protección de datos"
               desc="Cuida tu información personal"
               tag="Artículo"
+              onClick={() => navigate('/recursos/proteccion-datos')}
             />
           </div>
         )}
@@ -150,7 +161,7 @@ const RecursosEducativos = () => {
   )
 }
 
-const Card = ({ title, desc, tag, img }) => (
+const Card = ({ title, desc, tag, img, onClick }) => (
   <div className="recurso-card">
     <div className="card-header">
       {img && <img src={img} alt={title} className="card-image" />}
@@ -161,7 +172,7 @@ const Card = ({ title, desc, tag, img }) => (
       <p>{desc}</p>
     </div>
     <div className="card-footer">
-      <a href="#" className="card-link">Ver recurso ↗</a>
+      <button onClick={onClick} className="card-link" style={{ background: 'none', border: 'none', cursor: 'pointer', font: 'inherit', padding: 0 }}>Ver recurso ↗</button>
     </div>
   </div>
 )
