@@ -1,6 +1,12 @@
 const getApiUrl = () => {
   // Obtener URL del .env
-  let url = import.meta.env.VITE_API_URL || 'http://localhost:5000';
+  let url = import.meta.env.VITE_API_URL;
+
+  // Si no hay variable de entorno, usar la IP actual para red local
+  if (!url) {
+    const hostname = window.location.hostname;
+    url = `http://${hostname}:5000`;
+  }
 
   // Eliminar slash final si existe
   url = url.replace(/\/$/, '');

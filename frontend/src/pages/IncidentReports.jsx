@@ -326,16 +326,21 @@ const IncidentReports = () => {
         <div
           className="modal-overlay"
           onClick={() => setShowMapModal(false)}
-          style={{ zIndex: 9999, padding: '5px' }}
+          style={{ zIndex: 9999, padding: '0' }}
         >
           <div
             className="modal-content"
             onClick={(e) => e.stopPropagation()}
             style={{
-              maxWidth: '1200px',
+              maxWidth: '100vw',
               width: '100%',
+              height: '100vh',
+              maxHeight: '100vh',
+              borderRadius: '0',
               padding: '0',
-              overflow: 'hidden'
+              overflowY: 'auto',
+              display: 'flex',
+              flexDirection: 'column'
             }}
           >
             <div className='navbarsububicacion'>
@@ -348,41 +353,47 @@ const IncidentReports = () => {
               </button>
             </div>
 
-            <div className='conenidodelmapaubicac'>
+            <div className='conenidodelmapaubicac' style={{ flex: 1, display: 'flex', flexDirection: 'column', padding: '20px' }}>
               <p>
                 <strong>Tipo:</strong> {selectedLocation.type}
               </p>
-              <p>
+              <p style={{ marginBottom: '15px' }}>
                 <strong>Coordenadas:</strong> {selectedLocation.lat}, {selectedLocation.lng}
               </p>
 
               {/* Mapa con iframe de OpenStreetMap */}
-              <iframe
-                width="100%"
-                height="400"
-                frameBorder="0"
-                scrolling="no"
-                marginHeight="0"
-                marginWidth="0"
-                src={`https://www.openstreetmap.org/export/embed.html?bbox=${selectedLocation.lng - 0.01},${selectedLocation.lat - 0.01},${selectedLocation.lng + 0.01},${selectedLocation.lat + 0.01}&layer=mapnik&marker=${selectedLocation.lat},${selectedLocation.lng}`}
-                style={{ border: '2px solid #e5e7eb', borderRadius: '10px' }}
-              />
+              <div style={{ flex: 1, minHeight: '300px' }}>
+                <iframe
+                  title="mapa-ubicacion"
+                  width="100%"
+                  height="100%"
+                  frameBorder="0"
+                  scrolling="no"
+                  marginHeight="0"
+                  marginWidth="0"
+                  src={`https://www.openstreetmap.org/export/embed.html?bbox=${selectedLocation.lng - 0.01},${selectedLocation.lat - 0.01},${selectedLocation.lng + 0.01},${selectedLocation.lat + 0.01}&layer=mapnik&marker=${selectedLocation.lat},${selectedLocation.lng}`}
+                  style={{ border: '2px solid #e5e7eb', borderRadius: '10px' }}
+                />
+              </div>
 
               {/* EDITAR */}
               {/* Enlace para abrir en Google Maps */}
-              <div style={{ marginTop: '16px', textAlign: 'center' }}>
+              <div style={{ marginTop: '20px', textAlign: 'center', paddingBottom: '20px' }}>
                 <a
                   href={`https://www.google.com/maps?q=${selectedLocation.lat},${selectedLocation.lng}`}
                   target="_blank"
                   rel="noopener noreferrer"
                   style={{
-                    padding: '12px 24px',
+                    padding: '16px 32px',
                     background: '#10b981',
                     color: 'white',
                     textDecoration: 'none',
                     borderRadius: '8px',
-                    fontWeight: '600',
-                    display: 'inline-block'
+                    fontWeight: 'bold',
+                    fontSize: '16px',
+                    display: 'inline-block',
+                    width: '100%',
+                    boxSizing: 'border-box'
                   }}
                 >
                   Abrir en Google Maps

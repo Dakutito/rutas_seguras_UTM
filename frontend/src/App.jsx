@@ -13,6 +13,20 @@ import AdminUsers from './pages/Adminusers'
 import Adminreports from './pages/Adminreports'
 import RecursosEducativos from './pages/RecursosEducativos'
 
+// RECURSOS EDUCATIVOS MÓDULOS
+import GuiaSeguridadUrbana from './pages/Recursos educativos/GuiaSeguridadUrbana'
+import ComoReportarIncidentes from './pages/Recursos educativos/ComoReportarIncidentes'
+import NumerosEmergencia from './pages/Recursos educativos/NumerosEmergencia'
+import RutasSegurasPortoviejo from './pages/Recursos educativos/RutasSegurasPortoviejo'
+import ManejoEstresAcademico from './pages/Recursos educativos/ManejoEstresAcademico'
+import PrimerosAuxiliosEmocionales from './pages/Recursos educativos/PrimerosAuxiliosEmocionales'
+import LineasApoyoPsicologico from './pages/Recursos educativos/LineasApoyoPsicologico'
+import BienestarDigital from './pages/Recursos educativos/BienestarDigital'
+import CiudadaniaDigital from './pages/Recursos educativos/CiudadaniaDigital'
+import PrevencionEstafas from './pages/Recursos educativos/PrevencionEstafas'
+import ProteccionDatos from './pages/Recursos educativos/ProteccionDatos'
+import IntroduccionRutasSeguras from './pages/Recursos educativos/IntroduccionRutasSeguras'
+
 import Login from './components/Login'
 import Register from './components/Register'
 
@@ -25,8 +39,7 @@ import AdminIncidents from './pages/AdminIncidents'
 
 import UserSettings from './pages/UserSettings'
 import AdminCategories from './pages/AdminCategories'
-import { usersAPI } from './services/api'
-
+import { userSettingsAPI } from './services/api'
 
 function App() {
   const [user, setUser] = useState(null)
@@ -74,7 +87,7 @@ function App() {
 
     const checkStatus = async () => {
       try {
-        const profile = await usersAPI.getProfile();
+        const profile = await userSettingsAPI.getProfile();
         if (profile.status === 'suspended') {
           alert('Tu cuenta ha sido suspendida por el administrador. Serás desconectado.');
           handleLogout();
@@ -159,9 +172,21 @@ function App() {
         <Navbar user={user} onLogout={handleLogout} isAdmin={isAdmin} darkMode={darkMode} onToggleDarkMode={toggleDarkMode} />
 
         <Routes>
-          {/* RUTAS PÚBLICAS */}
+          {/* RUTAS PÚBLICAS DE RECURSOS EDUCATIVOS*/}
           <Route path="/" element={user && isAdmin ? <Navigate to="/admin" replace /> : <Home />} />
           <Route path="/recursos" element={<RecursosEducativos />} />
+          <Route path="/recursos/seguridad-urbana" element={<GuiaSeguridadUrbana />} />
+          <Route path="/recursos/reportar-incidentes" element={<ComoReportarIncidentes />} />
+          <Route path="/recursos/numeros-emergencia" element={<NumerosEmergencia />} />
+          <Route path="/recursos/rutas-portoviejo" element={<RutasSegurasPortoviejo />} />
+          <Route path="/recursos/manejo-estres" element={<ManejoEstresAcademico />} />
+          <Route path="/recursos/primeros-auxilios" element={<PrimerosAuxiliosEmocionales />} />
+          <Route path="/recursos/apoyo-psicologico" element={<LineasApoyoPsicologico />} />
+          <Route path="/recursos/bienestar-digital" element={<BienestarDigital />} />
+          <Route path="/recursos/ciudadania-digital" element={<CiudadaniaDigital />} />
+          <Route path="/recursos/prevencion-estafas" element={<PrevencionEstafas />} />
+          <Route path="/recursos/proteccion-datos" element={<ProteccionDatos />} />
+          <Route path="/recursos/introduccion" element={<IntroduccionRutasSeguras />} />
           <Route path="/verify-email" element={<VerifyEmail />} />
 
           {/*RUTAS DE AUTENTICACIÓN */}

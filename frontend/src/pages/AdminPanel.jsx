@@ -46,7 +46,7 @@ const AdminPanel = ({ user }) => {
       const activeUsers = Array.isArray(users) ? users.filter(u => u.status === 'active').length : 0
       const hoy = new Date().toDateString()
       const todayCount = Array.isArray(reports) ? reports.filter(r => new Date(r.created_at).toDateString() === hoy).length : 0
-      const dangerCount = Array.isArray(reports) ? reports.filter(r => GRAVE_EMOTIONS.includes(r.emotion) || r.is_incident).length : 0
+      const dangerCount = Array.isArray(reports) ? reports.filter(r => !r.is_incident && GRAVE_EMOTIONS.includes(r.emotion)).length : 0
 
       setStats({ totalUsers, activeUsers, reports: Array.isArray(reports) ? reports : [], dangerCount, todayCount })
       calculateStats(Array.isArray(reports) ? reports : [])
@@ -213,13 +213,13 @@ const AdminPanel = ({ user }) => {
         <div className="danger-zone-container">
           <div className="danger-zone-header">
             <div>
-              <h2 className="danger-zone-title">⚠️ Reportes Emocionales Graves</h2>
+              <h2 className="danger-zone-title">Reportes Emocionales Graves</h2>
               <p className="danger-zone-subtitle">Filtrado por: Ansioso, Asustado, Triste y Enojado</p>
             </div>
             <div style={{ display: 'flex', gap: '12px', alignItems: 'center' }}>
               {filteredGraveReports.length > 0 && (
                 <button onClick={openBulkDeleteModal} className="admin-danger-btn-bulk">
-                  🗑️ Eliminar Todas
+                  Eliminar Todas
                 </button>
               )}
               <div className="search-box-container">
@@ -292,11 +292,11 @@ const AdminPanel = ({ user }) => {
   if (loading) return <div className="admin-layout"><div className="admin-main"><div className="card" style={{ textAlign: 'center', padding: '60px' }}><h2>Cargando Panel...</h2></div></div></div>
 
   const cards = [
-    { title: 'Total Usuarios', value: stats.totalUsers, bg: '#6b7280', icon: '👥' },
-    { title: 'Usuarios Activos', value: stats.activeUsers, bg: '#3b82f6', icon: '👤' },
-    { title: 'Alertas Graves', value: stats.dangerCount, bg: '#ef4444', icon: '⚠️' },
-    { title: 'Reportes Hoy', value: stats.todayCount, bg: '#10b981', icon: '📈' },
-    { title: 'Total Reportes', value: stats.reports.length, bg: '#818cf8', icon: '📋' },
+    { title: 'Total Usuarios', value: stats.totalUsers, bg: '#6b7280' },
+    { title: 'Usuarios Activos', value: stats.activeUsers, bg: '#3b82f6' },
+    { title: 'Alertas Graves', value: stats.dangerCount, bg: '#ef4444' },
+    { title: 'Reportes Hoy', value: stats.todayCount, bg: '#10b981' },
+    { title: 'Total Reportes', value: stats.reports.length, bg: '#818cf8' },
   ]
 
   return (

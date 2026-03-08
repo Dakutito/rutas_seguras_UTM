@@ -97,13 +97,12 @@ const AdminStats = () => {
         {/* Resumen rápido */}
         <div className="stats-summary-grid">
           {[
-            { label: 'Total Reportes', value: stats.totalReports, className: 'stats-summary-card purple', icon: '📊' },
-            { label: 'Reportes Hoy', value: stats.todayReports, className: 'stats-summary-card green', icon: '📈' },
-            { label: 'Emociones Positivas', value: stats.positiveCount, className: 'stats-summary-card green-light', icon: '😊' },
-            { label: 'Emociones Negativas', value: stats.negativeCount, className: 'stats-summary-card red', icon: '😢' },
+            { label: 'Total Reportes', value: stats.totalReports, className: 'stats-summary-card purple' },
+            { label: 'Reportes Hoy', value: stats.todayReports, className: 'stats-summary-card green' },
+            { label: 'Emociones Positivas', value: stats.positiveCount, className: 'stats-summary-card green-light' },
+            { label: 'Emociones Negativas', value: stats.negativeCount, className: 'stats-summary-card red' },
           ].map((s, i) => (
             <div key={i} className={s.className}>
-              <div className="stats-summary-icon">{s.icon}</div>
               <div className="stats-summary-value">{s.value}</div>
               <div className="stats-summary-label">{s.label}</div>
             </div>

@@ -87,7 +87,7 @@ const AdminReports = ({ type, onLocate }) => {
   const getFilteredByType = () => {
     if (type === 'incidents') return allReports.filter(r => r.is_incident)
     if (type === 'emotions') return allReports.filter(r => !r.is_incident)
-    if (type === 'danger') return allReports.filter(r => r.emotion === '😢' || r.emotion === '😡')
+    if (type === 'danger') return allReports.filter(r => !r.is_incident && ['😰', '😨', '😢', '😡'].includes(r.emotion))
     if (type === 'today') {
       const hoy = new Date().toDateString()
       return allReports.filter(r => new Date(r.created_at).toDateString() === hoy)
@@ -132,7 +132,7 @@ const AdminReports = ({ type, onLocate }) => {
               className="admin-danger-btn-bulk"
               style={{ alignSelf: 'center' }}
             >
-              🗑️ Eliminar Todo ({filteredBySearch.length})
+              Eliminar Todo ({filteredBySearch.length})
             </button>
           )}
         </div>
