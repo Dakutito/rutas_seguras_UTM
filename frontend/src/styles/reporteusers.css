@@ -325,13 +325,6 @@
 }
 
 
-/* reporte incidentes para el modo oscuro*/
-.detallesincidenteuser {
-  background: var(--bg-card);
-  padding: 24px;
-  border-radius: 12px;
-  border: 1px solid var(--border-color);
-}
 
 .sub_detallesincidenteuser {
   margin-bottom: 20px;
@@ -503,8 +496,6 @@
 
 /* --- MAPA REPORTE REARRANGED LAYOUT --- */
 .container_Ver_mapaReporte {
-  max-width: 100%;
-  padding: 20px;
   background: var(--bg-primary);
   min-height: calc(100vh - 80px);
 }
@@ -519,7 +510,7 @@
 }
 
 .ontainer_Ver_mapaReportecard.full-width-layout {
-  max-width: 1200px;
+  max-width: 1400px;
   margin: 0 auto;
 }
 
@@ -538,7 +529,7 @@
 
 .map-container-wrapper {
   min-height: 500px;
-  height: 60vh;
+  height: 80vh;
   border-radius: 15px;
   overflow: hidden;
   border: 2px solid var(--border-color);
@@ -772,6 +763,10 @@
 }
 
 @media (max-width: 768px) {
+  .container_Ver_mapaReporte {
+    padding: 0;
+  }
+
   .mapa-reporte-layout {
     flex-direction: column;
   }
@@ -782,8 +777,6 @@
 
   .map-container-wrapper {
     flex: none;
-    min-height: 400px;
-    height: 50vh;
   }
 
   .report-sidebar-desktop {

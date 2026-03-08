@@ -70,21 +70,25 @@ const RecursosEducativos = () => {
         {tab === 'seguridad' && (
           <div className="cards-grid">
             <Card
+              img="/img/Seguridad/SeguridadUrbana.png"
               title="Guía de Seguridad Urbana"
               desc="Consejos prácticos para desplazarte de forma segura"
               tag="Guía"
             />
             <Card
+              img="/img/Seguridad/reporincident.png"
               title="Cómo reportar incidentes"
               desc="Tutorial paso a paso del sistema de reportes"
               tag="Tutorial"
             />
             <Card
+              img="/img/Seguridad/numeemer.png"
               title="Números de emergencia"
               desc="ECU 911, Policía, Bomberos"
               tag="Referencia"
             />
             <Card
+              img="/img/Seguridad/img_mapa.png"
               title="Rutas seguras en Portoviejo"
               desc="Mapa interactivo de zonas seguras"
               tag="Mapa"
@@ -95,21 +99,25 @@ const RecursosEducativos = () => {
         {tab === 'bienestar' && (
           <div className="cards-grid">
             <Card
+              img="/img/Bienestar/ManejoEstres.png"
               title="Manejo del estrés académico"
               desc="Técnicas de relajación y mindfulness"
               tag="Curso"
             />
             <Card
+              img="/img/Bienestar/PrimerAuxilio.png"
               title="Primeros auxilios emocionales"
               desc="Cómo ayudar a alguien en crisis emocional"
               tag="Guía"
             />
             <Card
+              img="/img/Bienestar/ApoyoPsicolo.png"
               title="Líneas de apoyo psicológico"
               desc="Servicios gratuitos de salud mental"
               tag="Referencia"
             />
             <Card
+              img="/img/Bienestar/BienestarDigi.png"
               title="Bienestar digital"
               desc="Balance saludable con la tecnología"
               tag="Artículo"
@@ -120,16 +128,19 @@ const RecursosEducativos = () => {
         {tab === 'digital' && (
           <div className="cards-grid">
             <Card
+              img="/img/Digital/Ciudaddigi.png"
               title="Ciudadanía digital"
               desc="Uso responsable de plataformas digitales"
               tag="Guía"
             />
             <Card
+              img="/img/Digital/preveestafa.png"
               title="Prevención de estafas"
               desc="Cómo identificar fraudes en línea"
               tag="Seguridad"
             />
             <Card
+              img="/img/Digital/Protestafa.png"
               title="Protección de datos"
               desc="Cuida tu información personal"
               tag="Artículo"
@@ -142,9 +153,10 @@ const RecursosEducativos = () => {
   )
 }
 
-const Card = ({ title, desc, tag }) => (
+const Card = ({ title, desc, tag, img }) => (
   <div className="recurso-card">
     <div className="card-header">
+      {img && <img src={img} alt={title} className="card-image" />}
       <span className="tag">{tag}</span>
     </div>
     <div className="card-body">

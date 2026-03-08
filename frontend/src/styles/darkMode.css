@@ -146,19 +146,19 @@
 [data-theme="dark"] .modal-content,
 [data-theme="dark"] .navbar,
 [data-theme="dark"] .report-status,
-[data-theme="dark"] .botonesdeladminreport,
 [data-theme="dark"] .subb_botonesdeladminreport h3,
 [data-theme="dark"] .adminemailreporte,
 [data-theme="dark"] .navbarsububicacion,
 [data-theme="dark"] .cuandonohayreporte,
 [data-theme="dark"] .categoriaadinmodooscuro,
 [data-theme="dark"] .map-interactive-content {
-    background:#182234;
+    background: #182234;
     color: var(--text-primary);
     border: none;
 }
-[data-theme="dark"] .gestionuseradinmodooscuro{
-    background:#182234;
+
+[data-theme="dark"] .gestionuseradinmodooscuro {
+    background: #182234;
     border: none;
 }
 
@@ -166,12 +166,15 @@
     background: var(--bg-card);
     border: none;
 }
-[data-theme="dark"] .userconfiggh1_email input{
+
+[data-theme="dark"] .userconfiggh1_email input {
     background: #1f2e4b;
     border: none;
     color: var(--text-primary);
 }
-[data-theme="dark"] .userconfiggh1_email input{
+
+[data-theme="dark"] .userconfiggh1_email input,
+[data-theme="dark"] .tabs {
     background: #1f2e4b;
     border: none;
     color: var(--text-primary);
@@ -180,13 +183,16 @@
 [data-theme="dark"] .sud_adminemailreporte strong,
 [data-theme="dark"] .sud_adminemailreporte span,
 [data-theme="dark"] .conenidodelmapaubicac strong,
+[data-theme="dark"] .tab-text,
+[data-theme="dark"] .card-link h4,
+[data-theme="dark"] .card-link p,
 [data-theme="dark"] .subb_botonesdeladminreport p {
     color: rgb(123, 123, 123);
 }
 
 
 [data-theme="dark"] .sub_Comienzareporte,
-[data-theme="dark"] .sub_detallesincidenteuserBotones button{
+[data-theme="dark"] .sub_detallesincidenteuserBotones button {
     background: #172133;
     color: white;
     border: none;
@@ -199,23 +205,25 @@
 [data-theme="dark"] .reportedeuseraladmi,
 [data-theme="dark"] .ub_analisisemocionuser,
 [data-theme="dark"] .sub_sub_distribuiremouser,
-[data-theme="dark"] .sub_subb_comentario{
+[data-theme="dark"] .sub_subb_comentario {
     background: #161E33;
     color: rgb(255, 255, 255);
     border: none;
 }
+
 [data-theme="dark"] .sub_sub_subcontenidohistorialreportetotaluser,
-[data-theme="dark"] .categoriadereporte button{
+[data-theme="dark"] .categoriadereporte button {
     background: #172133;
     color: white;
     border: 1px solid var(--border-color);
 }
+
 [data-theme="dark"] .mensajemap,
-[data-theme="dark"] .location-status{
+[data-theme="dark"] .location-status {
     background: var(--bg-card);
-    color:rgb(255, 255, 255);
+    color: rgb(255, 255, 255);
     box-shadow: var(--shadow-card);
-    border:none;
+    border: none;
 }
 
 [data-theme="dark"].report-status strong,
@@ -231,24 +239,31 @@
 [data-theme="dark"] .mapacaloradmindeuser,
 [data-theme="dark"] .sub_analisisemocionuser h1,
 [data-theme="dark"] .sub_distribuiremouser h2,
-[data-theme="dark"] .map-sub-interactive-content span{
-    color:white;
+[data-theme="dark"] .map-sub-interactive-content span {
+    color: white;
 }
 
-[data-theme="dark"] .tardemotion{
-    color:white;
+[data-theme="dark"] .tabs button,
+[data-theme="dark"] .tabs button.active {
+    background-color: #182234;
+}
+
+[data-theme="dark"] .tardemotion {
+    color: white;
     background: var(--bg-card);
 }
+
 [data-theme="dark"] .sub_contenidoapartadobo h1,
-[data-theme="dark"] .tardemotion_ubi_us{
-    color:rgb(182, 182, 182);
+[data-theme="dark"] .tardemotion_ubi_us {
+    color: rgb(182, 182, 182);
 }
-[data-theme="dark"] .tardemotionboton{
+
+[data-theme="dark"] .tardemotionboton {
     background-color: #667eea;
     color: white;
 }
-[data-theme="dark"] .zonapelicgrocuenta{
+
+[data-theme="dark"] .zonapelicgrocuenta {
     background-color: #1A182C;
     border-color: #452036;
 }
-

@@ -90,7 +90,7 @@ const IncidentReports = () => {
   }
 
   return (
-    <div className="container">
+    <div className="Contenidoreporteincidet">
       <div className="card">
         {/* Header */}
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '30px', flexWrap: 'wrap', gap: '15px' }}>
@@ -106,16 +106,6 @@ const IncidentReports = () => {
             {!isUserAdmin && (
               <button
                 onClick={() => navigate('/dashboard')}
-                className="map-preview-btn"
-              >
-                inicio
-              </button>
-            )}
-
-            {/* Botón NUEVO REPORTE SOLO para usuarios */}
-            {!isUserAdmin && (
-              <button
-                onClick={() => navigate('/map-reporte')}
                 className="btn btn-primary"
                 style={{
                   background: '#3b82f6',
@@ -128,6 +118,16 @@ const IncidentReports = () => {
                   gap: '8px'
                 }}
               >
+                inicio
+              </button>
+            )}
+
+            {/* Botón NUEVO REPORTE SOLO para usuarios */}
+            {!isUserAdmin && (
+              <button
+                onClick={() => navigate('/map-reporte')}
+                className="map-preview-btn"
+              >
                 Nuevo Reportes
               </button>
             )}
@@ -137,16 +137,6 @@ const IncidentReports = () => {
               <button
                 onClick={() => navigate('/mapa-reportes')}
                 className="map-preview-btn"
-                style={{
-                  background: '#3b82f6',
-                  color: 'white',
-                  padding: '12px 24px',
-                  fontSize: '15px',
-                  fontWeight: '600',
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: '8px'
-                }}
               >
                 Ver Mapa
               </button>
@@ -253,7 +243,7 @@ const IncidentReports = () => {
                     </div>
                   </div>
 
-                  <div style={{ display: 'flex', flexDirection: 'column', gap: '10px', minWidth: '140px' }}>
+                  <div className='ListadeReporteUser'>
                     <span style={{
                       background: `${getIncidentColor(incident)}20`,
                       color: getIncidentColor(incident),
@@ -336,7 +326,7 @@ const IncidentReports = () => {
         <div
           className="modal-overlay"
           onClick={() => setShowMapModal(false)}
-          style={{ zIndex: 9999 }}
+          style={{ zIndex: 9999, padding: '5px' }}
         >
           <div
             className="modal-content"
@@ -354,7 +344,7 @@ const IncidentReports = () => {
               </h2>
               <button
                 onClick={() => setShowMapModal(false)}>
-                ✕ Cerrar
+                ✕
               </button>
             </div>
 

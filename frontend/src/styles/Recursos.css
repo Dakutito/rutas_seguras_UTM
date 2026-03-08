@@ -264,7 +264,6 @@
 /* RECURSO CARD RESPONSIVE */
 .recurso-card {
   background: var(--bg-card);
-  padding: 20px;
   border-radius: 16px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
   transition: transform 0.3s, box-shadow 0.3s;
@@ -272,6 +271,8 @@
   flex-direction: column;
   height: 100%;
   border: 1px solid var(--border-color);
+  overflow: hidden;
+  /* Ensure image corners are clipped */
 }
 
 .recurso-card:hover {
@@ -280,20 +281,32 @@
 }
 
 .card-header {
-  margin-bottom: 15px;
+  position: relative;
+}
+
+.card-image {
+  width: 100%;
+  height: 160px;
+  object-fit: cover;
+  display: block;
 }
 
 .tag {
-  font-size: 12px;
-  background: #e0f2fe;
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  font-size: 11px;
+  background: rgba(224, 242, 254, 0.9);
   color: #0369a1;
-  padding: 4px 12px;
+  padding: 3px 10px;
   border-radius: 12px;
-  font-weight: 600;
-  display: inline-block;
+  font-weight: 700;
+  backdrop-filter: blur(4px);
+  z-index: 1;
 }
 
 .card-body {
+  padding: 20px;
   flex: 1;
 }
 
@@ -318,8 +331,8 @@
 }
 
 .card-footer {
-  margin-top: 20px;
-  padding-top: 15px;
+  margin-top: auto;
+  padding: 15px 20px 20px;
   border-top: 1px solid var(--border-light);
 }
 

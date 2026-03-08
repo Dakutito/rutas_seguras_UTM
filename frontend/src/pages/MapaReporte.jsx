@@ -319,6 +319,7 @@ const MapaReporte = ({ user, viewOnly = false, onInicio, center: initialCenter }
                 center={initialCenter ? [initialCenter.lat, initialCenter.lng] : (userLocation ? [userLocation.lat, userLocation.lng] : [-1.0234, -80.4667])}
                 zoom={15}
                 className="full-map-reporte"
+                style={{ position: 'sticky' }}
               >
                 <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
                 <ChangeView center={initialCenter} />
@@ -386,7 +387,7 @@ const MapaReporte = ({ user, viewOnly = false, onInicio, center: initialCenter }
         {/* Leyenda (SOLO EN viewOnly) */}
         {viewOnly && incidentTypes.length > 0 && (
           <div className='mensajemap' style={{ margin: '15px' }}>
-            <h4 className='h4mensa'>Leyenda de Incidentes:</h4>
+            <h4 className='h4mensa'>Incidentes:</h4>
             <div style={{ display: 'flex', flexWrap: 'wrap', gap: '12px' }}>
               {incidentTypes.map(type => (
                 <div key={type.value} style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
