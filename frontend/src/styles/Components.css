@@ -1069,6 +1069,7 @@ body {
 
 /* MENÚ HAMBURGUESA MÓVIL */
 .mobile-menu-toggle {
+  color: white;
   display: none;
   background: none;
   border: none;

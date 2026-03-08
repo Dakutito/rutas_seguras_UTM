@@ -63,7 +63,7 @@ const Navbar = ({ user, onLogout, isAdmin, darkMode, onToggleDarkMode }) => {
           ) : (
             <>
               <Link to="/login" className="nav-link">Iniciar Sesión</Link>
-              <Link to="/register" style={{ textDecoration: 'none' }} className="nav-btn nav-btn-register">
+              <Link to="/register" style={{ textDecoration: 'none', color: 'white' }} className="nav-btn nav-btn-register">
                 Registrarse
               </Link>
               <button
@@ -104,7 +104,7 @@ const Navbar = ({ user, onLogout, isAdmin, darkMode, onToggleDarkMode }) => {
                 {/* Si es admin NO mostrar Dashboard */}
                 {!isAdmin && (
                   <>
-                    <Link to="/dashboard" className="mobile-link" onClick={closeMobileMenu}>Dashboard</Link>
+                    <Link to="/dashboard" className="mobile-link" onClick={closeMobileMenu}>Inicio</Link>
                     <Link to="/map" className="mobile-link" onClick={closeMobileMenu}>Mapa Emocional</Link>
                     <Link to="/reportes" className="mobile-link" onClick={closeMobileMenu}>Reportes de Incidentes</Link>
                   </>

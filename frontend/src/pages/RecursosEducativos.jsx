@@ -43,7 +43,6 @@ const RecursosEducativos = () => {
             className={tab === 'seguridad' ? 'active' : ''}
             onClick={() => setTab('seguridad')}
           >
-            <span className="tab-icon">🛡</span>
             <span className="tab-text">Seguridad</span>
           </button>
 
@@ -51,7 +50,6 @@ const RecursosEducativos = () => {
             className={tab === 'bienestar' ? 'active' : ''}
             onClick={() => setTab('bienestar')}
           >
-            <span className="tab-icon">💙</span>
             <span className="tab-text">Bienestar</span>
           </button>
 
@@ -59,7 +57,6 @@ const RecursosEducativos = () => {
             className={tab === 'digital' ? 'active' : ''}
             onClick={() => setTab('digital')}
           >
-            <span className="tab-icon">📱</span>
             <span className="tab-text">Digital</span>
           </button>
         </div>
