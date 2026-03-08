@@ -448,6 +448,7 @@ body {
 }
 
 .cardss {
+  cursor: pointer;
   background: var(--bg-card);
   padding: 30px;
   border-radius: 20px;

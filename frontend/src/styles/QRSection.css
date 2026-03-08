@@ -47,7 +47,8 @@
 
 .qr-download-btn {
     padding: 12px 24px;
-    background: var(--btn-primary);
+    color: white;
+    background: #667EEA;
     border: none;
     border-radius: 12px;
     font-weight: 600;
