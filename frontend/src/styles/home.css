@@ -762,6 +762,14 @@ footer {
     padding: 20px;
   }
 
+  .cta {
+    padding: 25px;
+  }
+
+  .cta h2 {
+    font-size: 30px;
+  }
+
   .section {
     padding: 25px 20px;
   }

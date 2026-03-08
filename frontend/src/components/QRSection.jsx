@@ -29,10 +29,10 @@ const QRSection = () => {
         <section className="qr-section">
             <div className="qr-card">
                 <div className="qr-info">
-                    <h2>📲 ¡Accede rápido!</h2>
+                    <h2>Comparte el Qr a otros Estudiantes!</h2>
                     <p>Escanea el código para entrar al sistema desde tu móvil sin descargar nada.</p>
                     <button onClick={downloadQR} className="qr-download-btn">
-                        💾 Descargar QR
+                        Descargar QR
                     </button>
                 </div>
                 <div className="qr-display">
