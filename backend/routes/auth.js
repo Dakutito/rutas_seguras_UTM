@@ -73,7 +73,7 @@ router.post('/register', [
     // Insertar usuario
     const userResult = await query(
       `INSERT INTO users (name, email, password, role, email_verified, status)
-        VALUES ($1, $2, $3, $4, false, 'pending') RETURNING id`,
+        VALUES ($1, $2, $3, $4, false, 'active') RETURNING id`,
       [name, normalizedEmail, hashedPassword, role]
     );
     const newUser = userResult.rows[0];

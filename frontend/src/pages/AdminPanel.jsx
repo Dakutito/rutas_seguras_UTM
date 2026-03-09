@@ -186,7 +186,7 @@ const AdminPanel = ({ user }) => {
                 </div>
               ))}
             </div>
-            <button onClick={() => setCurrentView('map_emotional')} className="admin-card-btn">Ver Mapa Emocional</button>
+            <button onClick={() => { setCurrentView('map_emotional'); setSelectedCenter(null); }} className="admin-card-btn">Ver Mapa Emocional</button>
           </div>
 
           <div className="heatmap-card">
@@ -206,7 +206,7 @@ const AdminPanel = ({ user }) => {
                 </div>
               ))}
             </div>
-            <button onClick={() => setCurrentView('map_incident')} className="admin-card-btn" style={{ background: '#ef4444' }}>Ver Mapa Incidentes</button>
+            <button onClick={() => { setCurrentView('map_incident'); setSelectedCenter(null); }} className="admin-card-btn" style={{ background: '#ef4444' }}>Ver Mapa Incidentes</button>
           </div>
         </div>
 
@@ -306,7 +306,7 @@ const AdminPanel = ({ user }) => {
         <nav className="sidebar-nav">
           {sidebarLinks.map(link => (
             <button key={link.name} className={`sidebar-link ${currentView === link.view ? 'active' : ''}`}
-              onClick={() => setCurrentView(link.view)}>
+              onClick={() => { setCurrentView(link.view); setSelectedCenter(null); }}>
               {link.name}
             </button>
           ))}
