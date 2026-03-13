@@ -40,7 +40,7 @@ const Navbar = ({ user, onLogout, isAdmin, darkMode, onToggleDarkMode }) => {
               {/* Si es admin NO mostrar Dashboard, solo Admin */}
               {!isAdmin && (
                 <>
-                  <Link to="/dashboard" className="nav-link">Dashboard</Link>
+                  <Link to="/dashboard" className="nav-link">Inicio</Link>
                   <Link to="/map" className="nav-link">Mapa Emocional</Link>
                   <Link to="/reportes" className="nav-link">Reportes</Link>
                 </>
