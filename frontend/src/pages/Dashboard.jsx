@@ -169,7 +169,7 @@ const Dashboard = ({ user }) => {
           {/* Acciones rápidas */}
           <h2>ACCIONES RÁPIDAS</h2>
           <div className="quick-actions">
-            <button onClick={() => navigate('/map')} className="action-btn btn-primary">
+            <button onClick={() => navigate('/map')} className="action-btn">
               <div className="action-btn-content">
                 <div className="action-btn-icon">😊</div>
                 <span>Reportar Emoción</span>
@@ -177,7 +177,7 @@ const Dashboard = ({ user }) => {
               <span className="action-btn-arrow">›</span>
             </button>
 
-            <button onClick={() => setShowHistorial(true)} className="action-btn btn-tertiary">
+            <button onClick={() => setShowHistorial(true)} className="action-btn">
               <div className="action-btn-content">
                 <div className="action-btn-icon">📋</div>
                 <span>Reportes Emocionales</span>
@@ -185,15 +185,15 @@ const Dashboard = ({ user }) => {
               <span className="action-btn-arrow">›</span>
             </button>
 
-            <button onClick={() => navigate('/map-reporte')} className="action-btn btn-secondary">
+            <button onClick={() => navigate('/map-reporte')} className="action-btn">
               <div className="action-btn-content">
                 <div className="action-btn-icon">⚠️</div>
-                <span>Reportar incidente</span>
+                <span>Reportar Incidente</span>
               </div>
               <span className="action-btn-arrow">›</span>
             </button>
 
-            <button onClick={() => navigate('/')} className="action-btn btn-secondary">
+            <button onClick={() => navigate('/')} className="action-btn">
               <div className="action-btn-content">
                 <div className="action-btn-icon">🤖</div>
                 <span>Asistente Emocional</span>
@@ -201,7 +201,7 @@ const Dashboard = ({ user }) => {
               <span className="action-btn-arrow">›</span>
             </button>
 
-            <button onClick={() => navigate('/settings')} className="action-btn btn-secondary">
+            <button onClick={() => navigate('/settings')} className="action-btn">
               <div className="action-btn-content">
                 <div className="action-btn-icon">⚙️</div>
                 <span>Mi Configuración</span>
@@ -223,7 +223,7 @@ const Dashboard = ({ user }) => {
                 <div className="header-info">
                   <div>
                     <h2>Estado de Ánimo</h2>
-                    <p>¿Cómo te sientes en este sector? <span className="mobile-only">(Toca para expandir)</span></p>
+                    <p style={{ marginBottom: '10px' }}>¿Cómo te sientes en este sector?</p>
                   </div>
                   <span className="toggle-icon">▾</span>
                 </div>
