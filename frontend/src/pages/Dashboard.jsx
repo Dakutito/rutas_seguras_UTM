@@ -69,13 +69,13 @@ const Dashboard = ({ user }) => {
   }
 
   const emotions = [
-    { emoji: '😊', label: 'Feliz', level: 'Nivel: Seguro', class: 'emotion-feliz' },
-    { emoji: '😌', label: 'Tranquilo', level: 'Nivel: Seguro', class: 'emotion-tranquilo' },
-    { emoji: '😐', label: 'Neutral', level: 'Nivel: Bajo', class: 'emotion-neutral' },
-    { emoji: '😰', label: 'Ansioso', level: 'Nivel: Medio', class: 'emotion-ansioso' },
-    { emoji: '😨', label: 'Asustado', level: 'Nivel: Medio', class: 'emotion-asustado' },
-    { emoji: '😢', label: 'Triste', level: 'Nivel: Alto', class: 'emotion-triste' },
-    { emoji: '😡', label: 'Enojado', level: 'Nivel: Peligro', class: 'emotion-enojado' }
+    { emoji: '😊', label: 'Feliz', level: 'Nivel: Seguro', class: 'emotion-feliz', color: '#10b981' },
+    { emoji: '😌', label: 'Tranquilo', level: 'Nivel: Seguro', class: 'emotion-tranquilo', color: '#34d399' },
+    { emoji: '😐', label: 'Neutral', level: 'Nivel: Bajo', class: 'emotion-neutral', color: '#a7f3d0' },
+    { emoji: '😰', label: 'Ansioso', level: 'Nivel: Medio', class: 'emotion-ansioso', color: '#fbbf24' },
+    { emoji: '😨', label: 'Asustado', level: 'Nivel: Medio', class: 'emotion-asustado', color: '#f59e0b' },
+    { emoji: '😢', label: 'Triste', level: 'Nivel: Alto', class: 'emotion-triste', color: '#f97316' },
+    { emoji: '😡', label: 'Enojado', level: 'Nivel: Peligro', class: 'emotion-enojado', color: '#ef4444' }
   ]
 
   // VISTA DE HISTORIAL
@@ -235,6 +235,7 @@ const Dashboard = ({ user }) => {
                     <Link
                       key={idx}
                       to="/map"
+                      state={{ emotionFromDashboard: emotion }}
                       className={`emotion-card-dashboard ${emotion.class}`}
                       style={{ textDecoration: 'none', borderRadius: '15px' }}
                     >

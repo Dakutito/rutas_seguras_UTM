@@ -1,17 +1,23 @@
 import { useState, useEffect } from 'react'
+import { useLocation } from 'react-router-dom'
 import Map from '../components/Map'
 import EmotionSelector from '../components/EmotionSelector'
 import CommentForm from '../components/CommentForm'
 import '../styles/MapView.css'
 
 const MapView = ({ isAdmin, user, onInicio, center }) => {
+  const location = useLocation()
   const [selectedEmotion, setSelectedEmotion] = useState(null)
   const [userLocation, setUserLocation] = useState(null)
   const [showReportForm, setShowReportForm] = useState(false)
   const [selectedZone, setSelectedZone] = useState(null)
+  const [locationLoading, setLocationLoading] = useState(true)
+  const [locationError, setLocationError] = useState(false)
 
   // Obtener ubicación real
   const getLocation = () => {
+    setLocationLoading(true)
+    setLocationError(false)
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition(
         (position) => {
@@ -19,15 +25,30 @@ const MapView = ({ isAdmin, user, onInicio, center }) => {
             lat: position.coords.latitude,
             lng: position.coords.longitude
           })
+          setLocationLoading(false)
         },
-        (error) => alert("Activa el GPS para reportar tu ubicación"),
+        (error) => {
+          setLocationError(true)
+          setLocationLoading(false)
+        },
         { enableHighAccuracy: true }
       )
+    } else {
+      setLocationError(true)
+      setLocationLoading(false)
     }
   }
 
-  // Cargar ubicación al iniciar
-  useEffect(() => { getLocation() }, [])
+  // Cargar ubicación al iniciar y verificar si venimos del Dashboard
+  useEffect(() => {
+    getLocation();
+
+    // Si venimos del dashboard con una emoción seleccionada, la seteamos
+    if (location.state?.emotionFromDashboard) {
+      setSelectedEmotion(location.state.emotionFromDashboard)
+      setShowReportForm(true)
+    }
+  }, [])
 
   if (isAdmin) {
     return (
@@ -92,30 +113,11 @@ const MapView = ({ isAdmin, user, onInicio, center }) => {
 
               {/* Selector de emociones */}
               <div className="emotion-section">
-                <EmotionSelector onSelect={setSelectedEmotion} />
+                <EmotionSelector onSelect={(emo) => {
+                  setSelectedEmotion(emo)
+                  setShowReportForm(true)
+                }} />
               </div>
-
-              {/* Botón de reporte */}
-              {selectedEmotion && userLocation && !showReportForm && (
-                <button
-                  onClick={() => setShowReportForm(true)}
-                  className="report-btn"
-                >
-                  <span className="emotion-icon">{selectedEmotion.emoji}</span>
-                  Reportar {selectedEmotion.label}
-                  <span className="arrow">→</span>
-                </button>
-              )}
-
-              {/* Estado del reporte */}
-              {selectedEmotion && userLocation && (
-                <div className="report-status">
-                  <div className="status-dot"></div>
-                  <span>
-                    Listo para reportar <strong>{selectedEmotion.label.toLowerCase()}</strong> en tu ubicación actual
-                  </span>
-                </div>
-              )}
             </div>
           </div>
         </div>
@@ -125,6 +127,8 @@ const MapView = ({ isAdmin, user, onInicio, center }) => {
             <CommentForm
               emotion={selectedEmotion}
               location={userLocation}
+              locationLoading={locationLoading}
+              locationError={locationError}
               onClose={() => {
                 setShowReportForm(false)
                 setSelectedEmotion(null)
