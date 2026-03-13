@@ -2,7 +2,7 @@ import { useState } from 'react'
 import '../styles/Components.css'
 import { reportsAPI } from '../services/api'
 
-const CommentForm = ({ emotion, location, onClose, isAdmin, user }) => {
+const CommentForm = ({ emotion, location, locationLoading, locationError, onClose, isAdmin, user }) => {
   const [comment, setComment] = useState('')
   const [submitted, setSubmitted] = useState(false)
   const [loading, setLoading] = useState(false)
@@ -45,6 +45,33 @@ const CommentForm = ({ emotion, location, onClose, isAdmin, user }) => {
       <div style={{ textAlign: 'center', padding: '30px', background: '#fef3c7', borderRadius: '10px' }}>
         <h3>Selecciona una emoción primero</h3>
         <button onClick={onClose} className="btn">Cerrar</button>
+      </div>
+    )
+  }
+
+  if (locationLoading) {
+    return (
+      <div className='tardemotion' style={{ textAlign: 'center' }}>
+        <h3 style={{ marginBottom: '15px' }}>Obteniendo Ubicación</h3>
+        <p style={{ marginBottom: '20px', color: '#4b5563' }}>Por favor espera un momento...</p>
+        <button className='tardemotionboton' onClick={onClose} style={{ width: '100%' }}>
+          Cancelar
+        </button>
+      </div>
+    )
+  }
+
+  if (!location || locationError) {
+    return (
+      <div className='tardemotion' style={{ textAlign: 'center' }}>
+        <h3 style={{ marginBottom: '15px', color: '#f59e0b' }}>Ubicación Requerida</h3>
+        <div style={{ fontSize: '40px', marginBottom: '15px' }}>📍</div>
+        <p style={{ marginBottom: '20px', color: '#4b5563' }}>
+          Por favor activa el GPS / Ubicación en tu dispositivo o navegador para poder enviar tu reporte.
+        </p>
+        <button className='tardemotionboton' onClick={onClose} style={{ width: '100%' }}>
+          Cerrar
+        </button>
       </div>
     )
   }
