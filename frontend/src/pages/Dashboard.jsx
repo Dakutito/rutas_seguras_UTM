@@ -1,3 +1,4 @@
+// Force Vercel rebuild: 2026-03-13T17:30 - Dakutito
 import { useState, useEffect } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import '../styles/Components.css'
