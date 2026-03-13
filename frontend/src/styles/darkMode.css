@@ -151,6 +151,8 @@
 [data-theme="dark"] .navbarsububicacion,
 [data-theme="dark"] .cuandonohayreporte,
 [data-theme="dark"] .categoriaadinmodooscuro,
+[data-theme="dark"] .action-btn,
+[data-theme="dark"] .action-btn:hover,
 [data-theme="dark"] .map-interactive-content {
     background: #182234;
     color: var(--text-primary);
