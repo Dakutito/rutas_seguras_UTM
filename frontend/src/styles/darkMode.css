@@ -176,6 +176,7 @@
 }
 
 [data-theme="dark"] .userconfiggh1_email input,
+[data-theme="dark"] .mobile-menu-content a,
 [data-theme="dark"] .tabs {
     background: #1f2e4b;
     border: none;

@@ -17,6 +17,7 @@ const EmotionSelector = ({ onSelect }) => {
         flexDirection: 'row',
         flexWrap: 'wrap',
         gap: '10px',
+        justifyContent: 'center'
       }}>
         {emotions.map((emotion, index) => (
           <button
