@@ -342,28 +342,6 @@ export const userSettingsAPI = {
     return handleResponse(response);
   },
 
-  // Subir foto
-  uploadPhoto: async (formData) => {
-    const token = getToken();
-    const response = await fetch(`${API_URL}/api/user-settings/upload-photo`, {
-      method: 'POST',
-      headers: {
-        ...(token && { 'Authorization': `Bearer ${token}` })
-        // No Content-Type header needed for FormData, browser sets it with boundary
-      },
-      body: formData
-    });
-    return handleResponse(response);
-  },
-
-  // Eliminar foto
-  deletePhoto: async () => {
-    const response = await fetch(`${API_URL}/api/user-settings/delete-photo`, {
-      method: 'DELETE',
-      headers: authHeaders()
-    });
-    return handleResponse(response);
-  },
 
   // Eliminar cuenta
   deleteAccount: async () => {
