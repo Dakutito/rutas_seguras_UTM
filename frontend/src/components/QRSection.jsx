@@ -30,7 +30,7 @@ const QRSection = () => {
             <div className="qr-card">
                 <div className="qr-info">
                     <h2>¡Comparte el QR con otros estudiantes!</h2>
-                    <p>Escanea el código para entrar al sistema desde tu móvil sin descargar nada.</p>
+                    <p>Escanea el código para entrar al sistema sin descargar nada.</p>
                     <button onClick={downloadQR} className="qr-download-btn">
                         Descargar QR
                     </button>
@@ -44,7 +44,7 @@ const QRSection = () => {
                             level={"H"}
                             includeMargin={true}
                             imageSettings={{
-                                src: "/favicon.ico", // Attempting to use favicon if it exists
+                                src: "/favicon.ico", 
                                 x: undefined,
                                 y: undefined,
                                 height: 40,
