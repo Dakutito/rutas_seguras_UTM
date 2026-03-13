@@ -1,12 +1,12 @@
 const EmotionSelector = ({ onSelect }) => {
   const emotions = [
-    { emoji: '😊 Feliz', label: 'Feliz', color: '#10b981' },
-    { emoji: '😌 Tranquilo', label: 'Tranquilo', color: '#34d399' },
-    { emoji: '😐 Neutral', label: 'Neutral', color: '#a7f3d0' },
-    { emoji: '😰 Ansioso', label: 'Ansioso', color: '#fbbf24' },
-    { emoji: '😨 Asustado', label: 'Asustado', color: '#f59e0b' },
-    { emoji: '😢 Triste', label: 'Triste', color: '#f97316' },
-    { emoji: '😡 Enojado', label: 'Enojado', color: '#ef4444' },
+    { emoji: '😊', label: 'Feliz', color: '#10b981' },
+    { emoji: '😌', label: 'Tranquilo', color: '#34d399' },
+    { emoji: '😐', label: 'Neutral', color: '#a7f3d0' },
+    { emoji: '😰', label: 'Ansioso', color: '#fbbf24' },
+    { emoji: '😨', label: 'Asustado', color: '#f59e0b' },
+    { emoji: '😢', label: 'Triste', color: '#f97316' },
+    { emoji: '😡', label: 'Enojado', color: '#ef4444' },
   ]
 
   return (
