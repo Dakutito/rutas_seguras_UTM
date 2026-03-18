@@ -32,7 +32,7 @@ const MapView = ({ isAdmin, user, onInicio, center }) => {
           setLocationError(true)
           setLocationLoading(false)
         },
-        { 
+        {
           enableHighAccuracy: true,
           timeout: 10000,
           maximumAge: 0
@@ -110,8 +110,8 @@ const MapView = ({ isAdmin, user, onInicio, center }) => {
                   </span>
                 </div>
                 {!userLocation && (
-                  <button 
-                    onClick={getLocation} 
+                  <button
+                    onClick={getLocation}
                     className="location-btn"
                     disabled={locationLoading}
                   >
@@ -120,7 +120,7 @@ const MapView = ({ isAdmin, user, onInicio, center }) => {
                 )}
                 {locationError && !userLocation && (
                   <div className="location-error-msg" style={{ color: '#ef4444', fontSize: '12px', marginTop: '8px', fontWeight: '500' }}>
-                    ⚠️ No se pudo obtener la ubicación. Por favor, activa el GPS y otorga permisos.
+                    No se pudo obtener la ubicación. Por favor, activa el GPS y otorga permisos.
                   </div>
                 )}
               </div>
