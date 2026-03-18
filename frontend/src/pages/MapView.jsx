@@ -28,10 +28,15 @@ const MapView = ({ isAdmin, user, onInicio, center }) => {
           setLocationLoading(false)
         },
         (error) => {
+          console.error("Error de geolocalización:", error);
           setLocationError(true)
           setLocationLoading(false)
         },
-        { enableHighAccuracy: true }
+        { 
+          enableHighAccuracy: true,
+          timeout: 10000,
+          maximumAge: 0
+        }
       )
     } else {
       setLocationError(true)
@@ -105,9 +110,18 @@ const MapView = ({ isAdmin, user, onInicio, center }) => {
                   </span>
                 </div>
                 {!userLocation && (
-                  <button onClick={getLocation} className="location-btn">
-                    Activar Ubicación
+                  <button 
+                    onClick={getLocation} 
+                    className="location-btn"
+                    disabled={locationLoading}
+                  >
+                    {locationLoading ? 'Obteniendo...' : 'Activar Ubicación'}
                   </button>
+                )}
+                {locationError && !userLocation && (
+                  <div className="location-error-msg" style={{ color: '#ef4444', fontSize: '12px', marginTop: '8px', fontWeight: '500' }}>
+                    ⚠️ No se pudo obtener la ubicación. Por favor, activa el GPS y otorga permisos.
+                  </div>
                 )}
               </div>
 

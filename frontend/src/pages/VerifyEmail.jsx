@@ -8,19 +8,6 @@ function VerifyEmail() {
   const location = useLocation();
   const navigate = useNavigate();
 
-  useEffect(() => {
-    const params = new URLSearchParams(location.search);
-    const token = params.get('token');
-
-    if (!token) {
-      setStatus('error');
-      setMessage('Token no encontrado');
-      return;
-    }
-
-    verifyEmail(token);
-  }, [location]);
-
   const verifyEmail = async (token) => {
     try {
       const data = await authAPI.verifyEmail(token);
@@ -42,6 +29,19 @@ function VerifyEmail() {
       setMessage(errorData?.error || 'Error al verificar el email');
     }
   };
+
+  useEffect(() => {
+    const params = new URLSearchParams(location.search);
+    const token = params.get('token');
+
+    if (!token) {
+      setStatus('error');
+      setMessage('Token no encontrado');
+      return;
+    }
+
+    verifyEmail(token);
+  }, [location]);
 
   return (
     <div className="verify-email-container">
