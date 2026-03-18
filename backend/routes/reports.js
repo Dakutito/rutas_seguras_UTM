@@ -3,10 +3,10 @@ const router = express.Router();
 const { query } = require('../config/database');
 const { authenticateToken } = require('../middleware/auth');
 
-// OBTENER TODOS LOS REPORTES CON INFO DEL USUARIO (Para Admin)
+// AQUI SE OBTENER TODOS  LOS REPORTES CON INFO DEL USUARIO (Para Admin)
 router.get('/', async (req, res) => {
   try {
-    const { type } = req.query; // 'emotion' o 'incident'
+    const { type } = req.query; // 'emocion' o 'incidentes'
 
     const emotionsQuery = `
       SELECT 

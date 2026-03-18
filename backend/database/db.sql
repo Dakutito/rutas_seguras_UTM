@@ -1,9 +1,4 @@
--- ==========================================
--- SCRIPT DE BASE DE DATOS - RUTAS SEGURAS UTM
--- Compatible con Supabase / PostgreSQL
--- ==========================================
-
--- 1. LIMPIEZA (Opcional, ten cuidado en producción)
+-- 1. LIMPIEZA (Opcional, cuidado en producción)
 -- Si ya tienes usuarios creados y no quieres borrarlos, NO ejecutes la línea de 'users'
 DROP TABLE IF EXISTS activity_logs CASCADE;
 DROP TABLE IF EXISTS user_sessions CASCADE;
@@ -13,7 +8,7 @@ DROP TABLE IF EXISTS incident_reports CASCADE;
 DROP TABLE IF EXISTS incident_categories CASCADE;
 -- DROP TABLE IF EXISTS users CASCADE; -- Descomenta solo si quieres borrar todas las cuentas
 
--- 2. TABLA DE USUARIOS
+-- TABLA DE USUARIOS
 CREATE TABLE users (
     id SERIAL PRIMARY KEY,
     name VARCHAR(255) NOT NULL,
@@ -28,7 +23,7 @@ CREATE TABLE users (
 
 CREATE INDEX idx_users_email ON users(email);
 
--- 3. TABLA DE CATEGORÍAS DE INCIDENTES
+-- TABLA DE CATEGORÍAS DE INCIDENTES
 CREATE TABLE incident_categories (
     id SERIAL PRIMARY KEY,
     name VARCHAR(100) UNIQUE NOT NULL,
@@ -39,7 +34,7 @@ CREATE TABLE incident_categories (
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
--- 4. TABLA DE REPORTES DE INCIDENTES
+-- TABLA DE REPORTES DE INCIDENTES
 CREATE TABLE incident_reports (
     id SERIAL PRIMARY KEY,
     user_id INTEGER REFERENCES users(id) ON DELETE CASCADE,
@@ -58,7 +53,7 @@ CREATE INDEX idx_incidents_category ON incident_reports(category_id);
 CREATE INDEX idx_incidents_location ON incident_reports(latitude, longitude);
 CREATE INDEX idx_incidents_status ON incident_reports(status);
 
--- 5. TABLA DE REPORTES DE EMOCIONES
+-- TABLA DE REPORTES DE EMOCIONES
 CREATE TABLE emotion_reports (
     id SERIAL PRIMARY KEY,
     user_id INTEGER REFERENCES users(id) ON DELETE CASCADE,
@@ -75,7 +70,7 @@ CREATE TABLE emotion_reports (
 CREATE INDEX idx_emotions_location ON emotion_reports(latitude, longitude);
 CREATE INDEX idx_emotions_expires ON emotion_reports(expires_at);
 
--- 6. TABLA DE ZONAS DE RIESGO
+-- ABLA DE ZONAS DE RIESGO
 CREATE TABLE risk_zones (
     id SERIAL PRIMARY KEY,
     latitude DECIMAL(10,8) NOT NULL,
@@ -87,7 +82,7 @@ CREATE TABLE risk_zones (
     UNIQUE(latitude, longitude)
 );
 
--- 7. FUNCIÓN PARA CALCULAR ZONAS DE RIESGO (INTEGRADA)
+-- FUNCIÓN PARA CALCULAR ZONAS DE RIESGO (INTEGRADA)
 CREATE OR REPLACE FUNCTION update_risk_zones()
 RETURNS void AS $$
 BEGIN
@@ -134,7 +129,7 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql;
 
--- 6. INSERTAR CATEGORÍAS POR DEFECTO
+-- INSERTAR CATEGORÍAS POR DEFECTO
 INSERT INTO incident_categories (name, icon, color, display_order) VALUES
 ('Robo', '🚨', '#ef4444', 1),
 ('Asalto', '⚠️', '#dc2626', 2),
@@ -148,9 +143,7 @@ ON CONFLICT (name) DO UPDATE SET
     icon = EXCLUDED.icon,
     color = EXCLUDED.color;
 
--- 9. USUARIO ADMINISTRADOR (Contraseña: admin123)
--- Nota: En Supabase las contraseñas suelen manejarse vía Auth, 
--- pero esto sirve para insertar el perfil en la tabla 'users' de la app.
+-- USUARIO ADMINISTRADOR (Contraseña: admin123)
 INSERT INTO users (name, email, password, role, status)
 VALUES ('Administrador', 'admin@rutas.com', '$2a$10$YourHashedPasswordHere', 'admin', 'active')
 ON CONFLICT (email) DO NOTHING;

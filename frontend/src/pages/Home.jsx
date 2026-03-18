@@ -32,7 +32,7 @@ const Home = () => {
 
         <div className="emotion-card">
           <h3>¿Cómo te sientes ahora?</h3>
-          <div className="location">📍 Ubicación detectada</div>
+          <div className="location">Ubicación detectada</div>
 
           <div className="emotions">
             <div className="emotion" style={{ background: '#DBFCE7', border: '3px solid #92F4B7' }}><span>😊</span><h4>Feliz</h4></div>

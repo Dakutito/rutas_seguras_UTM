@@ -187,10 +187,16 @@
 [data-theme="dark"] .sud_adminemailreporte span,
 [data-theme="dark"] .conenidodelmapaubicac strong,
 [data-theme="dark"] .tab-text,
-[data-theme="dark"] .card-link h4,
-[data-theme="dark"] .card-link p,
 [data-theme="dark"] .subb_botonesdeladminreport p {
     color: rgb(123, 123, 123);
+}
+
+[data-theme="dark"] .card-link h4 {
+    color: #ffffff;
+}
+
+[data-theme="dark"] .card-link p {
+    color: #a3a3a3;
 }
 
 

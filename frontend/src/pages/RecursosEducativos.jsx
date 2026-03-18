@@ -16,7 +16,7 @@ const RecursosEducativos = () => {
 
       <h1>Recursos Educativos</h1>
       <p className="subtitle">
-        Material de apoyo sobre seguridad urbana, bienestar emocional y ciudadanía digital
+        Material de apoyo para la seguridad urbana, bienestar emocional y ciudadanía <br /> digital en nuestra comunidad universitaria
       </p>
 
       {/* VIDEO DESTACADO */}
@@ -29,8 +29,7 @@ const RecursosEducativos = () => {
           <div className="badge-video"><span>Video Destacado</span></div>
           <h3>Introducción a Rutas Seguras UTM</h3>
           <p>
-            Conoce cómo funciona la plataforma y cómo puedes contribuir a crear
-            una comunidad más segura en Portoviejo.
+            Descubre todas las herramientas y funciones que ofrece nuestra <br /> plataforma para mejorar tu experiencia de seguridad en el campus y sus <br /> alrededores en este breve recorrido guiado.
           </p>
           <button className="btn-vervideo" onClick={() => navigate('/recursos/introduccion')}>Ver video (5 min)</button>
         </div>
