@@ -47,14 +47,12 @@ function VerifyEmail() {
     <div className="verify-email-container">
       {status === 'loading' && (
         <div className="status-box">
-          <div className="spinner">⏳</div>
           <h2>Verificando tu email...</h2>
         </div>
       )}
 
       {status === 'success' && (
         <div className="status-box success">
-          <div className="icon">✅</div>
           <h2>¡Email Verificado!</h2>
           <p>{message}</p>
           <p>Serás redirigido al login...</p>
