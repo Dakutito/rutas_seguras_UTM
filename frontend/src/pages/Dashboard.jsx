@@ -1,11 +1,13 @@
 // Force Vercel rebuild: 2026-03-13T17:30 - Dakutito
 import { useState, useEffect } from 'react'
-import { Link, useNavigate } from 'react-router-dom'
+import { Link, useNavigate, useLocation } from 'react-router-dom'
 import '../styles/Components.css'
 import { API_URL } from '../services/api'
+import { QRSection } from '../components/QRSection'
 
 const Dashboard = ({ user }) => {
   const navigate = useNavigate()
+  const location = useLocation()
   const [showHistorial, setShowHistorial] = useState(false)
   const [userReports, setUserReports] = useState([])
   const [loading, setLoading] = useState(false)
@@ -18,6 +20,11 @@ const Dashboard = ({ user }) => {
     window.addEventListener('resize', handleResize);
     return () => window.removeEventListener('resize', handleResize);
   }, [])
+  
+  // Resetear vista de historial al navegar al dashboard (ej. clic en "Inicio" del Navbar)
+  useEffect(() => {
+    setShowHistorial(false)
+  }, [location.key])
 
   const loadUserReports = async () => {
     setLoading(true)

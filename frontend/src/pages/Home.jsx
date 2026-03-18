@@ -139,6 +139,7 @@ const Home = () => {
           </div>
         </section>
       )}
+
       <footer className='footerhome'>
         <div>Rutas Seguras UTM</div>
         <div>Universidad Técnica de Manabí - Portoviejo, Ecuador</div>

@@ -1,7 +1,7 @@
 import { QRCodeSVG } from 'qrcode.react';
 import '../styles/QRSection.css';
 
-const QRSection = () => {
+export const QRSection = () => {
     const productionUrl = "https://rutas-seguras-utm.vercel.app/";
 
     const downloadQR = () => {
@@ -44,7 +44,7 @@ const QRSection = () => {
                             level={"H"}
                             includeMargin={true}
                             imageSettings={{
-                                src: "/favicon.ico", 
+                                src: "/favicon.ico",
                                 x: undefined,
                                 y: undefined,
                                 height: 40,
@@ -59,5 +59,6 @@ const QRSection = () => {
         </section>
     );
 };
+
 
 export default QRSection;
