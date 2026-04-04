@@ -115,7 +115,6 @@ BEGIN
                     ELSE 1 
                 END as weight
             FROM emotion_reports
-            WHERE expires_at > NOW()
             
             UNION ALL
             

@@ -64,7 +64,7 @@
 }
 
 .sidebar-title {
-    color: #f87171;
+    color: #3f3f3f;
     font-size: 22px;
     font-weight: 800;
     padding: 0 25px;
@@ -112,13 +112,14 @@
 .admin-main {
     padding: 20px;
     flex: 1;
-    max-width: 1400px;
+    max-width: 1600px;
     margin: 0 auto;
     width: calc(100% - 260px);
 }
 
 /* STATS CARDS */
 .stats-grid {
+    padding-top: 25px;
     display: grid;
     grid-template-columns: repeat(5, 1fr);
     gap: 15px;
@@ -126,9 +127,9 @@
 }
 
 .stat-card {
+    background: rgb(218, 219, 223);
     padding: 20px;
     border-radius: 14px;
-    color: white;
     display: flex;
     justify-content: space-between;
     box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
@@ -156,7 +157,7 @@
 /* HEATMAP SECTION */
 .admin-content-grid {
     display: grid;
-    grid-template-columns: 1fr 1fr;
+    grid-template-columns: 1fr 1fr 1fr;
     gap: 30px;
 }
 
@@ -411,12 +412,6 @@
     box-shadow: 0 4px 12px rgba(99, 102, 241, 0.2);
 }
 
-/* VIEW CONTENT AREA */
-.view-content-area {
-    background: transparent;
-    width: 100%;
-}
-
 /* SHARED ADMIN TEXT Styles */
 .admin-desc-text {
     color: var(--text-secondary);
@@ -447,11 +442,9 @@
 
 .report-comment-box {
     margin: 10px 0;
-    padding: 8px;
+    padding: 8px 0px;
     border-radius: 6px;
     font-size: 14px;
-    background: var(--bg-hover);
-    color: var(--text-primary);
 }
 
 /* USER MANAGEMENT STYLES */
@@ -462,14 +455,11 @@
     margin-bottom: 35px;
 }
 
-.admin-stat-card-blue,
-.admin-stat-card-green,
-.admin-stat-card-red,
-.admin-stat-card-purple {
+.admin-stat-card {
+    background: rgb(218, 219, 223);
     padding: 25px;
     border-radius: 12px;
     text-align: center;
-    color: white;
 }
 
 .admin-stat-card-blue {
@@ -582,23 +572,24 @@
     padding: 18px;
     border-radius: 10px;
     text-align: center;
-    color: white;
 }
 
 .stats-summary-card.purple {
-    background: #4f46e5;
+    background: #1E293B;
+    color: white;
 }
 
 .stats-summary-card.green {
-    background: #10b981;
+    background: #FFFFFF;
+    border: 1px solid var(--border-color);
 }
 
 .stats-summary-card.green-light {
-    background: #10b981;
+    background: #F0FDF4;
 }
 
 .stats-summary-card.red {
-    background: #ef4444;
+    background: #FEE2E2;
 }
 
 .stats-summary-icon {
@@ -649,12 +640,12 @@
 }
 
 .impact-box-positive {
-    background: #d1fae5;
+    background: #F5FBF9;
     color: #065f46;
 }
 
 .impact-box-negative {
-    background: #fee2e2;
+    background: #FBF7F8;
     color: #991b1b;
 }
 
@@ -704,21 +695,18 @@
 }
 
 .danger-level-card.bajo {
-    background: #d1fae5;
     color: #065f46;
-    border-color: #10b981;
+    border-color: #d1fae5;
 }
 
 .danger-level-card.medio {
-    background: #fef3c7;
     color: #92400e;
-    border-color: #fbbf24;
+    border-color: #fef3c7;
 }
 
 .danger-level-card.alto {
-    background: #fee2e2;
     color: #991b1b;
-    border-color: #ef4444;
+    border-color: #fee2e2;
 }
 
 [data-theme="dark"] .danger-level-card.bajo {
@@ -1044,6 +1032,6 @@
     }
 
     .stats-grid {
-        grid-template-columns: 1fr 1fr;
+        grid-template-columns: 1fr 1fr 1fr;
     }
 }

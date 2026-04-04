@@ -29,6 +29,7 @@ const MapaReporte = ({ user, viewOnly = false, onInicio, center: initialCenter }
   const [position, setPosition] = useState(null)
   const [showReportMobile, setShowReportMobile] = useState(false)
   const [incidentType, setIncidentType] = useState('')
+  const [title, setTitle] = useState('')
   const [description, setDescription] = useState('')
   const [loading, setLoading] = useState(false)
   const [existingIncidents, setExistingIncidents] = useState([])
@@ -124,6 +125,7 @@ const MapaReporte = ({ user, viewOnly = false, onInicio, center: initialCenter }
     try {
       await incidentsAPI.create({
         category_id: incidentType,
+        title: title.trim(),
         description: description.trim(),
         latitude: position.lat,
         longitude: position.lng
@@ -201,6 +203,28 @@ const MapaReporte = ({ user, viewOnly = false, onInicio, center: initialCenter }
       </div>
 
       <div className='sub_detallesincidenteuser' style={{ marginTop: '15px' }}>
+        <label>Título (Opcional)</label>
+        <input
+          type="text"
+          value={title}
+          onChange={(e) => setTitle(e.target.value)}
+          placeholder="Ej: Robo de vehículo, Asalto a mano armada..."
+          maxLength={255}
+          style={{
+            width: '100%',
+            padding: '10px 12px',
+            border: '1px solid var(--border-color)',
+            borderRadius: '8px',
+            fontSize: '14px',
+            background: 'var(--bg-card)',
+            color: 'var(--text-primary)',
+            outline: 'none',
+            boxSizing: 'border-box'
+          }}
+        />
+      </div>
+
+      <div className='sub_detallesincidenteuser' style={{ marginTop: '15px' }}>
         <label>Descripción (Opcional)</label>
         <textarea
           value={description}
@@ -220,7 +244,7 @@ const MapaReporte = ({ user, viewOnly = false, onInicio, center: initialCenter }
           {loading ? 'Enviando...' : 'Enviar Reporte'}
         </button>
         <button
-          onClick={() => { setPosition(null); setIncidentType(''); setDescription(''); }}
+          onClick={() => { setPosition(null); setIncidentType(''); setTitle(''); setDescription(''); }}
           className="btn-clear-report"
         >
           Limpiar
@@ -230,7 +254,7 @@ const MapaReporte = ({ user, viewOnly = false, onInicio, center: initialCenter }
   )
 
   return (
-    <div className="container_Ver_mapaReporte">
+    <div className="container_Ver_mapaReporte" style={{ marginTop: '10px' }}>
       <div className={`ontainer_Ver_mapaReportecard ${viewOnly ? 'full-width-layout' : ''}`}>
 
         <div className="mapa-reporte-layout">
@@ -249,9 +273,6 @@ const MapaReporte = ({ user, viewOnly = false, onInicio, center: initialCenter }
 
               <div className="header-actions-map">
                 <div className="nav-buttons-map">
-                  <button onClick={onInicio || (() => navigate('/admin'))} className="btn-secondary-map" style={{ background: '#6366f1', color: 'white' }}>
-                    Inicio
-                  </button>
                   {!onInicio && (
                     <button onClick={() => navigate('/reportes')} className="btn-secondary-map">
                       Ver Lista
@@ -264,7 +285,7 @@ const MapaReporte = ({ user, viewOnly = false, onInicio, center: initialCenter }
                       onClick={() => setShowReportMobile(true)}
                       className="mobile-report-toggle-btn"
                     >
-                      ⚠️ Reportar
+                      Reportar
                     </button>
                   )}
                 </div>

@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { Link, useNavigate } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
 import '../styles/AdminPanel.css'
 import { usersAPI, reportsAPI, incidentsAPI } from '../services/api'
 
@@ -208,53 +208,54 @@ const AdminPanel = ({ user }) => {
             </div>
             <button onClick={() => { setCurrentView('map_incident'); setSelectedCenter(null); }} className="admin-card-btn" style={{ background: '#ef4444' }}>Ver Mapa Incidentes</button>
           </div>
-        </div>
-
-        <div className="danger-zone-container">
-          <div className="danger-zone-header">
-            <div>
-              <h2 className="danger-zone-title">Reportes Emocionales Graves</h2>
-              <p className="danger-zone-subtitle">Filtrado por: Ansioso, Asustado, Triste y Enojado</p>
-            </div>
-            <div style={{ display: 'flex', gap: '12px', alignItems: 'center' }}>
-              {filteredGraveReports.length > 0 && (
-                <button onClick={openBulkDeleteModal} className="admin-danger-btn-bulk">
-                  Eliminar Todas
-                </button>
-              )}
-              <div className="search-box-container">
-                <input type="text" placeholder="Buscar por usuario o correo..." value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)}
-                  className="admin-search-input" />
-                <span className="search-icon">🔍</span>
+          <div className="danger-zone-container">
+            <div className="danger-zone-header">
+              <div>
+                <h2 className="danger-zone-title">Reportes Emocionales Graves</h2>
+                <p className="danger-zone-subtitle">Filtrado por: Ansioso, Asustado, Triste y Enojado</p>
+              </div>
+              <div style={{ display: 'flex', gap: '12px', alignItems: 'center' }}>
+                {filteredGraveReports.length > 0 && (
+                  <button onClick={openBulkDeleteModal} className="admin-danger-btn-bulk">
+                    Eliminar Todas
+                  </button>
+                )}
+                <div className="search-box-container">
+                  <input type="text" placeholder="Buscar por usuario o correo..." value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)}
+                    className="admin-search-input" />
+                  <span className="search-icon">🔍</span>
+                </div>
               </div>
             </div>
-          </div>
-          {filteredGraveReports.length === 0 ? (<div style={{ textAlign: 'center', padding: '40px' }}><p style={{ color: '#6b7280' }}>No hay alertas críticas</p></div>) : (
-            <div className="danger-reports-grid">
-              {filteredGraveReports.map(r => (
-                <div key={r.id} className="danger-report-card" style={{ borderLeft: `5px solid ${getDangerColor(r.emotion)}` }}>
-                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
-                    <div style={{ display: 'flex', gap: '12px' }}>
-                      <span className="emotion-icon">{r.emotion}</span>
-                      <div>
-                        <div className="report-emotion-label">{r.emotion_label}</div>
-                        <div className="report-user-name">{r.user_name || 'Anónimo'}</div>
-                        {r.comment && <div className="report-comment">"{r.comment}"</div>}
-                        <div className="report-time">{formatTime(r.created_at)}</div>
+            {filteredGraveReports.length === 0 ? (<div style={{ textAlign: 'center', padding: '40px' }}><p style={{ color: '#6b7280' }}>No hay alertas críticas</p></div>) : (
+              <div className="danger-reports-grid">
+                {filteredGraveReports.map(r => (
+                  <div key={r.id} className="danger-report-card" style={{ borderLeft: `5px solid ${getDangerColor(r.emotion)}` }}>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
+                      <div style={{ display: 'flex', gap: '12px' }}>
+                        <span className="emotion-icon">{r.emotion}</span>
+                        <div>
+                          <div className="report-emotion-label">{r.emotion_label}</div>
+                          <div className="report-user-name">{r.user_name || 'Anónimo'}</div>
+                          {r.comment && <div className="report-comment">"{r.comment}"</div>}
+                          <div className="report-time">{formatTime(r.created_at)}</div>
+                        </div>
+                      </div>
+                      <div style={{ display: 'flex', gap: '8px' }}>
+                        <button onClick={() => handleLocate(r)}
+                          style={{ padding: '8px 15px', background: '#3b82f6', color: 'white', border: 'none', borderRadius: '8px', cursor: 'pointer', fontSize: '12px', fontWeight: '700' }}>Localizar</button>
+                        <button onClick={() => openDeleteModal(r.id)}
+                          style={{ padding: '8px 15px', background: '#fee2e2', color: '#ef4444', border: 'none', borderRadius: '8px', cursor: 'pointer', fontSize: '12px', fontWeight: '700' }}>Eliminar</button>
                       </div>
                     </div>
-                    <div style={{ display: 'flex', gap: '8px' }}>
-                      <button onClick={() => handleLocate(r)}
-                        style={{ padding: '8px 15px', background: '#3b82f6', color: 'white', border: 'none', borderRadius: '8px', cursor: 'pointer', fontSize: '12px', fontWeight: '700' }}>Localizar</button>
-                      <button onClick={() => openDeleteModal(r.id)}
-                        style={{ padding: '8px 15px', background: '#fee2e2', color: '#ef4444', border: 'none', borderRadius: '8px', cursor: 'pointer', fontSize: '12px', fontWeight: '700' }}>Eliminar</button>
-                    </div>
                   </div>
-                </div>
-              ))}
-            </div>
-          )}
+                ))}
+              </div>
+            )}
+          </div>
         </div>
+
+
       </>
     )
   }
@@ -284,7 +285,7 @@ const AdminPanel = ({ user }) => {
     { name: 'Usuario', view: 'users' },
     { name: 'Analíticas', view: 'stats' },
     { name: 'Categorías', view: 'categories' },
-    { name: 'Alertas Graves', view: 'danger' },
+    { name: 'Emociones Graves', view: 'danger' },
     { name: 'Mapa Emocional', view: 'map_emotional' },
     { name: 'Mapa incidente', view: 'map_incident' },
   ]
@@ -292,11 +293,11 @@ const AdminPanel = ({ user }) => {
   if (loading) return <div className="admin-layout"><div className="admin-main"><div className="card" style={{ textAlign: 'center', padding: '60px' }}><h2>Cargando Panel...</h2></div></div></div>
 
   const cards = [
-    { title: 'Total Usuarios', value: stats.totalUsers, bg: '#6b7280' },
-    { title: 'Usuarios Activos', value: stats.activeUsers, bg: '#3b82f6' },
-    { title: 'Alertas Graves', value: stats.dangerCount, bg: '#ef4444' },
-    { title: 'Reportes Hoy', value: stats.todayCount, bg: '#10b981' },
-    { title: 'Total Reportes', value: stats.reports.length, bg: '#818cf8' },
+    { title: 'Total Usuarios', value: stats.totalUsers },
+    { title: 'Usuarios Activos', value: stats.activeUsers },
+    { title: 'Alertas Graves', value: stats.dangerCount },
+    { title: 'Reportes Hoy', value: stats.todayCount },
+    { title: 'Total Reportes', value: stats.reports.length },
   ]
 
   return (

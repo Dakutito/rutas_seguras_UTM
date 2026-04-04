@@ -42,6 +42,13 @@
 }
 
 /* VIDEO CARD RESPONSIVE */
+.introducvideoinfo {
+  background: var(--bg-card);
+  padding: 20px;
+  border-radius: 10px;
+  margin-bottom: 20px;
+}
+
 .video-card {
   display: flex;
   gap: 20px;

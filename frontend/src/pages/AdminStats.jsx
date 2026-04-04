@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import { API_URL } from '../services/api'
+import '../styles/darkMode.css'
 
 const AdminStats = () => {
   const [stats, setStats] = useState(null)
@@ -82,117 +83,115 @@ const AdminStats = () => {
   const maxCount = Math.max(...stats.reportsByEmotion.map(e => e.count), 1)
 
   return (
-    <div className="container">
-      <div className="card">
-        {/* Header */}
-        <div className='analisisemocionuser'>
-          <div className='sub_analisisemocionuser'>
-            <h1>Analíticas de Seguridad</h1>
-            <p style={{ color: '#6b7280', margin: 0 }}>
-              Basado en {stats.totalReports} reporte{stats.totalReports > 1 ? 's' : ''} activos
+    <div className="card">
+      {/* Header */}
+      <div className='analisisemocionuser'>
+        <div className='sub_analisisemocionuser'>
+          <h1>Analíticas Emocinales</h1>
+          <p style={{ color: '#6b7280', margin: 0 }}>
+            Basado en {stats.totalReports} reporte{stats.totalReports > 1 ? 's' : ''} activos
+          </p>
+        </div>
+      </div>
+
+      {/* Resumen rápido */}
+      <div className="stats-summary-grid">
+        {[
+          { label: 'Total Reportes', value: stats.totalReports, className: 'stats-summary-card purple' },
+          { label: 'Reportes Hoy', value: stats.todayReports, className: 'stats-summary-card green' },
+          { label: 'Emociones Positivas', value: stats.positiveCount, className: 'stats-summary-card green-light' },
+          { label: 'Emociones Negativas', value: stats.negativeCount, className: 'stats-summary-card red' },
+        ].map((s, i) => (
+          <div key={i} className={s.className}>
+            <div className="stats-summary-value">{s.value}</div>
+            <div className="stats-summary-label">{s.label}</div>
+          </div>
+        ))}
+      </div>
+
+      {/* Distribución de emociones */}
+      <div className='sub_distribuiremouser' style={{ marginBottom: '36px' }}>
+        <h2>
+          Distribución de Emociones Reportadas
+        </h2>
+        <div className='sub_sub_distribuiremouser'>
+          {stats.reportsByEmotion.length === 0 ? (
+            <p style={{ textAlign: 'center', color: '#9ca3af', padding: '20px' }}>
+              No hay datos de emociones
             </p>
-          </div>
-        </div>
-
-        {/* Resumen rápido */}
-        <div className="stats-summary-grid">
-          {[
-            { label: 'Total Reportes', value: stats.totalReports, className: 'stats-summary-card purple' },
-            { label: 'Reportes Hoy', value: stats.todayReports, className: 'stats-summary-card green' },
-            { label: 'Emociones Positivas', value: stats.positiveCount, className: 'stats-summary-card green-light' },
-            { label: 'Emociones Negativas', value: stats.negativeCount, className: 'stats-summary-card red' },
-          ].map((s, i) => (
-            <div key={i} className={s.className}>
-              <div className="stats-summary-value">{s.value}</div>
-              <div className="stats-summary-label">{s.label}</div>
-            </div>
-          ))}
-        </div>
-
-        {/* Distribución de emociones */}
-        <div className='sub_distribuiremouser' style={{ marginBottom: '36px' }}>
-          <h2>
-            Distribución de Emociones Reportadas
-          </h2>
-          <div className='sub_sub_distribuiremouser'>
-            {stats.reportsByEmotion.length === 0 ? (
-              <p style={{ textAlign: 'center', color: '#9ca3af', padding: '20px' }}>
-                No hay datos de emociones
-              </p>
-            ) : (
-              stats.reportsByEmotion.map((emotion) => {
-                const percentage = (emotion.count / stats.totalReports) * 100
-                return (
-                  <div key={emotion.emotion_label} style={{ marginBottom: '14px' }}>
-                    <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '5px' }}>
-                      <span className="emotion-stat-label">
-                        {emotion.emotion_label}
-                      </span>
-                      <span className="emotion-stat-count">
-                        {emotion.count} ({percentage.toFixed(1)}%)
-                      </span>
-                    </div>
-                    <div className="stats-progress-container">
-                      <div style={{
-                        width: `${percentage}%`,
-                        height: '100%',
-                        background: emotion.emotion_color,
-                        transition: 'width 0.4s',
-                        borderRadius: '6px'
-                      }}></div>
-                    </div>
-                  </div>
-                )
-              })
-            )}
-          </div>
-        </div>
-
-        {/* Impacto: positivas vs negativas */}
-        <div className='sub_distribuiremouser' style={{ marginBottom: '36px' }}>
-          <h2>
-            Análisis de Impacto Emocional
-          </h2>
-          <div className="impact-analysis-grid">
-            <div className="impact-box-positive">
-              <div className="impact-label">Emociones Positivas</div>
-              <div className="impact-value">{stats.positiveCount}</div>
-              <div className="impact-percent">{stats.totalReports > 0 ? ((stats.positiveCount / stats.totalReports) * 100).toFixed(1) : 0}% del total</div>
-              <div className="impact-desc">Feliz, Tranquilo y Neutral</div>
-            </div>
-
-            <div className="impact-box-negative">
-              <div className="impact-label">Emociones Negativas</div>
-              <div className="impact-value">{stats.negativeCount}</div>
-              <div className="impact-percent">{stats.totalReports > 0 ? ((stats.negativeCount / stats.totalReports) * 100).toFixed(1) : 0}% del total</div>
-              <div className="impact-desc">Ansioso, Asustado, Triste y Enojado</div>
-            </div>
-          </div>
-        </div>
-
-        <div className='sub_distribuiremouser' >
-          <h2 >
-            Zonas por Nivel de Peligro
-          </h2>
-          <div className="danger-levels-grid">
-            {['bajo', 'medio', 'alto'].map(level => {
-              const count = stats.zonesByDanger[level] || 0
+          ) : (
+            stats.reportsByEmotion.map((emotion) => {
+              const percentage = (emotion.count / stats.totalReports) * 100
               return (
-                <div key={level} className={`danger-level-card ${level}`}>
-                  <div className="danger-level-label">Peligro {level}</div>
-                  <div className="danger-level-value">{count}</div>
-                  <div className="danger-level-unit">{count === 1 ? 'zona' : 'zonas'}</div>
+                <div key={emotion.emotion_label} style={{ marginBottom: '14px' }}>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '5px' }}>
+                    <span className="emotion-stat-label">
+                      {emotion.emotion_label}
+                    </span>
+                    <span className="emotion-stat-count">
+                      {emotion.count} ({percentage.toFixed(1)}%)
+                    </span>
+                  </div>
+                  <div className="stats-progress-container">
+                    <div style={{
+                      width: `${percentage}%`,
+                      height: '100%',
+                      background: emotion.emotion_color,
+                      transition: 'width 0.4s',
+                      borderRadius: '6px'
+                    }}></div>
+                  </div>
                 </div>
               )
-            })}
+            })
+          )}
+        </div>
+      </div>
+
+      {/* Impacto: positivas vs negativas */}
+      <div className='sub_distribuiremouser' style={{ marginBottom: '36px' }}>
+        <h2>
+          Análisis de Impacto Emocional
+        </h2>
+        <div className="impact-analysis-grid">
+          <div className="impact-box-positive">
+            <div className="impact-label">Emociones Positivas</div>
+            <div className="impact-value">{stats.positiveCount}</div>
+            <div className="impact-percent">{stats.totalReports > 0 ? ((stats.positiveCount / stats.totalReports) * 100).toFixed(1) : 0}% del total</div>
+            <div className="impact-desc">Feliz, Tranquilo y Neutral</div>
+          </div>
+
+          <div className="impact-box-negative">
+            <div className="impact-label">Emociones Negativas</div>
+            <div className="impact-value">{stats.negativeCount}</div>
+            <div className="impact-percent">{stats.totalReports > 0 ? ((stats.negativeCount / stats.totalReports) * 100).toFixed(1) : 0}% del total</div>
+            <div className="impact-desc">Ansioso, Asustado, Triste y Enojado</div>
           </div>
         </div>
+      </div>
 
-        {/* Información adicional */}
-        <div className="stats-info-note">
-          <strong>Nota:</strong> Los datos se actualizan automáticamente cada 10 segundos.
-          Las zonas de peligro se calculan en base a la concentración de emociones negativas.
+      <div className='sub_distribuiremouser' >
+        <h2 >
+          Zonas por Nivel de Peligro
+        </h2>
+        <div className="danger-levels-grid">
+          {['bajo', 'medio', 'alto'].map(level => {
+            const count = stats.zonesByDanger[level] || 0
+            return (
+              <div key={level} className={`danger-level-card ${level}`}>
+                <div className="danger-level-label">Peligro {level}</div>
+                <div className="danger-level-value">{count}</div>
+                <div className="danger-level-unit">{count === 1 ? 'zona' : 'zonas'}</div>
+              </div>
+            )
+          })}
         </div>
+      </div>
+
+      {/* Información adicional */}
+      <div className="stats-info-note">
+        <strong>Nota:</strong> Los datos se actualizan automáticamente cada 10 segundos.
+        Las zonas de peligro se calculan en base a la concentración de emociones negativas.
       </div>
     </div>
   )

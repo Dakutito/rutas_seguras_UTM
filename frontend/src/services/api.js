@@ -12,8 +12,6 @@ const getApiUrl = () => {
   url = url.replace(/\/$/, '');
 
   // NO agregar /api aquí, se agrega en cada endpoint
-  console.log('🔧 API Base URL:', url);
-
   return url;
 };
 

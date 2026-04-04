@@ -15,6 +15,7 @@ router.get('/', async (req, res) => {
         ic.name as incident_type,
         ic.icon as category_icon,
         ic.color as category_color,
+        ir.title,
         ir.description,
         ir.latitude::float as lat,
         ir.longitude::float as lng,
@@ -87,6 +88,7 @@ router.get('/my-incidents', authenticateToken, async (req, res) => {
         ic.name as incident_type,
         ic.icon as category_icon,
         ic.color as category_color,
+        ir.title,
         ir.description,
         ir.latitude::float as lat,
         ir.longitude::float as lng,
@@ -108,7 +110,7 @@ router.get('/my-incidents', authenticateToken, async (req, res) => {
 // CREAR NUEVO INCIDENTE
 router.post('/', authenticateToken, async (req, res) => {
   try {
-    const { category_id, description, latitude, longitude } = req.body;
+    const { category_id, title, description, latitude, longitude } = req.body;
 
     if (!category_id || !latitude || !longitude) {
       return res.status(400).json({ error: 'Categoría y ubicación son requeridos' });
@@ -123,10 +125,10 @@ router.post('/', authenticateToken, async (req, res) => {
 
     const result = await query(
       `INSERT INTO incident_reports 
-       (user_id, category_id, incident_type, description, latitude, longitude)
-       VALUES ($1, $2, $3, $4, $5, $6)
+       (user_id, category_id, incident_type, title, description, latitude, longitude)
+       VALUES ($1, $2, $3, $4, $5, $6, $7)
        RETURNING *`,
-      [req.user.id, category_id, incident_type, description || null, latitude, longitude]
+      [req.user.id, category_id, incident_type, title || null, description || null, latitude, longitude]
     );
 
     res.status(201).json(result.rows[0]);
