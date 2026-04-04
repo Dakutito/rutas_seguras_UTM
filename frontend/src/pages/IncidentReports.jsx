@@ -85,7 +85,6 @@ const IncidentReports = () => {
 
   // Ya no necesitamos mapeos estáticos, usamos lo que viene de la DB
   const getIncidentColor = (incident) => incident.category_color || '#6b7280'
-  const getIncidentIcon = (incident) => incident.category_icon || '📍'
 
   if (loading && incidentTypes.length === 0) {
     return (
