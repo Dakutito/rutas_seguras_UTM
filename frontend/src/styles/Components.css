@@ -98,6 +98,13 @@ body {
   margin-bottom: 12px;
 }
 
+.sub_emotionfecha span {
+  margin-right: 5px;
+  padding: 5px;
+  border-radius: 5px;
+  background-color: #f9f9f9ff;
+}
+
 /*CommentForm reporte emoción*/
 .tardemotion {
   margin: 0 auto;
