@@ -1266,10 +1266,6 @@ body {
   }
 
   .quick-actions .action-btn {
-    flex-direction: column;
-    align-items: flex-start;
-    justify-content: flex-end;
-    height: 120px;
     padding: 15px;
     position: relative;
   }
@@ -1284,10 +1280,7 @@ body {
   }
 
   .action-btn-icon {
-    position: absolute;
-    top: 15px;
-    left: 15px;
-    font-size: 28px;
+    font-size: 18px;
     width: auto;
     height: auto;
   }

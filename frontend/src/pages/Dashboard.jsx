@@ -151,7 +151,7 @@ const Dashboard = ({ user }) => {
                               <div style={{ fontSize: '18px', fontWeight: '700' }}> <span>{r.emotion}</span> {r.emotion_label}</div>
                               <div style={{ fontSize: '13px', color: '#6b7280' }}>{formatDate(r.created_at)}</div>
                             </div>
-                            {r.comment && <div className='sub_sub_subcontenidohistorialreportetotaluser'>"{r.comment}"</div>}
+                            {r.comment && <div className='sub_sub_subcontenidohistorialreportetotaluser'>{r.comment}</div>}
                             <div style={{ fontSize: '13px', color: '#6b7280', alignItems: 'center' }}>
                               <MdLocationOn style={{ fontSize: '14px' }} /> Lat: {parseFloat(r.lat).toFixed(4)}, Lng: {parseFloat(r.lng).toFixed(4)}
                             </div>
@@ -233,7 +233,7 @@ const Dashboard = ({ user }) => {
               <button onClick={() => setShowHistorial(true)} className="action-btn">
                 <div className="action-btn-content">
                   <div className="action-btn-icon">📋</div>
-                  <span>Mis Reportes Emocionales</span>
+                  <span>Reportes Emocionales</span>
                 </div>
                 <span className="action-btn-arrow">›</span>
               </button>
