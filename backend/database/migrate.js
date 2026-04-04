@@ -54,6 +54,7 @@ const createTables = async () => {
         user_id INTEGER REFERENCES users(id) ON DELETE CASCADE,
         category_id INTEGER REFERENCES incident_categories(id) ON DELETE SET NULL,
         incident_type VARCHAR(50) NOT NULL, -- Mantenido por compatibilidad
+        title VARCHAR(255),
         description TEXT,
         latitude DECIMAL(10,8) NOT NULL,
         longitude DECIMAL(11,8) NOT NULL,

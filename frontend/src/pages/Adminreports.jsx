@@ -119,7 +119,7 @@ const AdminReports = ({ type, onLocate }) => {
   if (loading) return <div className="container"><div className="card">Cargando...</div></div>
 
   return (
-    <div className="container">
+    <div>
       <div className="card">
         <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '24px', flexWrap: 'wrap', gap: '12px' }}>
           <div>
@@ -140,30 +140,57 @@ const AdminReports = ({ type, onLocate }) => {
         <input type="text" placeholder="Buscar..." value={search} onChange={(e) => setSearch(e.target.value)}
           className="admin-search-input-list" />
 
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '12px', }}>
           {filteredBySearch.map(r => (
-            <div className='reportedeuseraladmi' key={r.id} style={{ borderLeft: `6px solid ${getDangerColor(r.emotion)}` }}>
+            <div className='reportedeuseraladmi' key={r.id} style={{ borderLeft: `6px solid ${r.emotion_color}` }}>
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
                 <div style={{ display: 'flex', gap: '15px', flex: 1 }}>
-                  <span style={{ fontSize: '32px' }}>{r.emotion}</span>
                   <div style={{ flex: 1 }}>
-                    <div style={{ fontWeight: 'bold' }}>{r.emotion_label}</div>
-                    <div className="report-time">{new Date(r.created_at).toLocaleString()}</div>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                      <div style={{ fontWeight: 'bold', color: r.emotion_color, fontSize: '13px' }}>{r.emotion_label}</div>
+                      <div style={{ fontSize: '13px', color: '#94a3b8' }}>{new Date(r.created_at).toLocaleString()}</div>
+                    </div>
+
+                    {r.is_incident && r.title && (
+                      <div style={{ fontSize: '20px', marginTop: '4px', fontWeight: '500' }}>{r.title}</div>
+                    )}
+
                     <div className="report-comment-box">
-                      "{r.comment || 'Sin comentario'}"
+                      {r.comment || 'Sin comentario'}
                     </div>
                     <div className="report-author-info">
-                      Usuario: {r.user_name || 'Anónimo'} ({r.user_email || 'sin email'}) | 📍 {parseFloat(r.lat).toFixed(4)}, {parseFloat(r.lng).toFixed(4)}
+                      <div><strong>Usuario:</strong> {r.user_name || 'Anónimo'} ({r.user_email || 'sin email'})</div>
                     </div>
                   </div>
                 </div>
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', marginLeft: '16px' }}>
-                  {/* BOTÓN DE UBICACIÓN */}
+                  {/* BOTÓN GOOGLE MAPS */}
+                  <a
+                    href={`https://www.google.com/maps?q=${r.lat},${r.lng}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    style={{
+                      background: '#EAEDFF',
+                      color: '#4A3FE3',
+                      border: 'none',
+                      padding: '8px 14px',
+                      borderRadius: '6px',
+                      cursor: 'pointer',
+                      fontSize: '13px',
+                      fontWeight: '600',
+                      whiteSpace: 'nowrap',
+                      textDecoration: 'none',
+                      textAlign: 'center'
+                    }}
+                  >
+                    Ubicación
+                  </a>
+                  {/* BOTÓN MAPA INTERNO */}
                   <button
                     onClick={() => goToReportLocation(r)}
                     style={{
-                      background: '#3b82f6',
-                      color: 'white',
+                      background: '#EAEDFF',
+                      color: '#4A3FE3',
                       border: 'none',
                       padding: '8px 14px',
                       borderRadius: '6px',
@@ -172,9 +199,9 @@ const AdminReports = ({ type, onLocate }) => {
                       fontWeight: '600',
                       whiteSpace: 'nowrap'
                     }}
-                    title="Ver ubicación en el mapa"
+                    title="Ver en el mapa interno"
                   >
-                    Ubicación
+                    Mapa
                   </button>
                   <button
                     onClick={() => openDeleteModal(r.id)}

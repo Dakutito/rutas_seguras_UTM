@@ -6,10 +6,9 @@ const { authenticateToken, requireAdmin } = require('../middleware/auth');
 // ESTADÍSTICAS GENERALES (público)
 router.get('/general', async (req, res) => {
   try {
-    // Total de reportes activos
+    // Total de reportes de emociones
     const totalReports = await query(
-      `SELECT (SELECT COUNT(*) FROM emotion_reports WHERE expires_at > NOW()) + 
-              (SELECT COUNT(*) FROM incident_reports WHERE status = 'activo') as count`
+      `SELECT COUNT(*) as count FROM emotion_reports`
     );
 
     // Reportes por emoción
@@ -19,7 +18,6 @@ router.get('/general', async (req, res) => {
         COUNT(*) as count,
         emotion_color
        FROM emotion_reports 
-       WHERE expires_at > NOW()
        GROUP BY emotion_label, emotion_color
        ORDER BY count DESC`
     );
@@ -33,25 +31,22 @@ router.get('/general', async (req, res) => {
        GROUP BY danger_level`
     );
 
-    // Reportes de hoy
+    // Reportes de hoy de emociones
     const todayReports = await query(
-      `SELECT (SELECT COUNT(*) FROM emotion_reports WHERE DATE(created_at) = CURRENT_DATE) + 
-              (SELECT COUNT(*) FROM incident_reports WHERE DATE(created_at) = CURRENT_DATE) as count`
+      `SELECT COUNT(*) as count FROM emotion_reports WHERE DATE(created_at) = CURRENT_DATE`
     );
 
     // Emociones positivas vs negativas
     const positiveEmotions = await query(
       `SELECT COUNT(*) as count 
        FROM emotion_reports 
-       WHERE emotion IN ('😊', '😌', '😐')
-       AND expires_at > NOW()`
+       WHERE emotion IN ('😊', '😌', '😐')`
     );
 
     const negativeEmotions = await query(
       `SELECT COUNT(*) as count 
        FROM emotion_reports 
-       WHERE emotion IN ('😰', '😨', '😢', '😡')
-       AND expires_at > NOW()`
+       WHERE emotion IN ('😰', '😨', '😢', '😡')`
     );
 
     res.json({
@@ -174,7 +169,7 @@ router.get('/user', authenticateToken, async (req, res) => {
 
     // Reportes activos
     const activeReports = await query(
-      'SELECT COUNT(*) as count FROM emotion_reports WHERE user_id = $1 AND expires_at > NOW()',
+      'SELECT COUNT(*) as count FROM emotion_reports WHERE user_id = $1',
       [req.user.id]
     );
 
@@ -227,7 +222,6 @@ router.get('/heatmap', async (req, res) => {
         emotion_color,
         COUNT(*) as intensity
        FROM emotion_reports
-       WHERE expires_at > NOW()
        GROUP BY ROUND(latitude::numeric, 3), ROUND(longitude::numeric, 3), emotion_color
        ORDER BY intensity DESC`
     );

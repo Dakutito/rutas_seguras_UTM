@@ -15,6 +15,8 @@ router.get('/', async (req, res) => {
         er.emotion_label, 
         er.emotion_color, 
         er.comment,
+        NULL::varchar as title,
+        NULL::varchar as incident_type,
         er.latitude::float as lat, 
         er.longitude::float as lng, 
         er.created_at,
@@ -23,7 +25,6 @@ router.get('/', async (req, res) => {
         FALSE as is_incident
       FROM emotion_reports er
       LEFT JOIN users u ON er.user_id = u.id
-      WHERE er.expires_at > NOW()
     `;
 
     const incidentsQuery = `
@@ -33,6 +34,8 @@ router.get('/', async (req, res) => {
         ic.name as emotion_label, 
         ic.color as emotion_color, 
         ir.description as comment,
+        ir.title,
+        ic.name as incident_type,
         ir.latitude::float as lat, 
         ir.longitude::float as lng, 
         ir.created_at,

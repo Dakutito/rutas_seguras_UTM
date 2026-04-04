@@ -3,7 +3,6 @@ import { useState, useEffect } from 'react'
 import { Link, useNavigate, useLocation } from 'react-router-dom'
 import '../styles/Components.css'
 import { API_URL } from '../services/api'
-import { QRSection } from '../components/QRSection'
 
 const Dashboard = ({ user }) => {
   const navigate = useNavigate()
@@ -153,7 +152,6 @@ const Dashboard = ({ user }) => {
           {/* Info del usuario */}
           <div className="user-activity-box">
             <div className="user-email">
-              <div className="email-icon">@</div>
               <div className="email-text">
                 <div className="email-label">Correo Institucional</div>
                 <div className="email-value">{user?.email}</div>

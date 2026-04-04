@@ -8,33 +8,43 @@ const RecursosEducativos = () => {
 
   return (
     <div className="recursos-container">
+      <div className='introducvideoinfo'>
+        {/* VOLVER */}
+        <button className="btn-volver" onClick={() => navigate(-1)}>
+          ← Volver
+        </button>
 
-      {/* VOLVER */}
-      <button className="btn-volver" onClick={() => navigate(-1)}>
-        ← Volver
-      </button>
+        <h1>Recursos Educativos</h1>
+        <p className="subtitle">
+          Rutas Seguras UTM es un espacio creado pensando en tu integridad. Conoce todo el ecosistema de la plataforma en este corto video y descubre cómo aprovechar cada herramienta disponible a favor del bienestar local.
+        </p>
 
-      <h1>Recursos Educativos</h1>
-      <p className="subtitle">
-        Material de apoyo para la seguridad urbana, bienestar emocional y ciudadanía <br /> digital en nuestra comunidad universitaria
-      </p>
+        {/* VIDEO DESTACADO */}
+        <div className="video-card">
+          <div className="video-preview">
+            ▶
+          </div>
 
-      {/* VIDEO DESTACADO */}
-      <div className="video-card">
-        <div className="video-preview">
-          ▶
+          <div className="video-info">
+            <div className="badge-video"><span>Video Destacado</span></div>
+            <h3>Introducción a Rutas Seguras UTM</h3>
+            <p>
+              Descubre todas las herramientas y funciones que ofrece nuestra <br /> plataforma para mejorar tu experiencia de seguridad en el campus y sus <br /> alrededores en este breve recorrido guiado.
+            </p>
+            <button className="btn-vervideo">Ver video (5 min)</button>
+            <div style={{ marginTop: '10px' }}>
+              ¿Qué descubrirás en este video?
+              <ul>
+                <li>Los pilares fundamentales del "Mapa Emocional" y por qué funciona.</li>
+                <li>La correcta categorización a usar en el "Mapa de Incidentes".</li>
+                <li>Un repaso sobre las opciones de Privacidad y Anonimato al emitir reportes.</li>
+                <li>Qué ocurre del lado de los Operadores y Administradores al usar los canales de ayuda.</li>
+              </ul>
+            </div>
+          </div>
         </div>
 
-        <div className="video-info">
-          <div className="badge-video"><span>Video Destacado</span></div>
-          <h3>Introducción a Rutas Seguras UTM</h3>
-          <p>
-            Descubre todas las herramientas y funciones que ofrece nuestra <br /> plataforma para mejorar tu experiencia de seguridad en el campus y sus <br /> alrededores en este breve recorrido guiado.
-          </p>
-          <button className="btn-vervideo" onClick={() => navigate('/recursos/introduccion')}>Ver video (5 min)</button>
-        </div>
       </div>
-
       {/* TABS MEJORADOS PARA MÓVIL */}
       <div className="tabs-container">
         <div className="tabs">

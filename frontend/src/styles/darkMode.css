@@ -177,7 +177,10 @@
 
 [data-theme="dark"] .userconfiggh1_email input,
 [data-theme="dark"] .mobile-menu-content a,
-[data-theme="dark"] .tabs {
+[data-theme="dark"] .tabs,
+[data-theme="dark"] .stats-summary-card.green,
+[data-theme="dark"] .stats-summary-card.red,
+[data-theme="dark"] .stats-summary-card.green-light {
     background: #1f2e4b;
     border: none;
     color: var(--text-primary);
@@ -275,4 +278,9 @@
 [data-theme="dark"] .zonapelicgrocuenta {
     background-color: #1A182C;
     border-color: #452036;
+}
+
+[data-theme="dark"] .stat-card,
+[data-theme="dark"] .admin-stat-card {
+    background-color: #1A182C;
 }

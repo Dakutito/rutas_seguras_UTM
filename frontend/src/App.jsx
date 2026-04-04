@@ -25,7 +25,6 @@ import BienestarDigital from './pages/Recursos educativos/BienestarDigital'
 import CiudadaniaDigital from './pages/Recursos educativos/CiudadaniaDigital'
 import PrevencionEstafas from './pages/Recursos educativos/PrevencionEstafas'
 import ProteccionDatos from './pages/Recursos educativos/ProteccionDatos'
-import IntroduccionRutasSeguras from './pages/Recursos educativos/IntroduccionRutasSeguras'
 
 import Login from './components/Login'
 import Register from './components/Register'
@@ -186,7 +185,6 @@ function App() {
           <Route path="/recursos/ciudadania-digital" element={<CiudadaniaDigital />} />
           <Route path="/recursos/prevencion-estafas" element={<PrevencionEstafas />} />
           <Route path="/recursos/proteccion-datos" element={<ProteccionDatos />} />
-          <Route path="/recursos/introduccion" element={<IntroduccionRutasSeguras />} />
           <Route path="/verify-email" element={<VerifyEmail />} />
 
           {/*RUTAS DE AUTENTICACIÓN */}

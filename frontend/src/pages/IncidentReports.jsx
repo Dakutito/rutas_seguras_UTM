@@ -2,6 +2,8 @@ import { useState, useEffect } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { isAdmin } from '../services/authService'
 import '../styles/Components.css'
+import { FaMapMarkerAlt } from 'react-icons/fa'; // Font Awesome
+import { MdLocationOn } from 'react-icons/md'; // Material Icons
 
 import { incidentsAPI } from '../services/api'
 
@@ -65,10 +67,17 @@ const IncidentReports = () => {
   }
 
   const formatDate = (dateStr) => {
-    const date = new Date(dateStr)
+    let date = new Date(dateStr)
     const now = new Date()
-    const diff = (now - date) / 1000 / 60
+    let diff = (now - date) / 1000 / 60
 
+    // Si diff es muy negativo, hay desfase de timezone → corregir
+    if (diff < -2) {
+      date = new Date(date.getTime() - date.getTimezoneOffset() * 60000)
+      diff = (now - date) / 1000 / 60
+    }
+
+    if (diff < 1) return 'Justo ahora'
     if (diff < 60) return `Hace ${Math.floor(diff)} min`
     if (diff < 1440) return `Hace ${Math.floor(diff / 60)} horas`
     return date.toLocaleDateString('es-ES', { day: '2-digit', month: 'short', year: 'numeric' })
@@ -95,33 +104,13 @@ const IncidentReports = () => {
         {/* Header */}
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '30px', flexWrap: 'wrap', gap: '15px' }}>
           <div>
-            <h1 style={{ margin: 0, marginBottom: '8px' }}>Reportes de Incidentes</h1>
+            <h1 style={{ margin: 0, marginBottom: '8px' }}>Reportes Comunitario</h1>
             <p style={{ color: '#6b7280', margin: 0, fontSize: '14px' }}>
-              Incidentes reportados por la comunidad
+              Vigilancia en tiempo real de incidentes locales para una comunidad más segura.
             </p>
           </div>
 
           <div style={{ display: 'flex', gap: '10px', flexWrap: 'wrap' }}>
-            {/* Botón inicio usuario */}
-            {!isUserAdmin && (
-              <button
-                onClick={() => navigate('/dashboard')}
-                className="btn btn-primary"
-                style={{
-                  background: '#3b82f6',
-                  color: 'white',
-                  padding: '12px 24px',
-                  fontSize: '15px',
-                  fontWeight: '600',
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: '8px'
-                }}
-              >
-                inicio
-              </button>
-            )}
-
             {/* Botón NUEVO REPORTE SOLO para usuarios */}
             {!isUserAdmin && (
               <button
@@ -201,31 +190,47 @@ const IncidentReports = () => {
               >
                 <div className='botonesdeladminreport'>
                   <div style={{ flex: 1 }}>
+
                     <div className='subb_botonesdeladminreport'>
-                      <span style={{ fontSize: '32px' }}>
-                        {getIncidentIcon(incident)}
-                      </span>
-                      <div>
-                        <h3>{incident.incident_type}</h3>
-                        <p >
+                      <span style={{
+                        background: 'rgba(0,0,0,0.05)',
+                        color: getIncidentColor(incident),
+                        padding: '6px 14px',
+                        borderRadius: '20px',
+                        fontSize: '12px',
+                        fontWeight: '600',
+                        whiteSpace: 'nowrap',
+                        textAlign: 'center'
+                      }}>
+                        {incident.incident_type}
+                      </span><div>
+                        <p style={{ marginTop: '10px' }}>
                           {formatDate(incident.created_at)}
                         </p>
                       </div>
                     </div>
 
+                    {incident.title && (
+                      <h3 style={{
+                        margin: '8px 0 4px 0',
+                        fontSize: '16px',
+                        fontWeight: '700',
+                        color: 'var(--text-primary, #1f2937)'
+                      }}>
+                        {incident.title}
+                      </h3>
+                    )}
+
                     {incident.description && (
                       <div className='sub_subb_comentario'>
                         <p>
-                          "{incident.description}"
+                          {incident.description}
                         </p>
                       </div>
                     )}
 
                     {/* Info del usuario - Email SOLO para admin */}
                     <div className='adminemailreporte'>
-                      <div className='sud_adminemailreporte'>
-                        <span><strong>Usuario:</strong> {incident.user_name || 'Anónimo'}</span>
-                      </div>
 
                       {/* EMAIL - SOLO VISIBLE PARA ADMIN */}
                       {isUserAdmin && incident.user_email && (
@@ -234,29 +239,11 @@ const IncidentReports = () => {
                         </div>
                       )}
 
-                      <div className='sud_adminemailreporte'>
-                        <span>Ubicación:</span>
-                        <span>
-                          Lat: {parseFloat(incident.lat).toFixed(4)}, Lng: {parseFloat(incident.lng).toFixed(4)}
-                        </span>
-                      </div>
+
                     </div>
                   </div>
 
                   <div className='ListadeReporteUser'>
-                    <span style={{
-                      background: `${getIncidentColor(incident)}20`,
-                      color: getIncidentColor(incident),
-                      padding: '6px 14px',
-                      borderRadius: '20px',
-                      fontSize: '12px',
-                      fontWeight: '600',
-                      whiteSpace: 'nowrap',
-                      textAlign: 'center'
-                    }}>
-                      {incident.incident_type}
-                    </span>
-
                     {/* BOTÓN VER UBICACIÓN */}
                     <button
                       onClick={() => handleViewLocation(incident.lat, incident.lng, incident.incident_type)}
@@ -275,7 +262,7 @@ const IncidentReports = () => {
                         gap: '6px'
                       }}
                     >
-                      Ubicación
+                      <MdLocationOn style={{ marginRight: '5px', fontSize: '14px' }} />  Ubicación
                     </button>
 
                     {/* BOTÓN ELIMINAR - SOLO ADMIN */}
