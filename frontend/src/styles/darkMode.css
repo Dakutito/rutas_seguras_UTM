@@ -180,6 +180,7 @@
 [data-theme="dark"] .tabs,
 [data-theme="dark"] .stats-summary-card.green,
 [data-theme="dark"] .stats-summary-card.red,
+[data-theme="dark"] .sub_emotionfecha span,
 [data-theme="dark"] .stats-summary-card.green-light {
     background: #1f2e4b;
     border: none;

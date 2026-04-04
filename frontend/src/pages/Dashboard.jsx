@@ -148,7 +148,7 @@ const Dashboard = ({ user }) => {
                         <div className='botonesreportehistorial'>
                           <div style={{ flex: 1 }}>
                             <div className='sub_emotionfecha'>
-                              <div style={{ fontSize: '18px', fontWeight: '700' }}> <span style={{ padding: '5px', backgroundColor: '#f9f9f9ff', borderRadius: '5px' }}>{r.emotion}</span> {r.emotion_label}</div>
+                              <div style={{ fontSize: '18px', fontWeight: '700' }}> <span>{r.emotion}</span> {r.emotion_label}</div>
                               <div style={{ fontSize: '13px', color: '#6b7280' }}>{formatDate(r.created_at)}</div>
                             </div>
                             {r.comment && <div className='sub_sub_subcontenidohistorialreportetotaluser'>"{r.comment}"</div>}
