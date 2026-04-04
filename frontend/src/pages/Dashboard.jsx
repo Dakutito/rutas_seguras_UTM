@@ -1,5 +1,6 @@
 // Force Vercel rebuild: 2026-03-13T17:30 - Dakutito
 import { useState, useEffect } from 'react'
+import ConfirmationModal from '../components/ConfirmationModal';
 import { Link, useNavigate, useLocation } from 'react-router-dom'
 import '../styles/Components.css'
 import { API_URL } from '../services/api'
@@ -13,17 +14,23 @@ const Dashboard = ({ user }) => {
   const [reportCount, setReportCount] = useState(0)
   const [impactLevel, setImpactLevel] = useState('Bajo')
   const [isDesktop, setIsDesktop] = useState(window.innerWidth > 768);
+  // Estados para el modal de confirmación
+  const [modalOpen, setModalOpen] = useState(false);
+  const [reportToDelete, setReportToDelete] = useState(null);
+  const [deleting, setDeleting] = useState(false);
   useEffect(() => {
-    loadUserReports()
+    loadUserReports();
     const handleResize = () => setIsDesktop(window.innerWidth > 768);
     window.addEventListener('resize', handleResize);
     return () => window.removeEventListener('resize', handleResize);
-  }, [])
-  
+  }, []);
+
   // Resetear vista de historial al navegar al dashboard (ej. clic en "Inicio" del Navbar)
   useEffect(() => {
-    setShowHistorial(false)
-  }, [location.key])
+    setShowHistorial(false);
+    setModalOpen(false);
+    setReportToDelete(null);
+  }, [location.key]);
 
   const loadUserReports = async () => {
     setLoading(true)
@@ -53,21 +60,28 @@ const Dashboard = ({ user }) => {
     }
   }
 
-  const handleDeleteReport = async (reportId) => {
-    if (!window.confirm('¿Eliminar este reporte?')) return
 
+  // Nueva función para eliminar el reporte seleccionado
+  const handleDeleteReport = async () => {
+    if (!reportToDelete) return;
+    setDeleting(true);
     try {
-      const token = localStorage.getItem('token')
-      const response = await fetch(`${API_URL}/api/user-reports/${reportId}`, {
+      const token = localStorage.getItem('token');
+      const response = await fetch(`${API_URL}/api/user-reports/${reportToDelete}`, {
         method: 'DELETE',
         headers: { 'Authorization': `Bearer ${token}` }
-      })
-
-      if (response.ok) loadUserReports()
+      });
+      if (response.ok) {
+        loadUserReports();
+        setModalOpen(false);
+        setReportToDelete(null);
+      }
     } catch (error) {
-      console.error('Error:', error)
+      console.error('Error:', error);
+    } finally {
+      setDeleting(false);
     }
-  }
+  };
 
   const formatDate = (dateStr) => {
     return new Date(dateStr).toLocaleString('es-ES', {
@@ -88,211 +102,246 @@ const Dashboard = ({ user }) => {
   // VISTA DE HISTORIAL
   if (showHistorial) {
     return (
-      <div className="container">
-        <div className="card" style={{ padding: '30px' }}>
-          <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '30px' }}>
-            <h1>Historial de Reportes</h1>
-            <button onClick={() => setShowHistorial(false)} className="btn" style={{ background: '#6b7280', color: 'white' }}>
-              ← Volver
-            </button>
-          </div>
+      <>
+        <ConfirmationModal
+          isOpen={modalOpen}
+          onClose={() => { setModalOpen(false); setReportToDelete(null); }}
+          onConfirm={handleDeleteReport}
+          title="Eliminar reporte"
+          message="¿Estás seguro de que deseas eliminar este reporte emocional? Esta acción no se puede deshacer."
+          confirmButtonText="Eliminar"
+          isLoading={deleting}
+        />
+        <div className="container">
+          <div className="card" style={{ padding: '30px' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '30px' }}>
+              <h1>Historial de Reportes</h1>
+              <button
+                onClick={() => {
+                  setShowHistorial(false);
+                  setModalOpen(false);
+                  setReportToDelete(null);
+                }}
+                className="btn"
+                style={{ background: '#6b7280', color: 'white' }}
+              >
+                ← Volver
+              </button>
+            </div>
 
-          {loading ? <div style={{ textAlign: 'center', padding: '40px' }}>Cargando...</div> :
-            userReports.length === 0 ? (
-              <div style={{ textAlign: 'center', padding: '60px', background: '#f9fafb', borderRadius: '12px' }}>
-                <div style={{ fontSize: '72px' }}>📭</div>
-                <h2 style={{ color: '#6b7280' }}>No tienes reportes aún</h2>
-                <Link to="/map" className="btn btn-primary" style={{ marginTop: '20px' }}>Ir al Mapa</Link>
-              </div>
-            ) : (
-              <>
-                <div className='historialreportetotaluser'>
-                  <strong>Total:</strong> {userReports.length} • <strong>Último:</strong> {formatDate(userReports[0].created_at)}
+            {loading ? <div style={{ textAlign: 'center', padding: '40px' }}>Cargando...</div> :
+              userReports.length === 0 ? (
+                <div style={{ textAlign: 'center', padding: '60px', background: '#f9fafb', borderRadius: '12px' }}>
+                  <div style={{ fontSize: '72px' }}>📭</div>
+                  <h2 style={{ color: '#6b7280' }}>No tienes reportes aún</h2>
+                  <Link to="/map" className="btn btn-primary" style={{ marginTop: '20px' }}>Ir al Mapa</Link>
                 </div>
-                <div className='subcontenidohistorialreportetotaluser'>
-                  {userReports.map(r => (
-                    <div className='sub_subcontenidohistorialreportetotaluser' key={r.id} style={{ borderLeft: `6px solid ${r.emotion_color}` }}>
-                      <div className='botonesreportehistorial'>
-                        <div style={{ flex: 1 }}>
-                          <div style={{ display: 'flex', gap: '12px', marginBottom: '12px' }}>
-                            <span style={{ fontSize: '36px' }}>{r.emotion}</span>
-                            <div>
-                              <div style={{ fontSize: '18px', fontWeight: '700' }}>{r.emotion_label}</div>
-                              <div style={{ fontSize: '13px', color: '#6b7280' }}>{formatDate(r.created_at)}</div>
+              ) : (
+                <>
+                  <div className='historialreportetotaluser'>
+                    <strong>Total:</strong> {userReports.length} • <strong>Último:</strong> {formatDate(userReports[0].created_at)}
+                  </div>
+                  <div className='subcontenidohistorialreportetotaluser'>
+                    {userReports.map(r => (
+                      <div className='sub_subcontenidohistorialreportetotaluser' key={r.id} style={{ borderLeft: `6px solid ${r.emotion_color}` }}>
+                        <div className='botonesreportehistorial'>
+                          <div style={{ flex: 1 }}>
+                            <div style={{ display: 'flex', gap: '12px', marginBottom: '12px' }}>
+                              <div>
+                                <div style={{ fontSize: '18px', fontWeight: '700' }}>{r.emotion_label}</div>
+                                <div style={{ fontSize: '13px', color: '#6b7280' }}>{formatDate(r.created_at)}</div>
+                              </div>
+                            </div>
+                            {r.comment && <div className='sub_sub_subcontenidohistorialreportetotaluser'>"{r.comment}"</div>}
+                            <div style={{ fontSize: '13px', color: '#6b7280' }}>
+                              Lat: {parseFloat(r.lat).toFixed(4)}, Lng: {parseFloat(r.lng).toFixed(4)}
                             </div>
                           </div>
-                          {r.comment && <div className='sub_sub_subcontenidohistorialreportetotaluser'>"{r.comment}"</div>}
-                          <div style={{ fontSize: '13px', color: '#6b7280' }}>
-                            Lat: {parseFloat(r.lat).toFixed(4)}, Lng: {parseFloat(r.lng).toFixed(4)}
-                          </div>
+                          <button
+                            onClick={() => {
+                              setReportToDelete(r.id);
+                              setModalOpen(true);
+                            }}
+                            style={{ padding: '8px 16px', background: '#ef4444', color: 'white', border: 'none', borderRadius: '6px', cursor: 'pointer', marginLeft: '16px' }}
+                          >
+                            Eliminar
+                          </button>
                         </div>
-                        <button onClick={() => handleDeleteReport(r.id)} style={{ padding: '8px 16px', background: '#ef4444', color: 'white', border: 'none', borderRadius: '6px', cursor: 'pointer', marginLeft: '16px' }}>
-                          Eliminar
-                        </button>
                       </div>
-                    </div>
-                  ))}
-                </div>
-              </>
-            )}
+                    ))}
+                  </div>
+                </>
+              )}
+          </div>
         </div>
-      </div>
-    )
-  }
+      </>
+    );
+  };
 
   // VISTA PRINCIPAL - DASHBOARD MODERNO
   return (
-    <div className="container">
-      <div className="dashboard-container">
+    <>
+      <ConfirmationModal
+        isOpen={modalOpen}
+        onClose={() => { setModalOpen(false); setReportToDelete(null); }}
+        onConfirm={handleDeleteReport}
+        title="Eliminar reporte"
+        message="¿Estás seguro de que deseas eliminar este reporte emocional? Esta acción no se puede deshacer."
+        confirmButtonText="Eliminar"
+        isLoading={deleting}
+      />
+      <div className="container">
+        <div className="dashboard-container">
 
-        {/* SIDEBAR IZQUIERDO DEL USUARIO*/}
-        <aside className="dashboard-sidebar">
-          <h2>TU ACTIVIDAD</h2>
+          {/* SIDEBAR IZQUIERDO DEL USUARIO*/}
+          <aside className="dashboard-sidebar">
+            <h2>TU ACTIVIDAD</h2>
 
-          {/* Info del usuario */}
-          <div className="user-activity-box">
-            <div className="user-email">
-              <div className="email-text">
-                <div className="email-label">Correo Institucional</div>
-                <div className="email-value">{user?.email}</div>
-              </div>
-            </div>
-
-            <div className="user-stats">
-              <div className="user-stat-item">
-                <div className="user-stat-label">Reportes</div>
-                <div className="user-stat-value">{reportCount}</div>
-              </div>
-              <div className="user-stat-item">
-                <div className="user-stat-label">Impacto</div>
-                <div className={`user-stat-impact impact-${impactLevel.toLowerCase()}`}>
-                  {impactLevel}
+            {/* Info del usuario */}
+            <div className="user-activity-box">
+              <div className="user-email">
+                <div className="email-text">
+                  <div className="email-label">Correo Institucional</div>
+                  <div className="email-value">{user?.email}</div>
                 </div>
               </div>
-            </div>
-          </div>
 
-          {/* Acciones rápidas */}
-          <h2>ACCIONES RÁPIDAS</h2>
-          <div className="quick-actions">
-            <button onClick={() => navigate('/map')} className="action-btn">
-              <div className="action-btn-content">
-                <div className="action-btn-icon">😊</div>
-                <span>Reportar Emoción</span>
-              </div>
-              <span className="action-btn-arrow">›</span>
-            </button>
-
-            <button onClick={() => setShowHistorial(true)} className="action-btn">
-              <div className="action-btn-content">
-                <div className="action-btn-icon">📋</div>
-                <span>Mis Reportes Emocionales</span>
-              </div>
-              <span className="action-btn-arrow">›</span>
-            </button>
-
-            <button onClick={() => navigate('/map-reporte')} className="action-btn">
-              <div className="action-btn-content">
-                <div className="action-btn-icon">⚠️</div>
-                <span>Reportar Incidente</span>
-              </div>
-              <span className="action-btn-arrow">›</span>
-            </button>
-
-            <button onClick={() => navigate('/')} className="action-btn">
-              <div className="action-btn-content">
-                <div className="action-btn-icon">🤖</div>
-                <span>Asistente Emocional</span>
-              </div>
-              <span className="action-btn-arrow">›</span>
-            </button>
-
-            <button onClick={() => navigate('/settings')} className="action-btn">
-              <div className="action-btn-content">
-                <div className="action-btn-icon">⚙️</div>
-                <span>Mi Configuración</span>
-              </div>
-              <span className="action-btn-arrow">›</span>
-            </button>
-
-
-          </div>
-        </aside>
-
-        {/* ========== CONTENIDO PRINCIPAL ========== */}
-        <main className="dashboard-main">
-
-          {/* Sección de emociones MODIFICANDO*/}
-          <section className="emotion-section">
-            <details className="modern-details" open={isDesktop}>
-              <summary className="emotion-header-summary">
-                <div className="header-info">
-                  <div>
-                    <h2>Estado de Ánimo</h2>
-                    <p style={{ marginBottom: '10px' }}>¿Cómo te sientes en este sector?</p>
+              <div className="user-stats">
+                <div className="user-stat-item">
+                  <div className="user-stat-label">Reportes</div>
+                  <div className="user-stat-value">{reportCount}</div>
+                </div>
+                <div className="user-stat-item">
+                  <div className="user-stat-label">Impacto</div>
+                  <div className={`user-stat-impact impact-${impactLevel.toLowerCase()}`}>
+                    {impactLevel}
                   </div>
-                  <span className="toggle-icon">▾</span>
-                </div>
-              </summary>
-
-              <div className="emotions-grid-wrapper">
-                <div className="emotions-grid">
-                  {emotions.map((emotion, idx) => (
-                    <Link
-                      key={idx}
-                      to="/map"
-                      state={{ emotionFromDashboard: emotion }}
-                      className={`emotion-card-dashboard ${emotion.class}`}
-                      style={{ textDecoration: 'none', borderRadius: '15px' }}
-                    >
-                      <div className="emotion-card-inner">
-                        <span className="emotion-emoji">{emotion.emoji}</span>
-                        <div className="emotion-info">
-                          <h3>{emotion.label}</h3>
-                          <span className="emotion-level">{emotion.level}</span>
-                        </div>
-                      </div>
-                    </Link>
-                  ))}
                 </div>
               </div>
-            </details>
-          </section>
+            </div>
 
-
-
-          {/* Mapa en tiempo real */}
-          <section className="map-preview-section">
-            <div className="map-preview-content">
-              <h3>Mapa en tiempo real</h3>
-              <p>Visualiza zonas de riesgo reportadas recientemente.</p>
-              <button
-                onClick={() => navigate('/mapa-reportes')}
-                className="map-preview-btn"
-              >
-                Ver Mapa
+            {/* Acciones rápidas */}
+            <h2>ACCIONES RÁPIDAS</h2>
+            <div className="quick-actions">
+              <button onClick={() => navigate('/map')} className="action-btn">
+                <div className="action-btn-content">
+                  <div className="action-btn-icon">😊</div>
+                  <span>Reportar Emoción</span>
+                </div>
+                <span className="action-btn-arrow">›</span>
               </button>
 
+              <button onClick={() => setShowHistorial(true)} className="action-btn">
+                <div className="action-btn-content">
+                  <div className="action-btn-icon">📋</div>
+                  <span>Mis Reportes Emocionales</span>
+                </div>
+                <span className="action-btn-arrow">›</span>
+              </button>
+
+              <button onClick={() => navigate('/map-reporte')} className="action-btn">
+                <div className="action-btn-content">
+                  <div className="action-btn-icon">⚠️</div>
+                  <span>Reportar Incidente</span>
+                </div>
+                <span className="action-btn-arrow">›</span>
+              </button>
+
+              <button onClick={() => navigate('/')} className="action-btn">
+                <div className="action-btn-content">
+                  <div className="action-btn-icon">🤖</div>
+                  <span>Asistente Emocional</span>
+                </div>
+                <span className="action-btn-arrow">›</span>
+              </button>
+
+              <button onClick={() => navigate('/settings')} className="action-btn">
+                <div className="action-btn-content">
+                  <div className="action-btn-icon">⚙️</div>
+                  <span>Mi Configuración</span>
+                </div>
+                <span className="action-btn-arrow">›</span>
+              </button>
+
+
             </div>
-            <div className="map-preview-visual"></div>
-          </section>
+          </aside>
 
-        </main>
+          {/* ========== CONTENIDO PRINCIPAL ========== */}
+          <main className="dashboard-main">
+
+            {/* Sección de emociones MODIFICANDO*/}
+            <section className="emotion-section">
+              <details className="modern-details" open={isDesktop}>
+                <summary className="emotion-header-summary">
+                  <div className="header-info">
+                    <div>
+                      <h2>Estado de Ánimo</h2>
+                      <p style={{ marginBottom: '10px' }}>¿Cómo te sientes en este sector?</p>
+                    </div>
+                    <span className="toggle-icon">▾</span>
+                  </div>
+                </summary>
+
+                <div className="emotions-grid-wrapper">
+                  <div className="emotions-grid">
+                    {emotions.map((emotion, idx) => (
+                      <Link
+                        key={idx}
+                        to="/map"
+                        state={{ emotionFromDashboard: emotion }}
+                        className={`emotion-card-dashboard ${emotion.class}`}
+                        style={{ textDecoration: 'none', borderRadius: '15px' }}
+                      >
+                        <div className="emotion-card-inner">
+                          <span className="emotion-emoji">{emotion.emoji}</span>
+                          <div className="emotion-info">
+                            <h3>{emotion.label}</h3>
+                            <span className="emotion-level">{emotion.level}</span>
+                          </div>
+                        </div>
+                      </Link>
+                    ))}
+                  </div>
+                </div>
+              </details>
+            </section>
+
+
+
+            {/* Mapa en tiempo real */}
+            <section className="map-preview-section">
+              <div className="map-preview-content">
+                <h3>Mapa en tiempo real</h3>
+                <p>Visualiza zonas de riesgo reportadas recientemente.</p>
+                <button
+                  onClick={() => navigate('/mapa-reportes')}
+                  className="map-preview-btn"
+                >
+                  Ver Mapa
+                </button>
+
+              </div>
+              <div className="map-preview-visual"></div>
+            </section>
+
+          </main>
+        </div>
+
+        {/* Footer */}
+        <footer className="dashboard-footer">
+          <div className="system-status">
+            <span className="status-dot"></span>
+            <span>SISTEMA ACTIVO</span>
+          </div>
+
+          <div className="copyright">
+            © 2026 Rutas Seguras UTM. Desarrollado para la comunidad universitaria.
+          </div>
+        </footer>
       </div>
-
-      {/* Footer */}
-      <footer className="dashboard-footer">
-        <div className="system-status">
-          <span className="status-dot"></span>
-          <span>SISTEMA ACTIVO</span>
-        </div>
-
-        <div className="copyright">
-          © 2026 Rutas Seguras UTM. Desarrollado para la comunidad universitaria.
-        </div>
-      </footer>
-    </div>
-  )
+    </>
+  );
 }
 
 export default Dashboard
