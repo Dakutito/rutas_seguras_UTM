@@ -93,6 +93,11 @@ body {
   margin-bottom: 12px;
 }
 
+.sub_emotionfecha {
+  gap: 12px;
+  margin-bottom: 12px;
+}
+
 /*CommentForm reporte emoción*/
 .tardemotion {
   margin: 0 auto;
@@ -366,6 +371,13 @@ body {
   grid-template-columns: 400px 1fr;
   gap: 30px;
   min-height: calc(100vh - 120px);
+}
+
+/* boton volver*/
+.histobotondashboard {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 30px;
 }
 
 /* Columna izquierda - Sidebar */
@@ -857,6 +869,7 @@ body {
 .botonesreportehistorial {
   display: flex;
   justify-content: space-between;
+  align-items: baseline;
 }
 
 
@@ -1235,6 +1248,7 @@ body {
   .botonesreportehistorial {
     flex-direction: column;
     gap: 10px;
+    align-items: normal;
   }
 
   /* NUEVO REDISEÑO MÓVIL DASHBOARD */
@@ -1350,6 +1364,18 @@ body {
     font-size: 11px !important;
     padding: 3px 10px !important;
     white-space: nowrap;
+  }
+
+  /* --- ESTADO DE ANIMO DASHBOARD --- */
+  .sub_emotionfecha {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  /* boton volver dashboard*/
+  .histobotondashboard {
+    display: block;
   }
 
   /* Último estado de ánimo ocupa todo el ancho */
