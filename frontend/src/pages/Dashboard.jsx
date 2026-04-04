@@ -4,6 +4,8 @@ import ConfirmationModal from '../components/ConfirmationModal';
 import { Link, useNavigate, useLocation } from 'react-router-dom'
 import '../styles/Components.css'
 import { API_URL } from '../services/api'
+import { FaMapMarkerAlt } from 'react-icons/fa'; // Font Awesome
+import { MdLocationOn } from 'react-icons/md'; // Material Icons
 
 const Dashboard = ({ user }) => {
   const navigate = useNavigate()
@@ -114,7 +116,7 @@ const Dashboard = ({ user }) => {
         />
         <div className="container">
           <div className="card" style={{ padding: '30px' }}>
-            <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '30px' }}>
+            <div className='histobotondashboard'>
               <h1>Historial de Reportes</h1>
               <button
                 onClick={() => {
@@ -123,7 +125,6 @@ const Dashboard = ({ user }) => {
                   setReportToDelete(null);
                 }}
                 className="btn"
-                style={{ background: '#6b7280', color: 'white' }}
               >
                 ← Volver
               </button>
@@ -146,15 +147,13 @@ const Dashboard = ({ user }) => {
                       <div className='sub_subcontenidohistorialreportetotaluser' key={r.id} style={{ borderLeft: `6px solid ${r.emotion_color}` }}>
                         <div className='botonesreportehistorial'>
                           <div style={{ flex: 1 }}>
-                            <div style={{ display: 'flex', gap: '12px', marginBottom: '12px' }}>
-                              <div>
-                                <div style={{ fontSize: '18px', fontWeight: '700' }}>{r.emotion_label}</div>
-                                <div style={{ fontSize: '13px', color: '#6b7280' }}>{formatDate(r.created_at)}</div>
-                              </div>
+                            <div className='sub_emotionfecha'>
+                              <div style={{ fontSize: '18px', fontWeight: '700' }}> <span style={{ padding: '5px', backgroundColor: '#f9f9f9ff', borderRadius: '5px' }}>{r.emotion}</span> {r.emotion_label}</div>
+                              <div style={{ fontSize: '13px', color: '#6b7280' }}>{formatDate(r.created_at)}</div>
                             </div>
                             {r.comment && <div className='sub_sub_subcontenidohistorialreportetotaluser'>"{r.comment}"</div>}
-                            <div style={{ fontSize: '13px', color: '#6b7280' }}>
-                              Lat: {parseFloat(r.lat).toFixed(4)}, Lng: {parseFloat(r.lng).toFixed(4)}
+                            <div style={{ fontSize: '13px', color: '#6b7280', alignItems: 'center' }}>
+                              <MdLocationOn style={{ fontSize: '14px' }} /> Lat: {parseFloat(r.lat).toFixed(4)}, Lng: {parseFloat(r.lng).toFixed(4)}
                             </div>
                           </div>
                           <button
@@ -162,7 +161,7 @@ const Dashboard = ({ user }) => {
                               setReportToDelete(r.id);
                               setModalOpen(true);
                             }}
-                            style={{ padding: '8px 16px', background: '#ef4444', color: 'white', border: 'none', borderRadius: '6px', cursor: 'pointer', marginLeft: '16px' }}
+                            style={{ maxWidth: 'max-content', padding: '8px 16px', background: '#ef4444', color: 'white', border: 'none', borderRadius: '6px', cursor: 'pointer' }}
                           >
                             Eliminar
                           </button>
