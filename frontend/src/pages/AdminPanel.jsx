@@ -250,10 +250,9 @@ const AdminPanel = ({ user }) => {
                   {filteredGraveReports.map(r => (
                     <div key={r.id} className="new-danger-report-card" style={{ borderLeftColor: getDangerColor(r.emotion) }}>
                       <div className="ndr-header">
-                        <span className="emotion-icon">{r.emotion}</span>
                         <div className="ndr-info">
-                          <div className="ndr-label">{r.emotion_label}</div>
-                          <div className="ndr-user">{r.user_name || 'Anónimo'}</div>
+                          <div className="ndr-label" style={{color: getDangerColor(r.emotion)}}>{r.emotion_label}</div>
+                          <div className="ndr-user"><strong>Estudiante:</strong> {r.user_name || 'Anónimo'}</div>
                         </div>
                         <div className="ndr-time">{formatTime(r.created_at)}</div>
                       </div>
