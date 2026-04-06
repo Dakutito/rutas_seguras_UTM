@@ -253,6 +253,7 @@ const AdminPanel = ({ user }) => {
                         <div className="ndr-info">
                           <div className="ndr-label" style={{color: getDangerColor(r.emotion)}}>{r.emotion_label}</div>
                           <div className="ndr-user"><strong>Estudiante:</strong> {r.user_name || 'Anónimo'}</div>
+                          <div className="ndr-user"><strong>Correo:</strong> ({r.user_email || 'sin email'})</div>
                         </div>
                         <div className="ndr-time">{formatTime(r.created_at)}</div>
                       </div>
