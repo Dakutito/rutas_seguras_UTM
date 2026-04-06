@@ -19,7 +19,7 @@ function ChangeView({ center }) {
   return null;
 }
 
-const Map = ({ userLocation, onZoneClick, isAdmin = false, user, center }) => {
+const Map = ({ userLocation, onZoneClick, isAdmin = false, user, center, onReportsUpdate, activeFilters = [] }) => {
   const [reports, setReports] = useState([]);
 
   const fetchReports = async () => {
@@ -28,13 +28,18 @@ const Map = ({ userLocation, onZoneClick, isAdmin = false, user, center }) => {
         // Admin ve TODOS los reportes de tipo EMOCIÓN
         const data = await reportsAPI.getAll()
         // Filtrar solo los que NO son incidentes (emociones)
-        setReports(Array.isArray(data) ? data.filter(r => !r.is_incident) : []);
+        const emos = Array.isArray(data) ? data.filter(r => !r.is_incident) : [];
+        setReports(emos);
+        if (onReportsUpdate) onReportsUpdate(emos);
       } else if (user) {
         // Usuario normal solo ve SUS PROPIOS reportes
         const data = await reportsAPI.getMyReports()
-        setReports(Array.isArray(data) ? data : []);
+        const emos = Array.isArray(data) ? data : [];
+        setReports(emos);
+        if (onReportsUpdate) onReportsUpdate(emos);
       } else {
         setReports([]);
+        if (onReportsUpdate) onReportsUpdate([]);
       }
     } catch (error) {
       console.error("Error al cargar puntos de calor:", error);
@@ -49,6 +54,10 @@ const Map = ({ userLocation, onZoneClick, isAdmin = false, user, center }) => {
     return () => clearInterval(timer);
   }, [isAdmin, user]);
 
+  const visibleReports = activeFilters.length > 0
+    ? reports.filter(r => activeFilters.includes(r.emotion))
+    : reports;
+
   return (
     <MapContainer className='tamañodelMapa' style={{ position: 'sticky' }} center={center ? [center.lat, center.lng] : [-1.0234, -80.4667]} zoom={15}>
       <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
@@ -60,8 +69,8 @@ const Map = ({ userLocation, onZoneClick, isAdmin = false, user, center }) => {
         userLocation && <ChangeView center={[userLocation.lat, userLocation.lng]} />
       )}
 
-      {/* Mostrar círculos: TODOS para admin, SOLO PROPIOS para usuario */}
-      {reports.map((report) => (
+      {/* Mostrar círculos filtrados */}
+      {visibleReports.map((report) => (
         <Circle
           key={report.id}
           center={[report.lat, report.lng]}
