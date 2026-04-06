@@ -117,7 +117,7 @@ const Dashboard = ({ user }) => {
         <div className="container">
           <div className="card" style={{ padding: '30px' }}>
             <div className='histobotondashboard'>
-              <h1>Historial de Reportes</h1>
+              <h1>Historial Emocional</h1>
               <button
                 onClick={() => {
                   setShowHistorial(false);

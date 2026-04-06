@@ -31,8 +31,8 @@ const RecursosEducativos = () => {
             <p>
               Descubre todas las herramientas y funciones que ofrece nuestra <br /> plataforma para mejorar tu experiencia de seguridad en el campus y sus <br /> alrededores en este breve recorrido guiado.
             </p>
-            <button className="btn-vervideo">Ver video (5 min)</button>
-            <div style={{ marginTop: '10px' }}>
+
+            <div style={{ margin: '20px 10px' }}>
               ¿Qué descubrirás en este video?
               <ul>
                 <li>Los pilares fundamentales del "Mapa Emocional" y por qué funciona.</li>
@@ -41,6 +41,7 @@ const RecursosEducativos = () => {
                 <li>Qué ocurre del lado de los Operadores y Administradores al usar los canales de ayuda.</li>
               </ul>
             </div>
+            <button className="btn-vervideo">Ver video (5 min)</button>
           </div>
         </div>
 

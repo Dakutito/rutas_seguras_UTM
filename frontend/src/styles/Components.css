@@ -594,38 +594,7 @@ body {
   cursor: pointer;
 }
 
-.emotion-card {
-  background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
-  border: 2px solid #bae6fd;
-  border-radius: 16px;
-  padding: 20px;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  position: relative;
-  overflow: hidden;
-}
 
-.emotion-card::before {
-  content: '';
-  position: absolute;
-  top: -50%;
-  right: -50%;
-  width: 200px;
-  height: 200px;
-  background: radial-gradient(circle, rgba(255, 255, 255, 0.4) 0%, transparent 70%);
-  transition: all 0.5s ease;
-}
-
-.emotion-card:hover::before {
-  top: -20%;
-  right: -20%;
-}
-
-.emotion-card:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.12);
-  border-color: transparent;
-}
 
 .emotion-card-inner {
   display: flex;
