@@ -516,13 +516,6 @@ body {
   gap: 16px;
 }
 
-.action-btn-icon {
-  font-size: 22px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
 .action-btn-arrow {
   color: #9ca3af;
   font-size: 18px;
@@ -1246,12 +1239,6 @@ body {
     align-items: flex-start;
     width: 100%;
     gap: 8px;
-  }
-
-  .action-btn-icon {
-    font-size: 18px;
-    width: auto;
-    height: auto;
   }
 
   .action-btn span {
