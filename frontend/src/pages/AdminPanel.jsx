@@ -257,7 +257,7 @@ const AdminPanel = ({ user }) => {
                         </div>
                         <div className="ndr-time">{formatTime(r.created_at)}</div>
                       </div>
-                      {r.comment && <div className="ndr-comment">"{r.comment}"</div>}
+                      {r.comment && <div className="ndr-comment">{r.comment}</div>}
                       <div className="ndr-actions">
                         <a
                           href={`https://www.google.com/maps?q=${r.lat},${r.lng}`}
