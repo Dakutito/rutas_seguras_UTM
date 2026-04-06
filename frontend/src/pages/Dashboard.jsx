@@ -224,7 +224,6 @@ const Dashboard = ({ user }) => {
             <div className="quick-actions">
               <button onClick={() => navigate('/map')} className="action-btn">
                 <div className="action-btn-content">
-                  <div className="action-btn-icon">😊</div>
                   <span>Reportar Emoción</span>
                 </div>
                 <span className="action-btn-arrow">›</span>
@@ -232,7 +231,6 @@ const Dashboard = ({ user }) => {
 
               <button onClick={() => setShowHistorial(true)} className="action-btn">
                 <div className="action-btn-content">
-                  <div className="action-btn-icon">📋</div>
                   <span>Reportes Emocionales</span>
                 </div>
                 <span className="action-btn-arrow">›</span>
@@ -240,7 +238,6 @@ const Dashboard = ({ user }) => {
 
               <button onClick={() => navigate('/map-reporte')} className="action-btn">
                 <div className="action-btn-content">
-                  <div className="action-btn-icon">⚠️</div>
                   <span>Reportar Incidente</span>
                 </div>
                 <span className="action-btn-arrow">›</span>
@@ -248,7 +245,6 @@ const Dashboard = ({ user }) => {
 
               <button onClick={() => navigate('/')} className="action-btn">
                 <div className="action-btn-content">
-                  <div className="action-btn-icon">🤖</div>
                   <span>Asistente Emocional</span>
                 </div>
                 <span className="action-btn-arrow">›</span>
@@ -256,7 +252,6 @@ const Dashboard = ({ user }) => {
 
               <button onClick={() => navigate('/settings')} className="action-btn">
                 <div className="action-btn-content">
-                  <div className="action-btn-icon">⚙️</div>
                   <span>Mi Configuración</span>
                 </div>
                 <span className="action-btn-arrow">›</span>
