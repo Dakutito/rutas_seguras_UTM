@@ -40,10 +40,10 @@ router.get('/', async (req, res) => {
 
     const result = await query(queryText, params);
 
-    // Si ic.name es nulo (por migración pendiente), usar ir.incident_type
+    // Si ic.name es nulo (por migración pendiente)
     const rows = result.rows.map(row => ({
       ...row,
-      incident_type: row.incident_type || row.old_incident_type // old_incident_type no existe, pero es una idea
+      incident_type: row.incident_type || row.old_incident_type
     }));
 
     res.json(result.rows);

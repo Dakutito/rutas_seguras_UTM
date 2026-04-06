@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { useLocation } from 'react-router-dom'
+import { useLocation, useNavigate } from 'react-router-dom'
 import Map from '../components/Map'
 import EmotionSelector from '../components/EmotionSelector'
 import CommentForm from '../components/CommentForm'
@@ -7,6 +7,7 @@ import '../styles/MapView.css'
 
 const MapView = ({ isAdmin, user, onInicio, center }) => {
   const location = useLocation()
+  const navigate = useNavigate()
   const [selectedEmotion, setSelectedEmotion] = useState(null)
   const [userLocation, setUserLocation] = useState(null)
   const [showReportForm, setShowReportForm] = useState(false)
@@ -52,6 +53,7 @@ const MapView = ({ isAdmin, user, onInicio, center }) => {
     if (location.state?.emotionFromDashboard) {
       setSelectedEmotion(location.state.emotionFromDashboard)
       setShowReportForm(true)
+      navigate(location.pathname, { replace: true, state: {} })
     }
   }, [])
 

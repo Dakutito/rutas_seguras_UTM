@@ -168,94 +168,107 @@ const AdminPanel = ({ user }) => {
 
     return (
       <>
-        <div className="admin-content-grid" style={{ marginBottom: '30px' }}>
-          <div className="heatmap-card">
-            <h2 style={{ color: '#8b5cf6' }}>Mapa de Calor - Emociones</h2>
-            <div className="heatmap-subtitle">Base de 7 emociones principales • Total: {getTotalEmotions()}</div>
-            <div className="heatmap-list">
-              {emotionStats.length === 0 ? (<div style={{ color: '#64748b' }}>No hay emociones registradas</div>) : emotionStats.map((stat, idx) => (
-                <div key={idx} className="stat-item" style={{ borderLeft: `4px solid ${stat.color}` }}>
-                  <div className="stat-item-header">
-                    <div className="stat-item-left">
-                      <span className="stat-item-icon">{stat.emotion}</span>
-                      <div><div className="stat-item-name">{stat.label}</div><div className="stat-item-count">{stat.count} reportes</div></div>
-                    </div>
-                    <div className="stat-item-value">{getEmoPercentage(stat.count)}%</div>
-                  </div>
-                  <div className="progress-container"><div className="progress-bar" style={{ width: `${getEmoPercentage(stat.count)}%`, background: stat.color }}></div></div>
+        <div className="admin-layout-grid">
+          <div className="admin-left-col" style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
+            <div className="admin-new-card">
+              <div className="admin-card-header">
+                <div>
+                  <h2 className="admin-card-title" style={{ color: '#312e81' }}>Mapa de Calor - Emociones</h2>
+                  <p className="admin-card-subtitle">Visualización de sentimientos ciudadanos reportados.</p>
                 </div>
-              ))}
-            </div>
-            <button onClick={() => { setCurrentView('map_emotional'); setSelectedCenter(null); }} className="admin-card-btn">Ver Mapa Emocional</button>
-          </div>
-
-          <div className="heatmap-card">
-            <h2 style={{ color: '#ef4444' }}>Mapa de Calor - Incidentes</h2>
-            <div className="heatmap-subtitle">Reportes de seguridad ciudadana • Total: {getTotalIncidents()}</div>
-            <div className="heatmap-list">
-              {incidentStats.length === 0 ? (<div style={{ color: '#64748b' }}>No hay incidentes registrados</div>) : incidentStats.map((stat, idx) => (
-                <div key={idx} className="stat-item" style={{ borderLeft: `4px solid ${stat.color}` }}>
-                  <div className="stat-item-header">
-                    <div className="stat-item-left">
-                      <span className="stat-item-icon">{stat.icon}</span>
-                      <div><div className="stat-item-name">{stat.label}</div><div className="stat-item-count">{stat.count} reportes</div></div>
-                    </div>
-                    <div className="stat-item-value">{getIncPercentage(stat.count)}%</div>
-                  </div>
-                  <div className="progress-container"><div className="progress-bar" style={{ width: `${getIncPercentage(stat.count)}%`, background: stat.color }}></div></div>
-                </div>
-              ))}
-            </div>
-            <button onClick={() => { setCurrentView('map_incident'); setSelectedCenter(null); }} className="admin-card-btn" style={{ background: '#ef4444' }}>Ver Mapa Incidentes</button>
-          </div>
-          <div className="danger-zone-container">
-            <div className="danger-zone-header">
-              <div>
-                <h2 className="danger-zone-title">Reportes Emocionales Graves</h2>
-                <p className="danger-zone-subtitle">Filtrado por: Ansioso, Asustado, Triste y Enojado</p>
+                <button onClick={() => { setCurrentView('map_emotional'); setSelectedCenter(null); }} className="admin-header-btn">
+                  <svg width="18" height="18" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7"></path></svg>
+                  Ver Mapa Emocional
+                </button>
               </div>
-              <div style={{ display: 'flex', gap: '12px', alignItems: 'center' }}>
-                {filteredGraveReports.length > 0 && (
-                  <button onClick={openBulkDeleteModal} className="admin-danger-btn-bulk">
-                    Eliminar Todas
-                  </button>
-                )}
-                <div className="search-box-container">
-                  <input type="text" placeholder="Buscar por usuario o correo..." value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)}
-                    className="admin-search-input" />
-                  <span className="search-icon">🔍</span>
-                </div>
-              </div>
-            </div>
-            {filteredGraveReports.length === 0 ? (<div style={{ textAlign: 'center', padding: '40px' }}><p style={{ color: '#6b7280' }}>No hay alertas críticas</p></div>) : (
-              <div className="danger-reports-grid">
-                {filteredGraveReports.map(r => (
-                  <div key={r.id} className="danger-report-card" style={{ borderLeft: `5px solid ${getDangerColor(r.emotion)}` }}>
-                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
-                      <div style={{ display: 'flex', gap: '12px' }}>
-                        <span className="emotion-icon">{r.emotion}</span>
-                        <div>
-                          <div className="report-emotion-label">{r.emotion_label}</div>
-                          <div className="report-user-name">{r.user_name || 'Anónimo'}</div>
-                          {r.comment && <div className="report-comment">"{r.comment}"</div>}
-                          <div className="report-time">{formatTime(r.created_at)}</div>
-                        </div>
+              <div className="new-heatmap-list">
+                {emotionStats.length === 0 ? (<div style={{ color: '#64748b' }}>No hay emociones registradas</div>) : emotionStats.map((stat, idx) => (
+                  <div key={idx} className="new-stat-item">
+                    <div className="new-stat-info">
+                      <div className="new-stat-name">
+                        <span className="dot" style={{ backgroundColor: stat.color }}></span>
+                        {stat.label}
                       </div>
-                      <div style={{ display: 'flex', gap: '8px' }}>
-                        <button onClick={() => handleLocate(r)}
-                          style={{ padding: '8px 15px', background: '#3b82f6', color: 'white', border: 'none', borderRadius: '8px', cursor: 'pointer', fontSize: '12px', fontWeight: '700' }}>Localizar</button>
-                        <button onClick={() => openDeleteModal(r.id)}
-                          style={{ padding: '8px 15px', background: '#fee2e2', color: '#ef4444', border: 'none', borderRadius: '8px', cursor: 'pointer', fontSize: '12px', fontWeight: '700' }}>Eliminar</button>
-                      </div>
+                      <div className="new-stat-value">{getEmoPercentage(stat.count)}% ({stat.count} reports)</div>
                     </div>
+                    <div className="new-progress-container"><div className="new-progress-bar" style={{ width: `${getEmoPercentage(stat.count)}%`, background: stat.color }}></div></div>
                   </div>
                 ))}
               </div>
-            )}
+            </div>
+
+            <div className="admin-new-card">
+              <div className="admin-card-header">
+                <div>
+                  <h2 className="admin-card-title" style={{ color: '#312e81' }}>Mapa de Calor - Incidentes</h2>
+                  <p className="admin-card-subtitle">Análisis de eventos críticos y seguridad urbana.</p>
+                </div>
+                <button onClick={() => { setCurrentView('map_incident'); setSelectedCenter(null); }} className="admin-header-btn">
+                  <svg width="18" height="18" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
+                  Ver Mapa Incidentes
+                </button>
+              </div>
+              <div className="new-heatmap-list">
+                {incidentStats.length === 0 ? (<div style={{ color: '#64748b' }}>No hay incidentes registrados</div>) : incidentStats.map((stat, idx) => (
+                  <div key={idx} className="new-stat-item">
+                    <div className="new-stat-info">
+                      <div className="new-stat-name">
+                        <span className="dot" style={{ backgroundColor: stat.color }}></span>
+                        {stat.label}
+                      </div>
+                      <div className="new-stat-value">{getIncPercentage(stat.count)}% ({stat.count} report{stat.count !== 1 ? 's' : ''})</div>
+                    </div>
+                    <div className="new-progress-container"><div className="new-progress-bar" style={{ width: `${getIncPercentage(stat.count)}%`, background: stat.color }}></div></div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+
+          <div className="admin-right-col">
+            <div className="admin-new-card" style={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
+              <div className="admin-card-header" style={{ flexDirection: 'column', alignItems: 'flex-start', marginBottom: '15px' }}>
+                <h2 className="admin-card-title" style={{ color: '#312e81' }}>Reportes Emocionales Graves</h2>
+                <p className="admin-card-subtitle">Alertas de intervención inmediata.</p>
+              </div>
+
+              <div className="new-search-container">
+                <svg width="18" height="18" fill="none" stroke="#94a3b8" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+                <input type="text" placeholder="Buscar por usuario o correo..." value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)} />
+              </div>
+
+              {filteredGraveReports.length === 0 ? (
+                <div className="empty-alerts-state">
+                  <div className="shield-icon">
+                    <svg width="24" height="24" fill="none" stroke="#94a3b8" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path></svg>
+                  </div>
+                  <h3>No hay alertas críticas</h3>
+                  <p>El sistema no ha detectado anomalías emocionales graves en las últimas 24 horas.</p>
+                </div>
+              ) : (
+                <div className="new-danger-reports-grid">
+                  {filteredGraveReports.map(r => (
+                    <div key={r.id} className="new-danger-report-card" style={{ borderLeftColor: getDangerColor(r.emotion) }}>
+                      <div className="ndr-header">
+                        <span className="emotion-icon">{r.emotion}</span>
+                        <div className="ndr-info">
+                          <div className="ndr-label">{r.emotion_label}</div>
+                          <div className="ndr-user">{r.user_name || 'Anónimo'}</div>
+                        </div>
+                        <div className="ndr-time">{formatTime(r.created_at)}</div>
+                      </div>
+                      {r.comment && <div className="ndr-comment">"{r.comment}"</div>}
+                      <div className="ndr-actions">
+                        <button onClick={() => handleLocate(r)} className="ndr-btn-locate">Localizar</button>
+                        <button onClick={() => openDeleteModal(r.id)} className="ndr-btn-delete">Eliminar</button>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
           </div>
         </div>
-
-
       </>
     )
   }
