@@ -158,8 +158,8 @@ const AdminPanel = ({ user }) => {
     setModalState({ isOpen: true, reportId: null, isBulk: true });
   }
 
-  // Componente para la vista de Dashboard (Home)
-  const DashboardHome = () => {
+  // Función para renderizar la vista de Dashboard (Home)
+  const renderDashboardHome = () => {
     const graveReports = stats.reports.filter(r => !r.is_incident && GRAVE_EMOTIONS.includes(r.emotion))
     const filteredGraveReports = graveReports.filter(r => {
       const search = searchTerm.toLowerCase()
@@ -251,7 +251,7 @@ const AdminPanel = ({ user }) => {
                     <div key={r.id} className="new-danger-report-card" style={{ borderLeftColor: getDangerColor(r.emotion) }}>
                       <div className="ndr-header">
                         <div className="ndr-info">
-                          <div className="ndr-label" style={{color: getDangerColor(r.emotion)}}>{r.emotion_label}</div>
+                          <div className="ndr-label" style={{ color: getDangerColor(r.emotion) }}>{r.emotion_label}</div>
                           <div className="ndr-user"><strong>Estudiante:</strong> {r.user_name || 'Anónimo'}</div>
                           <div className="ndr-user"><strong>Correo:</strong> ({r.user_email || 'sin email'})</div>
                         </div>
@@ -283,7 +283,7 @@ const AdminPanel = ({ user }) => {
 
   const renderView = () => {
     switch (currentView) {
-      case 'home': return <DashboardHome />
+      case 'home': return renderDashboardHome()
       case 'users': return <AdminUsers />
       case 'incident_reports': return <AdminReports key="incidents" type="incidents" onLocate={handleLocate} />
       case 'emotion_reports': return <AdminReports key="emotions" type="emotions" onLocate={handleLocate} />
@@ -294,7 +294,7 @@ const AdminPanel = ({ user }) => {
       case 'categories': return <AdminCategories />
       case 'map_emotional': return <MapView isAdmin={true} user={user} onInicio={() => setCurrentView('home')} center={selectedCenter} />
       case 'map_incident': return <MapaReporte user={user} viewOnly={true} onInicio={() => setCurrentView('home')} center={selectedCenter} />
-      default: return <DashboardHome />
+      default: return renderDashboardHome()
     }
   }
 
