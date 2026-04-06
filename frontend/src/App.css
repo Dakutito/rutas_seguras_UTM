@@ -50,6 +50,24 @@ a.skip-transition,
 .skip-transition {
   transition: none !important;
 }
+/* Oculta la barra de scroll en todo el sitio, para todos los elementos */
+html, body, * {
+  scrollbar-width: none !important; /* Firefox */
+  -ms-overflow-style: none !important; /* IE y Edge */
+}
+
+html::-webkit-scrollbar, body::-webkit-scrollbar, *::-webkit-scrollbar {
+  display: none !important;
+}
+/* Oculta la barra de scroll en la mayoría de los navegadores */
+body {
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* IE y Edge */
+}
+
+body::-webkit-scrollbar {
+  display: none;
+}
 
 /* Responsive */
 @media (max-width: 768px) {

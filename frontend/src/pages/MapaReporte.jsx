@@ -254,8 +254,8 @@ const MapaReporte = ({ user, viewOnly = false, onInicio, center: initialCenter }
   )
 
   return (
-    <div className="container_Ver_mapaReporte" style={viewOnly ? { height: 'calc(100vh - 40px)', display: 'flex', flexDirection: 'column', margin: 0, padding: 0, minHeight: 0 } : { marginTop: '10px' }}>
-      <div className={`ontainer_Ver_mapaReportecard ${viewOnly ? 'full-width-layout' : ''}`} style={viewOnly ? { flex: 1, display: 'flex', flexDirection: 'column', borderRadius: '12px', margin: 0, minHeight: 0 } : {}}>
+    <div className="container_Ver_mapaReporte" style={viewOnly ? { height: 'calc(100vh - 40px)', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'flex-start', margin: 0, padding: 0, minHeight: 0, width: '100%' } : { marginTop: '10px' }}>
+      <div className={`container_Ver_mapaReportecard ${viewOnly ? 'full-width-layout' : ''}`} style={viewOnly ? { flex: 1, display: 'flex', flexDirection: 'column', width: '100%', maxWidth: '1400px', borderRadius: '12px', margin: '0 auto', minHeight: 0 } : {}}>
 
         <div className="mapa-reporte-layout" style={viewOnly ? { flex: 1, minHeight: 0 } : {}}>
           <div className="main-map-area" style={viewOnly ? { flex: 1, padding: '10px', minHeight: 0 } : {}}>
