@@ -500,16 +500,17 @@
   min-height: calc(100vh - 80px);
 }
 
-.ontainer_Ver_mapaReportecard {
+.container_Ver_mapaReportecard {
   background: var(--bg-card);
   border-radius: 20px;
   box-shadow: var(--shadow-card);
   overflow: hidden;
   padding: 0;
   transition: all 0.3s ease;
+  width: 100%;
 }
 
-.ontainer_Ver_mapaReportecard.full-width-layout {
+.container_Ver_mapaReportecard.full-width-layout {
   max-width: 1400px;
   margin: 0 auto;
 }
