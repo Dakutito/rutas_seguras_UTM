@@ -1260,9 +1260,33 @@
     flex-direction: column;
     gap: 12px;
     overflow-y: auto;
+    max-height: 520px;
+    padding-right: 6px;
     flex: 1;
-    min-height: 100px;
 }
+
+/* Scrollbar personalizado para reportes graves */
+.new-danger-reports-grid::-webkit-scrollbar {
+    width: 6px;
+}
+
+.new-danger-reports-grid::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.new-danger-reports-grid::-webkit-scrollbar-thumb {
+    background: #cbd5e1;
+    border-radius: 10px;
+}
+
+[data-theme='dark'] .new-danger-reports-grid::-webkit-scrollbar-thumb {
+    background: #475569;
+}
+
+.new-danger-reports-grid::-webkit-scrollbar-thumb:hover {
+    background: #94a3b8;
+}
+
 
 .new-danger-report-card {
     border-left: 4px solid;
