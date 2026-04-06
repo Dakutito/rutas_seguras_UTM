@@ -189,7 +189,7 @@ const AdminPanel = ({ user }) => {
                         <span className="dot" style={{ backgroundColor: stat.color }}></span>
                         {stat.label}
                       </div>
-                      <div className="new-stat-value">{getEmoPercentage(stat.count)}% ({stat.count} reports)</div>
+                      <div className="new-stat-value">{getEmoPercentage(stat.count)}% ({stat.count} reporte{stat.count !== 1 ? 's' : ''})</div>
                     </div>
                     <div className="new-progress-container"><div className="new-progress-bar" style={{ width: `${getEmoPercentage(stat.count)}%`, background: stat.color }}></div></div>
                   </div>
@@ -216,7 +216,7 @@ const AdminPanel = ({ user }) => {
                         <span className="dot" style={{ backgroundColor: stat.color }}></span>
                         {stat.label}
                       </div>
-                      <div className="new-stat-value">{getIncPercentage(stat.count)}% ({stat.count} report{stat.count !== 1 ? 's' : ''})</div>
+                      <div className="new-stat-value">{getIncPercentage(stat.count)}% ({stat.count} reporte{stat.count !== 1 ? 's' : ''})</div>
                     </div>
                     <div className="new-progress-container"><div className="new-progress-bar" style={{ width: `${getIncPercentage(stat.count)}%`, background: stat.color }}></div></div>
                   </div>
@@ -259,7 +259,15 @@ const AdminPanel = ({ user }) => {
                       </div>
                       {r.comment && <div className="ndr-comment">"{r.comment}"</div>}
                       <div className="ndr-actions">
-                        <button onClick={() => handleLocate(r)} className="ndr-btn-locate">Localizar</button>
+                        <a
+                          href={`https://www.google.com/maps?q=${r.lat},${r.lng}`}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="ndr-btn-gmaps"
+                        >
+                          Ubicación en Google Maps
+                        </a>
+                        <button onClick={() => handleLocate(r)} className="ndr-btn-locate">Ver Mapa</button>
                         <button onClick={() => openDeleteModal(r.id)} className="ndr-btn-delete">Eliminar</button>
                       </div>
                     </div>
@@ -316,7 +324,7 @@ const AdminPanel = ({ user }) => {
   return (
     <div className="admin-layout">
       <aside className="admin-sidebar" style={{ zIndex: 100 }}>
-        <div className="sidebar-title">Panel de Administración</div>
+        <div className="sidebar-title">Panel de <br /> Administración</div>
         <nav className="sidebar-nav">
           {sidebarLinks.map(link => (
             <button key={link.name} className={`sidebar-link ${currentView === link.view ? 'active' : ''}`}

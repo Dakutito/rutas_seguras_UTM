@@ -170,8 +170,8 @@ const AdminReports = ({ type, onLocate }) => {
                     target="_blank"
                     rel="noopener noreferrer"
                     style={{
-                      background: '#EAEDFF',
-                      color: '#4A3FE3',
+                      background: '#DCFCE7',
+                      color: '#166534',
                       border: 'none',
                       padding: '8px 14px',
                       borderRadius: '6px',
@@ -189,8 +189,8 @@ const AdminReports = ({ type, onLocate }) => {
                   <button
                     onClick={() => goToReportLocation(r)}
                     style={{
-                      background: '#EAEDFF',
-                      color: '#4A3FE3',
+                      background: '#DBEAFE',
+                      color: '#1E40AF',
                       border: 'none',
                       padding: '8px 14px',
                       borderRadius: '6px',

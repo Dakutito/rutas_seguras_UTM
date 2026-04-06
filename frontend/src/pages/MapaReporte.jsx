@@ -254,11 +254,11 @@ const MapaReporte = ({ user, viewOnly = false, onInicio, center: initialCenter }
   )
 
   return (
-    <div className="container_Ver_mapaReporte" style={{ marginTop: '10px' }}>
-      <div className={`ontainer_Ver_mapaReportecard ${viewOnly ? 'full-width-layout' : ''}`}>
+    <div className="container_Ver_mapaReporte" style={viewOnly ? { height: 'calc(100vh - 40px)', display: 'flex', flexDirection: 'column', margin: 0, padding: 0, minHeight: 0 } : { marginTop: '10px' }}>
+      <div className={`ontainer_Ver_mapaReportecard ${viewOnly ? 'full-width-layout' : ''}`} style={viewOnly ? { flex: 1, display: 'flex', flexDirection: 'column', borderRadius: '12px', margin: 0, minHeight: 0 } : {}}>
 
-        <div className="mapa-reporte-layout">
-          <div className="main-map-area">
+        <div className="mapa-reporte-layout" style={viewOnly ? { flex: 1, minHeight: 0 } : {}}>
+          <div className="main-map-area" style={viewOnly ? { flex: 1, padding: '10px', minHeight: 0 } : {}}>
             {/* Header */}
             <div className='contenidoapartadobo' style={{ marginBottom: '15px' }}>
               <div className='sub_contenidoapartadobo'>
@@ -335,7 +335,7 @@ const MapaReporte = ({ user, viewOnly = false, onInicio, center: initialCenter }
             )}
 
             {/* Mapa */}
-            <div className="map-container-wrapper">
+            <div className="map-container-wrapper" style={viewOnly ? { flex: 1, minHeight: 0, height: 'auto' } : {}}>
               <MapContainer
                 center={initialCenter ? [initialCenter.lat, initialCenter.lng] : (userLocation ? [userLocation.lat, userLocation.lng] : [-1.0234, -80.4667])}
                 zoom={15}

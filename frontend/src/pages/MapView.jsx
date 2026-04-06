@@ -57,19 +57,101 @@ const MapView = ({ isAdmin, user, onInicio, center }) => {
     }
   }, [])
 
+  const EMOTIONS_CONFIG = {
+    '😊': { label: 'Feliz', color: '#10b981' },
+    '😌': { label: 'Tranquilo', color: '#34d399' },
+    '😐': { label: 'Neutro', color: '#a3e635' },
+    '😰': { label: 'Ansioso', color: '#fbbf24' },
+    '😨': { label: 'Asustado', color: '#f59e0b' },
+    '😢': { label: 'Triste', color: '#f97316' },
+    '😡': { label: 'Enojado', color: '#ef4444' }
+  }
+
+  const [activeFilters, setActiveFilters] = useState([])
+  const [loadedReports, setLoadedReports] = useState([])
+
+  const toggleFilter = (emotionEmoji) => {
+    setActiveFilters(prev => {
+      if (prev.includes(emotionEmoji)) {
+        return prev.filter(e => e !== emotionEmoji)
+      } else {
+        return [...prev, emotionEmoji]
+      }
+    })
+  }
+
+  const visibleReportsCount = activeFilters.length === 0
+    ? loadedReports.length
+    : loadedReports.filter(r => activeFilters.includes(r.emotion)).length
+
   if (isAdmin) {
     return (
-      <div className="container">
-        <div className="card">
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
-            <h1 className="map-title" style={{ margin: 0 }}>Mapa Emocional UTM</h1>
+      <div style={{ background: 'var(--bg-card)', borderRadius: '12px', padding: '24px', display: 'flex', flexDirection: 'column', height: 'calc(100vh - 40px)' }}>
+        <div className='contenidoapartadobo' style={{ marginBottom: '15px' }}>
+          <div className='sub_contenidoapartadobo'>
+            <h1 className="map-title" style={{ margin: 0, fontSize: '24px', color: 'var(--text-heading)' }}>Mapa Emocional UTM</h1>
+            <p style={{ margin: '6px 0 0 0', color: 'var(--text-secondary)', fontSize: '14px' }}>
+              Visualización de emociones reportadas en tiempo real
+            </p>
           </div>
+        </div>
+
+        <div className="filter-chips-container">
+          <button
+            className={`filter-chip ${activeFilters.length === 0 ? 'active' : ''}`}
+            onClick={() => setActiveFilters([])}
+            style={{
+              borderColor: activeFilters.length === 0 ? '#3b82f6' : 'var(--border-color)',
+              background: activeFilters.length === 0 ? '#3b82f615' : 'var(--bg-card)',
+              color: activeFilters.length === 0 ? '#3b82f6' : 'var(--text-primary)'
+            }}
+          >
+            🔍 Todos
+            <span className="chip-count" style={{ background: activeFilters.length === 0 ? '#3b82f6' : 'var(--border-color)', color: activeFilters.length === 0 ? 'white' : 'var(--text-primary)' }}>
+              {loadedReports.length}
+            </span>
+          </button>
+          {Object.entries(EMOTIONS_CONFIG).map(([emoji, config]) => {
+            const count = loadedReports.filter(r => r.emotion === emoji).length
+            const isActive = activeFilters.includes(emoji)
+            return (
+              <button
+                key={emoji}
+                className={`filter-chip ${isActive ? 'active' : ''}`}
+                onClick={() => toggleFilter(emoji)}
+                style={{
+                  borderColor: isActive ? config.color : 'var(--border-color)',
+                  background: isActive ? `${config.color}15` : 'var(--bg-card)',
+                  color: isActive ? config.color : 'var(--text-primary)'
+                }}
+              >
+                {emoji} {config.label}
+                <span className="chip-count" style={{
+                  background: isActive ? config.color : 'var(--border-color)',
+                  color: isActive ? 'white' : 'var(--text-primary)'
+                }}>
+                  {count}
+                </span>
+              </button>
+            )
+          })}
+        </div>
+
+        {activeFilters.length > 0 && (
+          <div className="filter-results-badge">
+            📊 Mostrando {visibleReportsCount} de {loadedReports.length} emociones
+          </div>
+        )}
+
+        <div className="admin-map-container" style={{ flex: 1, borderRadius: '12px', overflow: 'hidden', minHeight: 0 }}>
           <Map
             userLocation={userLocation}
             onZoneClick={setSelectedZone}
             center={center}
             isAdmin={isAdmin}
             user={user}
+            onReportsUpdate={setLoadedReports}
+            activeFilters={activeFilters}
           />
         </div>
       </div>
