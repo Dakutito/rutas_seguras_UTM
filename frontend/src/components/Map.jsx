@@ -47,7 +47,9 @@ const Map = ({ userLocation, onZoneClick, isAdmin = false, user, center, onRepor
   };
 
   useEffect(() => {
-    fetchReports();
+    (async () => {
+      await fetchReports();
+    })();
 
     // Actualizar cada 15 segundos
     const timer = setInterval(fetchReports, 15000);

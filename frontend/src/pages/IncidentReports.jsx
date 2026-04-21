@@ -1,8 +1,7 @@
 import { useState, useEffect } from 'react'
-import { Link, useNavigate } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
 import { isAdmin } from '../services/authService'
 import '../styles/Components.css'
-import { FaMapMarkerAlt } from 'react-icons/fa'; // Font Awesome
 import { MdLocationOn } from 'react-icons/md'; // Material Icons
 
 import { incidentsAPI } from '../services/api'
@@ -90,7 +89,6 @@ const IncidentReports = () => {
     return (
       <div className="container">
         <div className="card" style={{ textAlign: 'center', padding: '60px' }}>
-          <div style={{ fontSize: '48px' }}>⏳</div>
           <h2>Cargando reportes...</h2>
         </div>
       </div>

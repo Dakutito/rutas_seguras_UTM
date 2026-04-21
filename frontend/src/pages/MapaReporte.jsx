@@ -24,7 +24,7 @@ function LocationMarker({ position, setPosition }) {
   return position === null ? null : <Marker position={position} />
 }
 
-const MapaReporte = ({ user, viewOnly = false, onInicio, center: initialCenter }) => {
+const MapaReporte = ({ viewOnly = false, onInicio, center: initialCenter }) => {
   const navigate = useNavigate()
   const [position, setPosition] = useState(null)
   const [showReportMobile, setShowReportMobile] = useState(false)

@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react'
-import { Link } from 'react-router-dom'
 import { API_URL } from '../services/api'
 
 const AdminCategories = () => {
@@ -86,7 +85,7 @@ const AdminCategories = () => {
   }
 
   const handleDelete = async (id, name) => {
-    if (!window.confirm(`¿Eliminar la categoría "${name}"?`)) return
+    if (!globalThis.confirm(`¿Eliminar la categoría "${name}"?`)) return
 
     setLoading(true)
     try {

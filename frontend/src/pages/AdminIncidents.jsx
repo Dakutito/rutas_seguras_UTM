@@ -30,7 +30,7 @@ const AdminIncidents = () => {
   }, [])
 
   const handleResolve = async (id) => {
-    if (!window.confirm('¿Marcar este incidente como resuelto?')) return
+    if (!globalThis.confirm('¿Marcar este incidente como resuelto?')) return
 
     try {
       const token = localStorage.getItem('token')
@@ -48,7 +48,7 @@ const AdminIncidents = () => {
   }
 
   const handleDelete = async (id) => {
-    if (!window.confirm('¿Eliminar este incidente permanentemente?')) return
+    if (!globalThis.confirm('¿Eliminar este incidente permanentemente?')) return
 
     try {
       const token = localStorage.getItem('token')

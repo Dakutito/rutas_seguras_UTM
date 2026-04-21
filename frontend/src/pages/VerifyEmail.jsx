@@ -24,9 +24,11 @@ function VerifyEmail() {
       }, 3000);
 
     } catch (error) {
-      setStatus('error');
-      const errorData = error.data || error.response?.data
-      setMessage(errorData?.error || 'Error al verificar el email');
+      setTimeout(() => {
+        setStatus('error');
+        const errorData = error.data || error.response?.data
+        setMessage(errorData?.error || 'Error al verificar el email');
+      }, 0);
     }
   };
 
@@ -34,9 +36,12 @@ function VerifyEmail() {
     const params = new URLSearchParams(location.search);
     const token = params.get('token');
 
+
     if (!token) {
-      setStatus('error');
-      setMessage('Token no encontrado');
+      setTimeout(() => {
+        setStatus('error');
+        setMessage('Token no encontrado');
+      }, 0);
       return;
     }
 

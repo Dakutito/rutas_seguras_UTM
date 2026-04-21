@@ -5,13 +5,13 @@ import EmotionSelector from '../components/EmotionSelector'
 import CommentForm from '../components/CommentForm'
 import '../styles/MapView.css'
 
-const MapView = ({ isAdmin, user, onInicio, center }) => {
+const MapView = ({ isAdmin, user, center }) => {
   const location = useLocation()
   const navigate = useNavigate()
   const [selectedEmotion, setSelectedEmotion] = useState(null)
   const [userLocation, setUserLocation] = useState(null)
   const [showReportForm, setShowReportForm] = useState(false)
-  const [selectedZone, setSelectedZone] = useState(null)
+  const [ setSelectedZone] = useState(null)
   const [locationLoading, setLocationLoading] = useState(true)
   const [locationError, setLocationError] = useState(false)
 
@@ -47,13 +47,18 @@ const MapView = ({ isAdmin, user, onInicio, center }) => {
 
   // Cargar ubicación al iniciar y verificar si venimos del Dashboard
   useEffect(() => {
-    getLocation();
+    // Llamar getLocation de forma asíncrona para evitar renderizados en cascada
+    setTimeout(() => {
+      getLocation();
+    }, 0);
 
     // Si venimos del dashboard con una emoción seleccionada, la seteamos
     if (location.state?.emotionFromDashboard) {
-      setSelectedEmotion(location.state.emotionFromDashboard)
-      setShowReportForm(true)
-      navigate(location.pathname, { replace: true, state: {} })
+      setTimeout(() => {
+        setSelectedEmotion(location.state.emotionFromDashboard)
+        setShowReportForm(true)
+        navigate(location.pathname, { replace: true, state: {} })
+      }, 0);
     }
   }, [])
 
@@ -106,7 +111,7 @@ const MapView = ({ isAdmin, user, onInicio, center }) => {
               color: activeFilters.length === 0 ? '#3b82f6' : 'var(--text-primary)'
             }}
           >
-            🔍 Todos
+            Todos
             <span className="chip-count" style={{ background: activeFilters.length === 0 ? '#3b82f6' : 'var(--border-color)', color: activeFilters.length === 0 ? 'white' : 'var(--text-primary)' }}>
               {loadedReports.length}
             </span>
