@@ -69,19 +69,6 @@ const AdminStats = () => {
     )
   }
 
-  // PANTALLA CON DATOS REALES
-  const emotionColors = {
-    'Feliz': '#10b981',
-    'Tranquilo': '#34d399',
-    'Neutral': '#a3e635',
-    'Ansioso': '#fbbf24',
-    'Asustado': '#f59e0b',
-    'Triste': '#f97316',
-    'Enojado': '#ef4444'
-  }
-
-  const maxCount = Math.max(...stats.reportsByEmotion.map(e => e.count), 1)
-
   return (
     <div className="card">
       {/* Header */}

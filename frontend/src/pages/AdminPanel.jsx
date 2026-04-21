@@ -1,5 +1,4 @@
 import { useState, useEffect } from 'react'
-import { useNavigate } from 'react-router-dom'
 import '../styles/AdminPanel.css'
 import { usersAPI, reportsAPI, incidentsAPI } from '../services/api'
 
@@ -13,7 +12,6 @@ import MapaReporte from './MapaReporte'
 import ConfirmationModal from '../components/ConfirmationModal'
 
 const AdminPanel = ({ user }) => {
-  const navigate = useNavigate()
   const [stats, setStats] = useState({ totalUsers: 0, activeUsers: 0, reports: [], dangerCount: 0, todayCount: 0 })
   const [loading, setLoading] = useState(true)
   const [emotionStats, setEmotionStats] = useState([])
@@ -143,7 +141,7 @@ const AdminPanel = ({ user }) => {
       }
       setModalState({ isOpen: false, reportId: null, isBulk: false });
       loadData();
-    } catch (error) {
+    } catch {
       alert("Error al eliminar el reporte");
     } finally {
       setIsDeleting(false);
@@ -152,10 +150,6 @@ const AdminPanel = ({ user }) => {
 
   const openDeleteModal = (id) => {
     setModalState({ isOpen: true, reportId: id, isBulk: false });
-  }
-
-  const openBulkDeleteModal = () => {
-    setModalState({ isOpen: true, reportId: null, isBulk: true });
   }
 
   // Función para renderizar la vista de Dashboard (Home)
@@ -167,8 +161,7 @@ const AdminPanel = ({ user }) => {
     })
 
     return (
-      <>
-        <div className="admin-layout-grid">
+      <div className="admin-layout-grid">
           <div className="admin-left-col" style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
             <div className="admin-new-card">
               <div className="admin-card-header">
@@ -277,7 +270,6 @@ const AdminPanel = ({ user }) => {
             </div>
           </div>
         </div>
-      </>
     )
   }
 

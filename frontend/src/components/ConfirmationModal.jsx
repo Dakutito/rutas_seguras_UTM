@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import PropTypes from 'prop-types';
 import '../styles/AdminPanel.css';
 
 const ConfirmationModal = ({
@@ -65,6 +66,17 @@ const ConfirmationModal = ({
             </div>
         </div>
     );
+};
+
+ConfirmationModal.propTypes = {
+    isOpen: PropTypes.bool.isRequired,
+    onClose: PropTypes.func.isRequired,
+    onConfirm: PropTypes.func.isRequired,
+    title: PropTypes.string.isRequired,
+    message: PropTypes.string.isRequired,
+    requiredText: PropTypes.string,
+    confirmButtonText: PropTypes.string,
+    isLoading: PropTypes.bool
 };
 
 export default ConfirmationModal;

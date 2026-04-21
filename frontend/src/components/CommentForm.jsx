@@ -1,8 +1,9 @@
 import { useState } from 'react'
+import PropTypes from 'prop-types'
 import '../styles/Components.css'
 import { reportsAPI } from '../services/api'
 
-const CommentForm = ({ emotion, location, locationLoading, locationError, onClose, isAdmin, user }) => {
+const CommentForm = ({ emotion, location, locationLoading, locationError, onClose, user }) => {
   const [comment, setComment] = useState('')
   const [submitted, setSubmitted] = useState(false)
   const [loading, setLoading] = useState(false)
@@ -123,6 +124,24 @@ const CommentForm = ({ emotion, location, locationLoading, locationError, onClos
       </div>
     </div>
   )
+}
+
+CommentForm.propTypes = {
+  emotion: PropTypes.shape({
+    emoji: PropTypes.string.isRequired,
+    label: PropTypes.string.isRequired,
+    color: PropTypes.string.isRequired,
+  }),
+  location: PropTypes.shape({
+    lat: PropTypes.number,
+    lng: PropTypes.number,
+  }),
+  locationLoading: PropTypes.bool,
+  locationError: PropTypes.bool,
+  onClose: PropTypes.func.isRequired,
+  user: PropTypes.shape({
+    name: PropTypes.string,
+  }),
 }
 
 export default CommentForm

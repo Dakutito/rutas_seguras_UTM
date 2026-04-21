@@ -1,5 +1,4 @@
 import { useState, useEffect } from 'react'
-import { Link } from 'react-router-dom'
 import { usersAPI } from '../services/api'
 import ConfirmationModal from '../components/ConfirmationModal'
 
@@ -35,7 +34,7 @@ const AdminUsers = () => {
     try {
       await usersAPI.updateStatus(id, newStatus)
       loadUsers();
-    } catch (error) {
+    } catch {
       alert("No se pudo cambiar el estado en la base de datos");
     }
   };
@@ -50,7 +49,7 @@ const AdminUsers = () => {
       await usersAPI.delete(id)
       loadUsers();
       setModalState({ isOpen: false, userId: null });
-    } catch (error) {
+    } catch {
       alert("Error al eliminar el usuario");
     } finally {
       setIsDeleting(false);

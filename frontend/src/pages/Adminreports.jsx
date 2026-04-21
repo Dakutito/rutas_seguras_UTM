@@ -113,9 +113,6 @@ const AdminReports = ({ type, onLocate }) => {
   }
   const cfg = config[type] || config['all-reports']
 
-  const getDangerColor = (e) => ({ '😊': '#10b981', '😌': '#34d399', '😐': '#a3e635', '😰': '#fbbf24', '😨': '#f59e0b', '😢': '#f97316', '😡': '#ef4444' }[e] || '#6b7280')
-  const getDangerLabel = (e) => ({ '😊': 'Bajo', '😌': 'Bajo', '😐': 'Bajo', '😰': 'Medio', '😨': 'Medio', '😢': 'Alto', '😡': 'Alto' }[e] || 'Bajo')
-
   if (loading) return <div className="container"><div className="card">Cargando...</div></div>
 
   return (

@@ -1,3 +1,5 @@
+import PropTypes from 'prop-types'
+
 const EmotionSelector = ({ onSelect }) => {
   const emotions = [
     { emoji: '😊', label: 'Feliz', color: '#10b981' },
@@ -42,6 +44,10 @@ const EmotionSelector = ({ onSelect }) => {
       </div>
     </div>
   )
+}
+
+EmotionSelector.propTypes = {
+  onSelect: PropTypes.func.isRequired,
 }
 
 export default EmotionSelector

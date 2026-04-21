@@ -1,10 +1,8 @@
-// Force Vercel rebuild: 2026-03-13T17:30 - Dakutito
 import { useState, useEffect } from 'react'
 import ConfirmationModal from '../components/ConfirmationModal';
 import { Link, useNavigate, useLocation } from 'react-router-dom'
 import '../styles/Components.css'
 import { API_URL } from '../services/api'
-import { FaMapMarkerAlt } from 'react-icons/fa'; // Font Awesome
 import { MdLocationOn } from 'react-icons/md'; // Material Icons
 
 const Dashboard = ({ user }) => {
@@ -21,11 +19,11 @@ const Dashboard = ({ user }) => {
   const [reportToDelete, setReportToDelete] = useState(null);
   const [deleting, setDeleting] = useState(false);
   useEffect(() => {
-    loadUserReports();
+    if (user) loadUserReports();
     const handleResize = () => setIsDesktop(window.innerWidth > 768);
     window.addEventListener('resize', handleResize);
     return () => window.removeEventListener('resize', handleResize);
-  }, []);
+  }, [user]);
 
   // Resetear vista de historial al navegar al dashboard (ej. clic en "Inicio" del Navbar)
   useEffect(() => {
@@ -35,9 +33,10 @@ const Dashboard = ({ user }) => {
   }, [location.key]);
 
   const loadUserReports = async () => {
+    const token = localStorage.getItem('token')
+    if (!token) return;
     setLoading(true)
     try {
-      const token = localStorage.getItem('token')
       const response = await fetch(`${API_URL}/api/user-reports/my-reports`, {
         headers: { 'Authorization': `Bearer ${token}` }
       })
@@ -133,7 +132,6 @@ const Dashboard = ({ user }) => {
             {loading ? <div style={{ textAlign: 'center', padding: '40px' }}>Cargando...</div> :
               userReports.length === 0 ? (
                 <div style={{ textAlign: 'center', padding: '60px', background: '#f9fafb', borderRadius: '12px' }}>
-                  <div style={{ fontSize: '72px' }}>📭</div>
                   <h2 style={{ color: '#6b7280' }}>No tienes reportes aún</h2>
                   <Link to="/map" className="btn btn-primary" style={{ marginTop: '20px' }}>Ir al Mapa</Link>
                 </div>

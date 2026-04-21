@@ -54,6 +54,22 @@ body {
   padding-bottom: 10px;
 }
 
+/* Ocultar scrollbar solo en móvil */
+@media (max-width: 768px) {
+  .categoriadereporte {
+    scrollbar-width: none;
+    /* Firefox */
+    -ms-overflow-style: none;
+    /* IE/Edge */
+    padding-bottom: 0;
+  }
+
+  .categoriadereporte::-webkit-scrollbar {
+    display: none;
+    /* Chrome/Safari */
+  }
+}
+
 .categoriadereporte button {
   padding: 10px 20px;
   border: none;
