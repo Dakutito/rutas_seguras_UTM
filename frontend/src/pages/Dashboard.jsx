@@ -241,13 +241,6 @@ const Dashboard = ({ user }) => {
                 <span className="action-btn-arrow">›</span>
               </button>
 
-              <button onClick={() => navigate('/')} className="action-btn">
-                <div className="action-btn-content">
-                  <span>Asistente Emocional</span>
-                </div>
-                <span className="action-btn-arrow">›</span>
-              </button>
-
               <button onClick={() => navigate('/settings')} className="action-btn">
                 <div className="action-btn-content">
                   <span>Mi Configuración</span>
