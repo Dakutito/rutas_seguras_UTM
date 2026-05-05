@@ -454,6 +454,9 @@
   .reporte-container {
     padding: 15px;
   }
+  .container_Ver_mapaReportecard {
+    margin:0;
+  }
 
   .reporte-card {
     padding: 15px;
@@ -508,6 +511,7 @@
   padding: 0;
   transition: all 0.3s ease;
   width: 100%;
+  margin: 25px;
 }
 
 .container_Ver_mapaReportecard.full-width-layout {
@@ -806,6 +810,7 @@
   .emotions-grid-wrapper {
     display: block !important;
   }
+
 }
 
 /* ===== FILTRO MULTI-CATEGORÍA CON CHIPS ===== */

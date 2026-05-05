@@ -757,6 +757,10 @@ footer {
 
 /* Responsive */
 @media (max-width: 480px) {
+  .emotions {
+    grid-template-columns: repeat(3, 1fr);
+  }
+
   .footerhome {
     display: flex;
     flex-direction: column;
