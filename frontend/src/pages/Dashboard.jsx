@@ -151,7 +151,7 @@ const Dashboard = ({ user }) => {
                             </div>
                             {r.comment && <div className='sub_sub_subcontenidohistorialreportetotaluser'>{r.comment}</div>}
                             <div style={{ fontSize: '13px', color: '#6b7280', alignItems: 'center' }}>
-                              <MdLocationOn style={{ fontSize: '14px' }} /> Lat: {parseFloat(r.lat).toFixed(4)}, Lng: {parseFloat(r.lng).toFixed(4)}
+                              <MdLocationOn style={{ fontSize: '14px' }} /> Lat: {parseFloat(r.lat).toFixed(4)}, Lng: {parseFloat(r.lng).toFixed(4)}o
                             </div>
                           </div>
                           <button
@@ -187,7 +187,9 @@ const Dashboard = ({ user }) => {
         confirmButtonText="Eliminar"
         isLoading={deleting}
       />
+      <div className="chatbot-floating">ChatBot</div>
       <div className="container">
+        
         <div className="dashboard-container">
 
           {/* SIDEBAR IZQUIERDO DEL USUARIO*/}
@@ -307,7 +309,6 @@ const Dashboard = ({ user }) => {
                 </button>
 
               </div>
-              <div className="map-preview-visual"></div>
             </section>
 
           </main>

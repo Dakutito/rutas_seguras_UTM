@@ -393,7 +393,6 @@ body {
   display: grid;
   grid-template-columns: 400px 1fr;
   gap: 30px;
-  min-height: calc(100vh - 120px);
 }
 
 /* boton volver*/
@@ -407,7 +406,7 @@ body {
 .dashboard-sidebar {
   background: var(--bg-card);
   border-radius: 20px;
-  padding: 30px;
+  padding: 30px 30px 90px 30px;
   box-shadow: var(--shadow-card);
   height: fit-content;
   position: sticky;
@@ -497,42 +496,48 @@ body {
 
 /* Acciones rápidas */
 .quick-actions {
-  display: flex;
-  flex-direction: column;
+  display: grid;
+  grid-template-columns: 1fr;
   gap: 12px;
 }
 
 .action-btn {
   display: flex;
+  flex-direction: column;
   align-items: center;
-  justify-content: space-between;
-  padding: 16px 20px;
+  justify-content: center;
+  padding: 20px 16px;
   background: white;
   border: 1px solid #e5e7eb;
   border-radius: 16px;
-  font-size: 16px;
-  font-weight: 500;
+  font-size: 15px;
+  font-weight: 600;
   color: #374151;
   cursor: pointer;
   transition: all 0.2s ease;
   text-decoration: none;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.02);
+  text-align: center;
+  gap: 8px;
 }
 
 .action-btn:hover {
   background: #f9fafb;
   border-color: #d1d5db;
-  transform: translateY(-1px);
+  transform: translateY(-2px);
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
 }
 
 .action-btn-content {
   display: flex;
   align-items: center;
-  gap: 16px;
+  gap: 0;
+  width: 100%;
+  justify-content: center;
 }
 
 .action-btn-arrow {
+  display: none;
   color: #9ca3af;
   font-size: 18px;
   font-weight: 300;
@@ -545,6 +550,20 @@ body {
   display: flex;
   flex-direction: column;
   gap: 30px;
+}
+
+.chatbot-floating {
+  cursor: pointer;
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  background: #93c5fd;
+  color: #1e3a8a;
+  padding: 16px 22px;
+  border-radius: 50px;
+  box-shadow: 0 16px 32px rgba(0, 0, 0, 0.14);
+  font-weight: 700;
+  z-index: 1001;
 }
 
 .emotion-section {
@@ -709,13 +728,7 @@ body {
 .map-preview-section {
   background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
   border-radius: 20px;
-  padding: 0;
   overflow: hidden;
-  position: relative;
-  min-height: 280px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
 }
 
 .map-preview-content {
@@ -755,24 +768,6 @@ body {
   box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
 }
 
-.map-preview-visual {
-  position: absolute;
-  right: 0;
-  top: 0;
-  width: 50%;
-  height: 100%;
-  background: linear-gradient(to left, rgba(0, 0, 0, 0.2) 0%, transparent 100%);
-  backdrop-filter: blur(10px);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.map-preview-visual::before {
-  content: '🗺️';
-  font-size: 120px;
-  opacity: 0.3;
-}
 
 .dashboard-footer {
   background: var(--bg-card);
@@ -1174,6 +1169,7 @@ body {
 
   .dashboard-sidebar {
     position: static;
+    padding: 30px;
   }
 
   .emotions-grid {
@@ -1240,59 +1236,32 @@ body {
   .quick-actions {
     display: grid;
     grid-template-columns: 1fr 1fr;
-    gap: 15px;
+    gap: 12px;
   }
 
   .quick-actions .action-btn {
-    padding: 15px;
-    position: relative;
+    padding: 20px 16px;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
   }
-
-  /* Estilo específico para el botón de Mis Reportes (Terciario en el mockup) */
 
   .action-btn-content {
     flex-direction: column;
-    align-items: flex-start;
+    align-items: center;
     width: 100%;
-    gap: 8px;
+    gap: 0;
   }
 
   .action-btn span {
     font-size: 14px;
-    line-height: 1.2;
-    max-width: 80%;
-    margin-bottom: 5px;
+    line-height: 1.3;
+    max-width: 100%;
   }
 
   .action-btn-arrow {
-    position: absolute;
-    bottom: 15px;
-    right: 15px;
-    font-size: 18px;
-  }
-
-  /* Último botón ocupa todo el ancho */
-  .quick-actions .action-btn:last-of-type {
-    grid-column: span 2;
-    height: 80px;
-    flex-direction: row;
-    align-items: center;
-    justify-content: space-between;
-  }
-
-  .quick-actions .action-btn:last-of-type .action-btn-icon {
-    position: static;
-    font-size: 24px;
-  }
-
-  .quick-actions .action-btn:last-of-type .action-btn-content {
-    flex-direction: row;
-    align-items: center;
-    gap: 12px;
-  }
-
-  .quick-actions .action-btn:last-of-type .action-btn-arrow {
-    position: static;
+    display: none;
   }
 
   /* REDISEÑO ESTADO DE ÁNIMO MÓVIL */
