@@ -1,5 +1,5 @@
-import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom'
-import { useState, useEffect } from 'react'
+import { BrowserRouter as Router, Routes, Route, Navigate, useNavigate } from 'react-router-dom'
+import { useState, useEffect, useRef } from 'react'
 import './App.css'
 import './styles/darkMode.css'
 
@@ -142,7 +142,23 @@ function App() {
     setIsAdmin(false)
     localStorage.removeItem('user')
     localStorage.removeItem('token')
+    localStorage.removeItem('refreshToken')
   }
+
+  // Escuchar el evento global 'auth:expired' que dispara el interceptor de api.js
+  // cuando el refresh token también expiró y ya no se puede renovar la sesión.
+  useEffect(() => {
+    const handleAuthExpired = () => {
+      handleLogout()
+      // Pequeño delay para asegurar que el estado se limpió antes del alert
+      setTimeout(() => {
+        alert('Tu sesión ha expirado. Por favor inicia sesión nuevamente.')
+      }, 100)
+    }
+
+    window.addEventListener('auth:expired', handleAuthExpired)
+    return () => window.removeEventListener('auth:expired', handleAuthExpired)
+  }, [])
 
   // Mostrar loading
   if (loading) {

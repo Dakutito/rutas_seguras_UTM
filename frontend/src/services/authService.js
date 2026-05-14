@@ -1,4 +1,3 @@
-// frontend/src/services/authService.js
 export const isAdmin = () => {
   try {
     const user = JSON.parse(localStorage.getItem('user') || '{}')

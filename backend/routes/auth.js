@@ -50,7 +50,41 @@ const clearAttempts = (email) => {
   loginAttempts.delete(email);
 };
 
-// REGISTRO (Solo POST, sin GET)
+// HELPERS DE TOKENS
+
+/**
+ * Genera un Access Token JWT de corta duración (15 minutos).
+ * Solo contiene el mínimo de información necesaria (id, email, role).
+ */
+const generateAccessToken = (user) => {
+  return jwt.sign(
+    { id: user.id, email: user.email, role: user.role },
+    process.env.JWT_SECRET,
+    { expiresIn: '15m' }
+  );
+};
+
+/**
+ * Genera y persiste un Refresh Token de larga duración (7 días).
+ * Se guarda en la tabla refresh_tokens para poder invalidarlo al hacer logout.
+ * Usa crypto.randomBytes para que sea imposible de predecir.
+ */
+const generateAndSaveRefreshToken = async (userId) => {
+  const token = crypto.randomBytes(64).toString('hex');
+  const expiresAt = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000); // 7 días
+
+  await query(
+    `INSERT INTO refresh_tokens (user_id, token, expires_at)
+     VALUES ($1, $2, $3)`,
+    [userId, token, expiresAt]
+  );
+
+  return token;
+};
+
+
+// REGISTRO
+
 router.post('/register', [
   body('name').trim().isLength({ min: 3 }),
   body('email').isEmail(),
@@ -78,7 +112,7 @@ router.post('/register', [
     );
     const newUser = userResult.rows[0];
 
-    // Crear token con CRYPTO
+    // Crear token de verificación de email con CRYPTO
     const verificationToken = crypto.randomBytes(32).toString('hex');
 
     await query(
@@ -145,7 +179,7 @@ router.get('/verify-email/:token', async (req, res) => {
   }
 });
 
-// LOGIN MEJORADO CON CÓDIGO DE ACCESO ADMIN
+// LOGIN — Genera Access Token (15min) + Refresh Token (7 días)
 router.post('/login', [
   body('email').isEmail(),
   body('password').notEmpty()
@@ -199,7 +233,6 @@ router.post('/login', [
     if (user.role === 'admin') {
       const validAdminCode = process.env.ADMIN_ACCESS_CODE;
 
-      // Si es admin, DEBE proporcionar el código
       if (!adminCode) {
         recordFailedAttempt(normalizedEmail);
         return res.status(403).json({
@@ -208,11 +241,9 @@ router.post('/login', [
         });
       }
 
-      // Verificar que el código sea correcto
       if (adminCode !== validAdminCode) {
         recordFailedAttempt(normalizedEmail);
 
-        // LOG DE SEGURIDAD
         console.warn(`INTENTO DE ACCESO ADMIN FALLIDO:
           Email: ${normalizedEmail}
           IP: ${req.ip}
@@ -226,7 +257,6 @@ router.post('/login', [
         });
       }
 
-      // LOG DE SEGURIDAD - Acceso admin exitoso
       console.log(`ACCESO ADMIN EXITOSO:
         Email: ${normalizedEmail}
         IP: ${req.ip}
@@ -237,17 +267,17 @@ router.post('/login', [
     // LIMPIAR INTENTOS FALLIDOS
     clearAttempts(normalizedEmail);
 
-    // Generar token JWT
-    const token = jwt.sign(
-      { id: user.id, email: user.email, role: user.role },
-      process.env.JWT_SECRET,
-      { expiresIn: '7d' }
-    );
+    // Generar Access Token (corta duración: 15 minutos)
+    const accessToken = generateAccessToken(user);
+
+    // Generar y guardar Refresh Token (larga duración: 7 días) en BD
+    const refreshToken = await generateAndSaveRefreshToken(user.id);
 
     res.json({
       message: 'Login exitoso',
       user: { id: user.id, name: user.name, email: user.email, role: user.role },
-      token
+      token: accessToken,           // Access Token → corta duración
+      refreshToken: refreshToken    // Refresh Token → larga duración
     });
   } catch (error) {
     console.error('Error en login:', error);
@@ -255,7 +285,103 @@ router.post('/login', [
   }
 });
 
-// RUTA PARA PRUEBA RÁPIDA DE EMAIL DESDE NAVEGADOR (Solo para debugging)
+/*REFRESH — Renueva el Access Token usando el Refresh Token
+ El frontend llama a esta ruta automáticamente cuando recibe un 401.
+  No requiere contraseña, solo el refreshToken guardado en localStorage.
+*/
+router.post('/refresh', async (req, res) => {
+  try {
+    const { refreshToken } = req.body;
+
+    if (!refreshToken) {
+      return res.status(401).json({ error: 'No se proporcionó refresh token' });
+    }
+
+    // Buscar el refresh token en la BD y verificar que no haya expirado
+    const result = await query(
+      `SELECT rt.*, u.id as user_id, u.email, u.role, u.status
+       FROM refresh_tokens rt
+       JOIN users u ON rt.user_id = u.id
+       WHERE rt.token = $1 AND rt.expires_at > NOW()`,
+      [refreshToken]
+    );
+
+    if (result.rows.length === 0) {
+      // El refresh token no existe o expiró → el usuario debe hacer login de nuevo
+      return res.status(401).json({
+        error: 'Sesión expirada. Por favor inicia sesión nuevamente.',
+        code: 'REFRESH_EXPIRED'
+      });
+    }
+
+    const session = result.rows[0];
+
+    // Verificar que el usuario sigue activo
+    if (session.status === 'suspended') {
+      // Limpiar todos sus tokens si está suspendido
+      await query('DELETE FROM refresh_tokens WHERE user_id = $1', [session.user_id]);
+      return res.status(403).json({ error: 'Tu cuenta ha sido suspendida. Contacta al administrador.' });
+    }
+
+    // Generar nuevo Access Token
+    const newAccessToken = generateAccessToken({
+      id: session.user_id,
+      email: session.email,
+      role: session.role
+    });
+
+    res.json({
+      token: newAccessToken,
+      message: 'Token renovado exitosamente'
+    });
+  } catch (error) {
+    console.error('Error al renovar token:', error);
+    res.status(500).json({ error: 'Error al renovar la sesión' });
+  }
+});
+
+// ---------------------------------------------------------------------------
+// LOGOUT — Elimina el Refresh Token de la BD para invalidar la sesión
+// ---------------------------------------------------------------------------
+router.post('/logout', async (req, res) => {
+  try {
+    const { refreshToken } = req.body;
+
+    // Eliminar el refresh token de la BD (invalida la sesión del dispositivo actual)
+    if (refreshToken) {
+      await query('DELETE FROM refresh_tokens WHERE token = $1', [refreshToken]);
+    }
+
+    res.json({ message: 'Sesión cerrada correctamente' });
+  } catch (error) {
+    console.error('Error en logout:', error);
+    // Aunque falle en BD, responder OK para que el frontend limpie su estado
+    res.json({ message: 'Sesión cerrada' });
+  }
+});
+
+// ---------------------------------------------------------------------------
+// VERIFY TOKEN (mantiene compatibilidad)
+// ---------------------------------------------------------------------------
+router.get('/verify', async (req, res) => {
+  const authHeader = req.headers['authorization'];
+  const token = authHeader && authHeader.split(' ')[1];
+
+  if (!token) {
+    return res.status(401).json({ error: 'No se proporcionó token' });
+  }
+
+  try {
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    res.json({ valid: true, user: decoded });
+  } catch (error) {
+    res.status(401).json({ valid: false, error: 'Token inválido o expirado' });
+  }
+});
+
+// ---------------------------------------------------------------------------
+// RUTAS DE DEBUGGING
+// ---------------------------------------------------------------------------
 router.get('/test-email', async (req, res) => {
   try {
     const { email } = req.query;

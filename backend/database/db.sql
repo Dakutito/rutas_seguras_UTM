@@ -1,12 +1,26 @@
--- 1. LIMPIEZA (Opcional, cuidado en producción)
--- Si ya tienes usuarios creados y no quieres borrarlos, NO ejecutes la línea de 'users'
-DROP TABLE IF EXISTS activity_logs CASCADE;
+/*DROP TABLE IF EXISTS activity_logs CASCADE;
 DROP TABLE IF EXISTS user_sessions CASCADE;
 DROP TABLE IF EXISTS risk_zones CASCADE;
 DROP TABLE IF EXISTS emotion_reports CASCADE;
 DROP TABLE IF EXISTS incident_reports CASCADE;
 DROP TABLE IF EXISTS incident_categories CASCADE;
--- DROP TABLE IF EXISTS users CASCADE; -- Descomenta solo si quieres borrar todas las cuentas
+DROP TABLE IF EXISTS refresh_tokens CASCADE;
+DROP TABLE IF EXISTS users CASCADE;
+*/
+-- TABLA DE REFRESH TOKENS (Sesiones persistentes)
+-- Almacena los tokens de renovación de sesión por usuario.
+-- Permite invalidar sesiones individuales sin afectar a otros usuarios.
+CREATE TABLE IF NOT EXISTS refresh_tokens (
+    id SERIAL PRIMARY KEY,
+    user_id INTEGER REFERENCES users(id) ON DELETE CASCADE,
+    token VARCHAR(512) UNIQUE NOT NULL,
+    expires_at TIMESTAMP NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE INDEX IF NOT EXISTS idx_refresh_tokens_token ON refresh_tokens(token);
+CREATE INDEX IF NOT EXISTS idx_refresh_tokens_user ON refresh_tokens(user_id);
+CREATE INDEX IF NOT EXISTS idx_refresh_tokens_expires ON refresh_tokens(expires_at);
 
 -- TABLA DE USUARIOS
 CREATE TABLE users (

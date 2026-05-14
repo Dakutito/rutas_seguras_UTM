@@ -7,17 +7,165 @@ const getApiUrl = () => {
     const hostname = window.location.hostname;
     url = `http://${hostname}:5000`;
   }
-
-  // Eliminar slash final si existe
   url = url.replace(/\/$/, '');
-
-  // NO agregar /api aquí, se agrega en cada endpoint
   return url;
 };
 
 export const API_URL = getApiUrl();
 
-// Helper para manejar respuestas
+// HELPERS DE TOKENS
+
+const getToken = () => localStorage.getItem('token');
+const getRefreshToken = () => localStorage.getItem('refreshToken');
+
+const setToken = (token) => localStorage.setItem('token', token);
+const setRefreshToken = (token) => localStorage.setItem('refreshToken', token);
+
+const clearTokens = () => {
+  localStorage.removeItem('token');
+  localStorage.removeItem('refreshToken');
+};
+
+// Helper para headers con autenticación
+const authHeaders = () => {
+  const token = getToken();
+  return {
+    'Content-Type': 'application/json',
+    ...(token && { 'Authorization': `Bearer ${token}` })
+  };
+};
+
+/* INTERCEPTOR DE REFRESH TOKEN
+ Control de estado para evitar múltiples refrescos simultáneos.
+ Si 10 peticiones fallan al mismo tiempo, solo se hace UNA llamada a /refresh
+ y las otras 9 esperan en cola a que termine.
+*/
+let isRefreshing = false;
+let refreshQueue = []; // Cola de callbacks pendientes mientras se refresca
+
+const processQueue = (error, token = null) => {
+  refreshQueue.forEach(({ resolve, reject }) => {
+    if (error) {
+      reject(error);
+    } else {
+      resolve(token);
+    }
+  });
+  refreshQueue = [];
+};
+
+/*
+ fetchWithRefresh — Envuelve fetch() con lógica de renovación automática.
+ Flujo:
+ 1. Hace la petición normal.
+ 2. Si responde 401 (token expirado) → intenta renovar con el refreshToken.
+ 3. Si la renovación es exitosa → reintenta la petición original con el nuevo token.
+ 4. Si la renovación falla → dispara el evento 'auth:expired' para logout global.
+ 
+ @param {string} url - URL a la que hacer la petición
+ @param {RequestInit} options - Opciones de fetch (method, headers, body, etc.)
+ @returns {Promise<Response>}
+*/
+const fetchWithRefresh = async (url, options = {}) => {
+  // Primera petición
+  const response = await fetch(url, options);
+
+  // Si NO es error de autenticación, devolver directamente
+  if (response.status !== 401) {
+    return response;
+  }
+
+  // Revisar si es un error de token expirado (no de credenciales incorrectas)
+  // Clonar la respuesta para poder leerla y aun así devolverla si es necesario
+  const responseClone = response.clone();
+  let errorData;
+  try {
+    errorData = await responseClone.json();
+  } catch {
+    return response;
+  }
+
+  // Solo intentar refresh si el código es TOKEN_EXPIRED
+  // Si es otro 401 (credenciales inválidas en login, etc.), no hacer refresh
+  const isTokenExpired = errorData?.code === 'TOKEN_EXPIRED' || errorData?.error === 'Token expirado';
+  if (!isTokenExpired) {
+    return response;
+  }
+
+  const storedRefreshToken = getRefreshToken();
+
+  // Si no hay refresh token guardado, no se puede renovar
+  if (!storedRefreshToken) {
+    window.dispatchEvent(new CustomEvent('auth:expired'));
+    return response;
+  }
+
+  // Si ya hay un refresh en curso, encolar esta petición
+  if (isRefreshing) {
+    return new Promise((resolve, reject) => {
+      refreshQueue.push({ resolve, reject });
+    }).then((newToken) => {
+      // Reintentar con el nuevo token
+      const retryOptions = {
+        ...options,
+        headers: {
+          ...options.headers,
+          'Authorization': `Bearer ${newToken}`
+        }
+      };
+      return fetch(url, retryOptions);
+    });
+  }
+
+  // Iniciar proceso de renovación
+  isRefreshing = true;
+
+  try {
+    const refreshResponse = await fetch(`${API_URL}/api/auth/refresh`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ refreshToken: storedRefreshToken })
+    });
+
+    if (!refreshResponse.ok) {
+      // El refresh token también expiró → cerrar sesión
+      processQueue(new Error('Refresh token inválido'));
+      clearTokens();
+      window.dispatchEvent(new CustomEvent('auth:expired'));
+      return response;
+    }
+
+    const data = await refreshResponse.json();
+    const newToken = data.token;
+
+    // Guardar el nuevo access token
+    setToken(newToken);
+
+    // Notificar a todas las peticiones en cola
+    processQueue(null, newToken);
+
+    // Reintentar la petición original con el nuevo token
+    const retryOptions = {
+      ...options,
+      headers: {
+        ...options.headers,
+        'Authorization': `Bearer ${newToken}`
+      }
+    };
+
+    return fetch(url, retryOptions);
+  } catch (err) {
+    processQueue(err);
+    clearTokens();
+    window.dispatchEvent(new CustomEvent('auth:expired'));
+    return response;
+  } finally {
+    isRefreshing = false;
+  }
+};
+
+// HELPER PARA MANEJAR RESPUESTAS HTTP
+
 const handleResponse = async (response) => {
   const data = await response.json();
 
@@ -30,21 +178,8 @@ const handleResponse = async (response) => {
   return data;
 };
 
-// Helper para obtener el token
-const getToken = () => {
-  return localStorage.getItem('token');
-};
 
-// Helper para headers con autenticación
-const authHeaders = () => {
-  const token = getToken();
-  return {
-    'Content-Type': 'application/json',
-    ...(token && { 'Authorization': `Bearer ${token}` })
-  };
-};
-
-// ==================== AUTENTICACIÓN ====================
+// AUTENTICACIÓN
 
 export const authAPI = {
   // Registro
@@ -57,7 +192,7 @@ export const authAPI = {
     return handleResponse(response);
   },
 
-  // Login
+  // Login — guarda AMBOS tokens al iniciar sesión
   login: async (credentials) => {
     const response = await fetch(`${API_URL}/api/auth/login`, {
       method: 'POST',
@@ -66,30 +201,37 @@ export const authAPI = {
     });
     const data = await handleResponse(response);
 
-    // Guardar token
+    // Guardar ambos tokens
     if (data.token) {
-      localStorage.setItem('token', data.token);
+      setToken(data.token);
+    }
+    if (data.refreshToken) {
+      setRefreshToken(data.refreshToken);
     }
 
     return data;
   },
 
-  // Logout
+  // Logout — elimina el refreshToken de la BD y limpia localStorage
   logout: async () => {
-    const response = await fetch(`${API_URL}/api/auth/logout`, {
-      method: 'POST',
-      headers: authHeaders()
-    });
+    const storedRefreshToken = getRefreshToken();
 
-    // Limpiar token
-    localStorage.removeItem('token');
-
-    return handleResponse(response);
+    try {
+      await fetch(`${API_URL}/api/auth/logout`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ refreshToken: storedRefreshToken })
+      });
+    } catch {
+      // Si falla la petición, igual limpiamos localmente
+    } finally {
+      clearTokens();
+    }
   },
 
   // Verificar token
   verifyToken: async () => {
-    const response = await fetch(`${API_URL}/api/auth/verify`, {
+    const response = await fetchWithRefresh(`${API_URL}/api/auth/verify`, {
       headers: authHeaders()
     });
     return handleResponse(response);
@@ -102,12 +244,12 @@ export const authAPI = {
   }
 };
 
-// ==================== USUARIOS ====================
+// USUARIOS
 
 export const usersAPI = {
   // Obtener todos los usuarios (admin)
   getAll: async () => {
-    const response = await fetch(`${API_URL}/api/users`, {
+    const response = await fetchWithRefresh(`${API_URL}/api/users`, {
       headers: authHeaders()
     });
     return handleResponse(response);
@@ -115,7 +257,7 @@ export const usersAPI = {
 
   // Obtener perfil propio
   getProfile: async () => {
-    const response = await fetch(`${API_URL}/api/users/profile`, {
+    const response = await fetchWithRefresh(`${API_URL}/api/users/profile`, {
       headers: authHeaders()
     });
     return handleResponse(response);
@@ -123,7 +265,7 @@ export const usersAPI = {
 
   // Cambiar estado de usuario (suspend/active)
   updateStatus: async (userId, status) => {
-    const response = await fetch(`${API_URL}/api/users/${userId}/status`, {
+    const response = await fetchWithRefresh(`${API_URL}/api/users/${userId}/status`, {
       method: 'PATCH',
       headers: authHeaders(),
       body: JSON.stringify({ status })
@@ -133,7 +275,7 @@ export const usersAPI = {
 
   // Eliminar usuario
   delete: async (userId) => {
-    const response = await fetch(`${API_URL}/api/users/${userId}`, {
+    const response = await fetchWithRefresh(`${API_URL}/api/users/${userId}`, {
       method: 'DELETE',
       headers: authHeaders()
     });
@@ -142,7 +284,7 @@ export const usersAPI = {
 
   // Restablecer contraseña
   resetPassword: async (userId) => {
-    const response = await fetch(`${API_URL}/api/users/${userId}/reset-password`, {
+    const response = await fetchWithRefresh(`${API_URL}/api/users/${userId}/reset-password`, {
       method: 'PUT',
       headers: authHeaders()
     });
@@ -151,7 +293,7 @@ export const usersAPI = {
 
   // Actualizar perfil
   updateProfile: async (userData) => {
-    const response = await fetch(`${API_URL}/api/users/profile`, {
+    const response = await fetchWithRefresh(`${API_URL}/api/users/profile`, {
       method: 'PUT',
       headers: authHeaders(),
       body: JSON.stringify(userData)
@@ -161,7 +303,7 @@ export const usersAPI = {
 
   // Cambiar contraseña
   changePassword: async (passwords) => {
-    const response = await fetch(`${API_URL}/api/users/change-password`, {
+    const response = await fetchWithRefresh(`${API_URL}/api/users/change-password`, {
       method: 'PUT',
       headers: authHeaders(),
       body: JSON.stringify(passwords)
@@ -170,12 +312,12 @@ export const usersAPI = {
   }
 };
 
-// ==================== REPORTES ====================
+// REPORTES
 
 export const reportsAPI = {
   // Crear reporte
   create: async (reportData) => {
-    const response = await fetch(`${API_URL}/api/user-reports`, {
+    const response = await fetchWithRefresh(`${API_URL}/api/user-reports`, {
       method: 'POST',
       headers: authHeaders(),
       body: JSON.stringify(reportData)
@@ -192,7 +334,7 @@ export const reportsAPI = {
 
   // Obtener mis reportes
   getMyReports: async () => {
-    const response = await fetch(`${API_URL}/api/user-reports/my-reports`, {
+    const response = await fetchWithRefresh(`${API_URL}/api/user-reports/my-reports`, {
       headers: authHeaders()
     });
     return handleResponse(response);
@@ -200,7 +342,7 @@ export const reportsAPI = {
 
   // Obtener reportes de un usuario
   getByUser: async (userId) => {
-    const response = await fetch(`${API_URL}/api/user-reports/user/${userId}`, {
+    const response = await fetchWithRefresh(`${API_URL}/api/user-reports/user/${userId}`, {
       headers: authHeaders()
     });
     return handleResponse(response);
@@ -208,7 +350,7 @@ export const reportsAPI = {
 
   // Eliminar reporte
   delete: async (reportId) => {
-    const response = await fetch(`${API_URL}/api/user-reports/${reportId}`, {
+    const response = await fetchWithRefresh(`${API_URL}/api/user-reports/${reportId}`, {
       method: 'DELETE',
       headers: authHeaders()
     });
@@ -217,7 +359,7 @@ export const reportsAPI = {
 
   // Limpiar reportes expirados (admin)
   cleanup: async () => {
-    const response = await fetch(`${API_URL}/api/user-reports/cleanup`, {
+    const response = await fetchWithRefresh(`${API_URL}/api/user-reports/cleanup`, {
       method: 'POST',
       headers: authHeaders()
     });
@@ -225,7 +367,7 @@ export const reportsAPI = {
   }
 };
 
-// ==================== ZONAS DE RIESGO ====================
+// ZONAS DE RIESGO
 
 export const zonesAPI = {
   // Obtener todas las zonas
@@ -249,7 +391,7 @@ export const zonesAPI = {
   }
 };
 
-// ==================== ESTADÍSTICAS ====================
+// ESTADÍSTICAS
 
 export const statsAPI = {
   // Estadísticas generales
@@ -260,7 +402,7 @@ export const statsAPI = {
 
   // Estadísticas de admin
   getAdmin: async () => {
-    const response = await fetch(`${API_URL}/api/stats/admin`, {
+    const response = await fetchWithRefresh(`${API_URL}/api/stats/admin`, {
       headers: authHeaders()
     });
     return handleResponse(response);
@@ -268,7 +410,7 @@ export const statsAPI = {
 
   // Estadísticas de usuario
   getUser: async () => {
-    const response = await fetch(`${API_URL}/api/stats/user`, {
+    const response = await fetchWithRefresh(`${API_URL}/api/stats/user`, {
       headers: authHeaders()
     });
     return handleResponse(response);
@@ -281,7 +423,8 @@ export const statsAPI = {
   }
 };
 
-// ==================== INCIDENTES ====================
+
+// INCIDENTES
 
 export const incidentsAPI = {
   // Obtener todos
@@ -295,7 +438,7 @@ export const incidentsAPI = {
 
   // Crear incidente
   create: async (data) => {
-    const response = await fetch(`${API_URL}/api/incidents`, {
+    const response = await fetchWithRefresh(`${API_URL}/api/incidents`, {
       method: 'POST',
       headers: authHeaders(),
       body: JSON.stringify(data)
@@ -305,7 +448,7 @@ export const incidentsAPI = {
 
   // Eliminar incidente
   delete: async (id) => {
-    const response = await fetch(`${API_URL}/api/incidents/${id}`, {
+    const response = await fetchWithRefresh(`${API_URL}/api/incidents/${id}`, {
       method: 'DELETE',
       headers: authHeaders()
     });
@@ -319,12 +462,13 @@ export const incidentsAPI = {
   }
 };
 
-// ==================== CONFIGURACIÓN DE USUARIO ====================
+
+// CONFIGURACIÓN DE USUARIO
 
 export const userSettingsAPI = {
   // Obtener perfil completo
   getProfile: async () => {
-    const response = await fetch(`${API_URL}/api/user-settings/profile`, {
+    const response = await fetchWithRefresh(`${API_URL}/api/user-settings/profile`, {
       headers: authHeaders()
     });
     return handleResponse(response);
@@ -332,7 +476,7 @@ export const userSettingsAPI = {
 
   // Actualizar nombre
   updateName: async (name) => {
-    const response = await fetch(`${API_URL}/api/user-settings/update-name`, {
+    const response = await fetchWithRefresh(`${API_URL}/api/user-settings/update-name`, {
       method: 'PATCH',
       headers: authHeaders(),
       body: JSON.stringify({ name })
@@ -340,10 +484,9 @@ export const userSettingsAPI = {
     return handleResponse(response);
   },
 
-
   // Eliminar cuenta
   deleteAccount: async () => {
-    const response = await fetch(`${API_URL}/api/user-settings/delete-account`, {
+    const response = await fetchWithRefresh(`${API_URL}/api/user-settings/delete-account`, {
       method: 'DELETE',
       headers: authHeaders()
     });
@@ -351,7 +494,7 @@ export const userSettingsAPI = {
   }
 };
 
-// ==================== HEALTH CHECK ====================
+// HEALTH CHECK
 
 export const healthCheck = async () => {
   const response = await fetch(`${API_URL}/api/health`);
