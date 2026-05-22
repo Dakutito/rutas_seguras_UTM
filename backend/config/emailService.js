@@ -70,19 +70,39 @@ const sendEmail = async ({ to, subject, html }) => {
 
 const sendVerificationEmail = async (email, name, verificationUrl) => {
   const html = `
-    <div style="font-family: sans-serif; max-width: 600px; margin: auto; border: 1px solid #eee; padding: 20px;">
-      <h2 style="color: #4f46e5;">Rutas Seguras UTM</h2>
-      <p>Hola <strong>${name}</strong>,</p>
-      <p>Gracias por registrarte. Para activar tu cuenta, haz clic en el siguiente botón:</p>
-      <div style="text-align: center; margin: 30px 0;">
-        <a href="${verificationUrl}" style="background-color: #4f46e5; color: white; padding: 12px 25px; text-decoration: none; border-radius: 5px; font-weight: bold;">Verificar mi correo</a>
+    <div style="font-family: sans-serif; max-width: 600px; margin: auto; border: 1px solid #eee; padding: 20px; background-color: #f9f9f9;">
+      <div style="text-align: center; margin-bottom: 30px;">
+        <h2 style="color: #4f46e5; margin: 0;">✓ Rutas Seguras UTM</h2>
       </div>
-      <p style="font-size: 12px; color: #666;">Si el botón no funciona, copia este enlace: ${verificationUrl}</p>
-      <hr style="border: 0; border-top: 1px solid #eee; margin: 20px 0;">
-      <p style="font-size: 11px; color: #999;">Este enlace expira en 24 horas.</p>
+      
+      <div style="background-color: white; padding: 20px; border-radius: 8px;">
+        <p style="font-size: 16px; color: #333; margin-top: 0;">Hola <strong>${name}</strong>,</p>
+        
+        <h3 style="color: #4f46e5; font-size: 18px;">¡Listo ya estás registrado! 🎉</h3>
+        <p style="font-size: 14px; color: #555; line-height: 1.6;">
+          Tu cuenta ha sido creada exitosamente. Ahora debes verificar tu correo electrónico para poder acceder al sistema.
+        </p>
+        
+        <p style="font-size: 14px; color: #555; line-height: 1.6;">
+          Dale click al botón de abajo para verificar tu correo y acceder al sistema:
+        </p>
+        
+        <div style="text-align: center; margin: 30px 0;">
+          <a href="${verificationUrl}" style="background-color: #4f46e5; color: white; padding: 14px 35px; text-decoration: none; border-radius: 5px; font-weight: bold; font-size: 16px; display: inline-block;">Ir al Sistema</a>
+        </div>
+        
+        <p style="font-size: 12px; color: #999; text-align: center; margin-top: 20px; padding-top: 20px; border-top: 1px solid #eee;">
+          Si el botón no funciona, copia este enlace en tu navegador:<br>
+          <span style="word-break: break-all; color: #4f46e5;">${verificationUrl}</span>
+        </p>
+        
+        <p style="font-size: 11px; color: #999; text-align: center; margin-top: 15px;">
+          Este enlace expira en 24 horas.
+        </p>
+      </div>
     </div>
   `;
-  return sendEmail({ to: email, subject: 'Verifica tu cuenta - Rutas Seguras', html });
+  return sendEmail({ to: email, subject: '¡Verifica tu cuenta - Rutas Seguras!', html });
 };
 
 const sendWelcomeEmail = async (email, name) => {
