@@ -125,10 +125,17 @@ router.post('/register', [
     const frontendUrl = process.env.FRONTEND_URL || 'https://rutas-seguras-utm.vercel.app';
     const verifyLink = `${frontendUrl}/verify-email?token=${verificationToken}`;
 
-    // --- ENVÍO DE EMAIL (No bloqueante) ---
-    sendVerificationEmail(normalizedEmail, name, verifyLink)
-      .then(() => console.log(`Correo enviado a: ${normalizedEmail}`))
-      .catch(mailError => console.error("Error al enviar correo (en segundo plano):", mailError.message));
+    // --- ENVÍO DE EMAIL (BLOQUEANTE para validación) ---
+    try {
+      await sendVerificationEmail(normalizedEmail, name, verifyLink);
+      console.log(`✅ Correo enviado exitosamente a: ${normalizedEmail}`);
+    } catch (mailError) {
+      console.error("❌ Error al enviar correo:", mailError.message);
+      return res.status(500).json({ 
+        error: 'Registro exitoso pero no pudimos enviar el email de verificación. Intenta más tarde.',
+        details: mailError.message
+      });
+    }
 
     res.status(201).json({
       message: 'Registro exitoso. Revisa tu correo para verificar tu cuenta.',
