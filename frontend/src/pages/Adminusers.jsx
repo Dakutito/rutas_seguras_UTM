@@ -72,7 +72,7 @@ const AdminUsers = () => {
 
   const activeCount = users.filter(u => u.status === 'active').length;
   const suspendedCount = users.filter(u => u.status === 'suspended').length;
-  const totalReports = users.reduce((acc, curr) => acc + parseInt(curr.reports_count || 0), 0);
+  const totalReports = users.reduce((acc, curr) => acc + Number.parseInt(curr.reports_count || 0), 0);
 
   if (loading && users.length === 0) return <div style={{ color: 'white', textAlign: 'center', padding: '50px' }}>Conectando a PostgreSQL...</div>;
 

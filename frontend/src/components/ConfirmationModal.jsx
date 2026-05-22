@@ -56,7 +56,7 @@ const ConfirmationModal = ({
                         Cancelar
                     </button>
                     <button
-                        className={`modal-confirm-btn ${!isConfirmed ? 'disabled' : ''}`}
+                        className={`modal-confirm-btn ${isConfirmed ? '' : 'disabled'}`}
                         onClick={handleConfirm}
                         disabled={!isConfirmed || isLoading}
                     >

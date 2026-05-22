@@ -79,9 +79,9 @@ router.get('/nearby', async (req, res) => {
       return res.status(400).json({ error: 'Se requieren parámetros lat y lng' });
     }
 
-    const latitude = parseFloat(lat);
-    const longitude = parseFloat(lng);
-    const searchRadius = parseFloat(radius);
+    const latitude = Number.parseFloat(lat);
+    const longitude = Number.parseFloat(lng);
+    const searchRadius = Number.parseFloat(radius);
 
     const result = await query(
       `SELECT 

@@ -207,7 +207,7 @@ const AdminIncidents = () => {
 
                   <div style={{ fontSize: '12px', color: '#6b7280', display: 'flex', flexWrap: 'wrap', gap: '16px' }}>
                     <span> usuario: {incident.user_name} ({incident.user_email})</span>
-                    <span> ubicacion: {parseFloat(incident.latitude).toFixed(4)}, {parseFloat(incident.longitude).toFixed(4)}</span>
+                    <span> ubicacion: {Number.parseFloat(incident.latitude).toFixed(4)}, {Number.parseFloat(incident.longitude).toFixed(4)}</span>
                     {incident.resolved_by_name && (
                       <span>✓ Resuelto por: {incident.resolved_by_name}</span>
                     )}

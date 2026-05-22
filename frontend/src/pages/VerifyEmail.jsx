@@ -8,6 +8,7 @@ function VerifyEmail() {
   const location = useLocation();
   const navigate = useNavigate();
 
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   const verifyEmail = async (token) => {
     try {
       const data = await authAPI.verifyEmail(token);
@@ -46,7 +47,7 @@ function VerifyEmail() {
     }
 
     verifyEmail(token);
-  }, [location]);
+  }, [location, verifyEmail]);
 
   return (
     <div className="verify-email-container">

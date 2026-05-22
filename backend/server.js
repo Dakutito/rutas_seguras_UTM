@@ -1,12 +1,12 @@
 const express = require('express');
-const dns = require('dns');
+const dns = require('node:dns');
 
 // Forzar resolución IPv4 globalmente
 if (dns.setDefaultResultOrder) {
   dns.setDefaultResultOrder('ipv4first');
 }
 const cors = require('cors');
-const path = require('path');
+const path = require('node:path');
 require('dotenv').config();
 const compression = require('compression');
 

@@ -24,8 +24,8 @@ const AdminPanel = ({ user }) => {
   const [modalState, setModalState] = useState({ isOpen: false, reportId: null, isBulk: false })
   const [isDeleting, setIsDeleting] = useState(false)
 
-  const BASE_EMOTIONS = ['😊', '😌', '😐', '😰', '😨', '😢', '😡'];
-  const GRAVE_EMOTIONS = ['😰', '😨', '😢', '😡'];
+  const BASE_EMOTIONS = new Set(['😊', '😌', '😐', '😰', '😨', '😢', '😡']);
+  const GRAVE_EMOTIONS = new Set(['😰', '😨', '😢', '😡']);
 
   useEffect(() => {
     loadData()
@@ -44,7 +44,7 @@ const AdminPanel = ({ user }) => {
       const activeUsers = Array.isArray(users) ? users.filter(u => u.status === 'active').length : 0
       const hoy = new Date().toDateString()
       const todayCount = Array.isArray(reports) ? reports.filter(r => new Date(r.created_at).toDateString() === hoy).length : 0
-      const dangerCount = Array.isArray(reports) ? reports.filter(r => !r.is_incident && GRAVE_EMOTIONS.includes(r.emotion)).length : 0
+      const dangerCount = Array.isArray(reports) ? reports.filter(r => !r.is_incident && GRAVE_EMOTIONS.has(r.emotion)).length : 0
 
       setStats({ totalUsers, activeUsers, reports: Array.isArray(reports) ? reports : [], dangerCount, todayCount })
       calculateStats(Array.isArray(reports) ? reports : [])
@@ -66,7 +66,7 @@ const AdminPanel = ({ user }) => {
           incidentCount[type] = { label: type, icon: report.emotion, count: 0, color: report.emotion_color || '#ef4444' }
         }
         incidentCount[type].count++
-      } else if (BASE_EMOTIONS.includes(report.emotion)) {
+      } else if (BASE_EMOTIONS.has(report.emotion)) {
         const emotion = report.emotion
         if (!emotionCount[emotion]) {
           emotionCount[emotion] = { emotion, label: report.emotion_label, count: 0, color: getDangerColor(emotion) }
@@ -80,7 +80,7 @@ const AdminPanel = ({ user }) => {
   }
 
   const getDangerColor = (e) => ({ '😊': '#10b981', '😌': '#34d399', '😐': '#a3e635', '😰': '#fbbf24', '😨': '#f59e0b', '😢': '#f97316', '😡': '#ef4444' }[e] || '#6366f1')
-  const formatTime = (d) => { const diff = (new Date() - new Date(d)) / 1000; return diff < 60 ? 'Hace unos segundos' : diff < 3600 ? `Hace ${Math.floor(diff / 60)} min` : diff < 86400 ? `Hace ${Math.floor(diff / 3600)}h` : `Hace ${Math.floor(diff / 86400)} días` }
+  const formatTime = (d) => { const diff = (Date.now() - new Date(d)) / 1000; return diff < 60 ? 'Hace unos segundos' : diff < 3600 ? `Hace ${Math.floor(diff / 60)} min` : diff < 86400 ? `Hace ${Math.floor(diff / 3600)}h` : `Hace ${Math.floor(diff / 86400)} días` }
 
   const getTotalEmotions = () => emotionStats.reduce((sum, stat) => sum + stat.count, 0)
   const getTotalIncidents = () => incidentStats.reduce((sum, stat) => sum + stat.count, 0)
@@ -108,7 +108,7 @@ const AdminPanel = ({ user }) => {
     setIsDeleting(true);
     try {
       if (modalState.isBulk) {
-        const graveReports = stats.reports.filter(r => !r.is_incident && GRAVE_EMOTIONS.includes(r.emotion));
+        const graveReports = stats.reports.filter(r => !r.is_incident && GRAVE_EMOTIONS.has(r.emotion));
         await Promise.all(graveReports.map(r => {
           if (r.is_incident) {
             return incidentsAPI.delete(r.id);
@@ -118,8 +118,8 @@ const AdminPanel = ({ user }) => {
         }));
         setStats(prev => ({
           ...prev,
-          reports: prev.reports.filter(r => !graveReports.find(gr => gr.id === r.id)),
-          dangerCount: prev.reports.filter(r => !graveReports.find(gr => gr.id === r.id) && (GRAVE_EMOTIONS.includes(r.emotion) || r.is_incident)).length
+          reports: prev.reports.filter(r => !graveReports.some(gr => gr.id === r.id)),
+          dangerCount: prev.reports.filter(r => !graveReports.some(gr => gr.id === r.id) && (GRAVE_EMOTIONS.has(r.emotion) || r.is_incident)).length
         }));
       } else {
         const id = modalState.reportId;
@@ -136,7 +136,7 @@ const AdminPanel = ({ user }) => {
         setStats(prev => ({
           ...prev,
           reports: prev.reports.filter(r => r.id !== id),
-          dangerCount: prev.reports.filter(r => (r.id !== id) && (GRAVE_EMOTIONS.includes(r.emotion) || r.is_incident)).length
+          dangerCount: prev.reports.filter(r => (r.id !== id) && (GRAVE_EMOTIONS.has(r.emotion) || r.is_incident)).length
         }));
       }
       setModalState({ isOpen: false, reportId: null, isBulk: false });
@@ -154,7 +154,7 @@ const AdminPanel = ({ user }) => {
 
   // Función para renderizar la vista de Dashboard (Home)
   const renderDashboardHome = () => {
-    const graveReports = stats.reports.filter(r => !r.is_incident && GRAVE_EMOTIONS.includes(r.emotion))
+    const graveReports = stats.reports.filter(r => !r.is_incident && GRAVE_EMOTIONS.has(r.emotion))
     const filteredGraveReports = graveReports.filter(r => {
       const search = searchTerm.toLowerCase()
       return (r.user_name || '').toLowerCase().includes(search) || (r.user_email || '').toLowerCase().includes(search)

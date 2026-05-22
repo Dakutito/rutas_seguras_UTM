@@ -79,10 +79,10 @@ const Login = ({ onLogin }) => {
       }
 
       // Mostrar intentos restantes
-      if (errorData?.remainingAttempts !== undefined) {
-        setError(`${message} (Intentos restantes: ${errorData.remainingAttempts})`)
-      } else {
+      if (errorData?.remainingAttempts === undefined) {
         setError(message)
+      } else {
+        setError(`${message} (Intentos restantes: ${errorData.remainingAttempts})`)
       }
     } finally {
       setLoading(false)

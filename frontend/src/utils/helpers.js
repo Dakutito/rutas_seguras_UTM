@@ -1,5 +1,3 @@
-// src/utils/helpers.js
-
 // Función para obtener color basado en emoción
 export const getEmotionColor = (emoji) => {
   const colors = {

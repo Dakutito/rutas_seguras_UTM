@@ -41,7 +41,7 @@ const AdminReports = ({ type, onLocate }) => {
             return reportsAPI.delete(r.id);
           }
         }));
-        setAllReports(allReports.filter(r => !reportsToDelete.find(rd => rd.id === r.id)));
+        setAllReports(allReports.filter(r => !reportsToDelete.some(rd => rd.id === r.id)));
       } else {
         // Eliminar uno solo
         const id = modalState.reportId;
@@ -49,7 +49,7 @@ const AdminReports = ({ type, onLocate }) => {
 
         // Buscar el reporte para saber si es incidente o emoción
         const report = allReports.find(r => r.id === id);
-        if (report && report.is_incident) {
+        if (report?.is_incident) {
           await incidentsAPI.delete(id);
         } else {
           await reportsAPI.delete(id);

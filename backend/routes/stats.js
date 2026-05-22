@@ -50,13 +50,13 @@ router.get('/general', async (req, res) => {
     );
 
     res.json({
-      totalReports: parseInt(totalReports.rows[0].count),
-      todayReports: parseInt(todayReports.rows[0].count),
-      positiveCount: parseInt(positiveEmotions.rows[0].count),
-      negativeCount: parseInt(negativeEmotions.rows[0].count),
+      totalReports: Number.parseInt(totalReports.rows[0].count),
+      todayReports: Number.parseInt(todayReports.rows[0].count),
+      positiveCount: Number.parseInt(positiveEmotions.rows[0].count),
+      negativeCount: Number.parseInt(negativeEmotions.rows[0].count),
       reportsByEmotion: reportsByEmotion.rows,
       zonesByDanger: zonesByDanger.rows.reduce((acc, row) => {
-        acc[row.danger_level] = parseInt(row.count);
+        acc[row.danger_level] = Number.parseInt(row.count);
         return acc;
       }, {})
     });
@@ -142,9 +142,9 @@ router.get('/admin', authenticateToken, requireAdmin, async (req, res) => {
 
     res.json({
       users: {
-        total: parseInt(totalUsers.rows[0].count),
-        active: parseInt(activeUsers.rows[0].count),
-        suspended: parseInt(suspendedUsers.rows[0].count)
+        total: Number.parseInt(totalUsers.rows[0].count),
+        active: Number.parseInt(activeUsers.rows[0].count),
+        suspended: Number.parseInt(suspendedUsers.rows[0].count)
       },
       reportsByDay: reportsByDay.rows,
       topUsers: topUsers.rows,
@@ -200,8 +200,8 @@ router.get('/user', authenticateToken, async (req, res) => {
     );
 
     res.json({
-      totalReports: parseInt(totalReports.rows[0].count),
-      activeReports: parseInt(activeReports.rows[0].count),
+      totalReports: Number.parseInt(totalReports.rows[0].count),
+      activeReports: Number.parseInt(activeReports.rows[0].count),
       mostReportedEmotion: mostReportedEmotion.rows[0] || null,
       reportsByDay: reportsByDay.rows
     });
