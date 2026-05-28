@@ -51,11 +51,6 @@ const clearAttempts = (email) => {
 };
 
 // HELPERS DE TOKENS
-
-/**
- * Genera un Access Token JWT de corta duración (15 minutos).
- * Solo contiene el mínimo de información necesaria (id, email, role).
- */
 const generateAccessToken = (user) => {
   return jwt.sign(
     { id: user.id, email: user.email, role: user.role },
@@ -84,7 +79,6 @@ const generateAndSaveRefreshToken = async (userId) => {
 
 
 // REGISTRO
-
 router.post('/register', [
   body('name').trim().isLength({ min: 3 }),
   body('email').isEmail(),
@@ -128,10 +122,10 @@ router.post('/register', [
     // --- ENVÍO DE EMAIL (BLOQUEANTE para validación) ---
     try {
       await sendVerificationEmail(normalizedEmail, name, verifyLink);
-      console.log(`✅ Correo enviado exitosamente a: ${normalizedEmail}`);
+      console.log(`Correo enviado exitosamente a: ${normalizedEmail}`);
     } catch (mailError) {
-      console.error("❌ Error al enviar correo:", mailError.message);
-      return res.status(500).json({ 
+      console.error("Error al enviar correo:", mailError.message);
+      return res.status(500).json({
         error: 'Registro exitoso pero no pudimos enviar el email de verificación. Intenta más tarde.',
         details: mailError.message
       });
@@ -292,10 +286,6 @@ router.post('/login', [
   }
 });
 
-/*REFRESH — Renueva el Access Token usando el Refresh Token
- El frontend llama a esta ruta automáticamente cuando recibe un 401.
-  No requiere contraseña, solo el refreshToken guardado en localStorage.
-*/
 router.post('/refresh', async (req, res) => {
   try {
     const { refreshToken } = req.body;
@@ -307,9 +297,9 @@ router.post('/refresh', async (req, res) => {
     // Buscar el refresh token en la BD y verificar que no haya expirado
     const result = await query(
       `SELECT rt.*, u.id as user_id, u.email, u.role, u.status
-       FROM refresh_tokens rt
-       JOIN users u ON rt.user_id = u.id
-       WHERE rt.token = $1 AND rt.expires_at > NOW()`,
+        FROM refresh_tokens rt
+        JOIN users u ON rt.user_id = u.id
+        WHERE rt.token = $1 AND rt.expires_at > NOW()`,
       [refreshToken]
     );
 
@@ -347,9 +337,7 @@ router.post('/refresh', async (req, res) => {
   }
 });
 
-// ---------------------------------------------------------------------------
 // LOGOUT — Elimina el Refresh Token de la BD para invalidar la sesión
-// ---------------------------------------------------------------------------
 router.post('/logout', async (req, res) => {
   try {
     const { refreshToken } = req.body;
@@ -367,9 +355,7 @@ router.post('/logout', async (req, res) => {
   }
 });
 
-// ---------------------------------------------------------------------------
 // VERIFY TOKEN (mantiene compatibilidad)
-// ---------------------------------------------------------------------------
 router.get('/verify', async (req, res) => {
   const authHeader = req.headers['authorization'];
   const token = authHeader && authHeader.split(' ')[1];
@@ -386,9 +372,7 @@ router.get('/verify', async (req, res) => {
   }
 });
 
-// ---------------------------------------------------------------------------
 // RUTAS DE DEBUGGING
-// ---------------------------------------------------------------------------
 router.get('/test-email', async (req, res) => {
   try {
     const { email } = req.query;

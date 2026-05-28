@@ -1,12 +1,4 @@
 const jwt = require('jsonwebtoken');
-
-/**
- * Middleware para autenticar el Token JWT.
- *
- * Diferencia entre dos tipos de error:
- *  - 401 TOKEN_EXPIRED: El token expiró → el frontend debe intentar renovarlo con /refresh
- *  - 403 TOKEN_INVALID: El token es inválido/manipulado → logout inmediato
- */
 const authenticateToken = async (req, res, next) => {
   // Obtener el token del header (formato: Bearer TOKEN)
   const authHeader = req.headers['authorization'];
@@ -35,9 +27,6 @@ const authenticateToken = async (req, res, next) => {
 
     next();
   } catch (error) {
-    // DIFERENCIACIÓN CLAVE:
-    // TokenExpiredError - el token venció - el frontend puede renovarlo con refreshToken
-    // JsonWebTokenError - el token es inválido/manipulado - cerrar sesión inmediatamente
     if (error.name === 'TokenExpiredError') {
       return res.status(401).json({
         error: 'Token expirado',

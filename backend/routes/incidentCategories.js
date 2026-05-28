@@ -54,11 +54,11 @@ router.patch('/:id', authenticateToken, requireAdmin, async (req, res) => {
     const { name, icon, color } = req.body;
 
     const result = await query(
-      `UPDATE incident_categories 
-       SET name = COALESCE($1, name),
-           icon = COALESCE($2, icon),
-           color = COALESCE($3, color)
-       WHERE id = $4
+      `UPDATE incident_categories
+      SET name = COALESCE($1, name),
+          icon = COALESCE($2, icon),
+          color = COALESCE($3, color)
+      WHERE id = $4
        RETURNING *`,
       [name, icon, color, id]
     );

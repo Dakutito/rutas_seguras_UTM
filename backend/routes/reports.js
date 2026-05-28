@@ -9,16 +9,16 @@ router.get('/', async (req, res) => {
     const { type } = req.query; // 'emocion' o 'incidentes'
 
     const emotionsQuery = `
-      SELECT 
-        er.id, 
-        er.emotion, 
-        er.emotion_label, 
-        er.emotion_color, 
+      SELECT
+        er.id,
+        er.emotion,
+        er.emotion_label,
+        er.emotion_color,
         er.comment,
         NULL::varchar as title,
         NULL::varchar as incident_type,
-        er.latitude::float as lat, 
-        er.longitude::float as lng, 
+        er.latitude::float as lat,
+        er.longitude::float as lng,
         er.created_at,
         u.name as user_name,
         u.email as user_email,
@@ -28,16 +28,16 @@ router.get('/', async (req, res) => {
     `;
 
     const incidentsQuery = `
-      SELECT 
-        ir.id, 
-        ic.icon as emotion, 
-        ic.name as emotion_label, 
-        ic.color as emotion_color, 
+      SELECT
+        ir.id,
+        ic.icon as emotion,
+        ic.name as emotion_label,
+        ic.color as emotion_color,
         ir.description as comment,
         ir.title,
         ic.name as incident_type,
-        ir.latitude::float as lat, 
-        ir.longitude::float as lng, 
+        ir.latitude::float as lat,
+        ir.longitude::float as lng,
         ir.created_at,
         u.name as user_name,
         u.email as user_email,
@@ -76,18 +76,18 @@ router.get('/', async (req, res) => {
 router.get('/my-reports', authenticateToken, async (req, res) => {
   try {
     const result = await query(
-      `SELECT 
-        id, 
-        emotion, 
-        emotion_label, 
-        emotion_color, 
+      `SELECT
+        id,
+        emotion,
+        emotion_label,
+        emotion_color,
         comment,
-        latitude::float as lat, 
-        longitude::float as lng, 
+        latitude::float as lat,
+        longitude::float as lng,
         created_at
-       FROM emotion_reports 
-       WHERE user_id = $1 
-       ORDER BY created_at DESC`,
+      FROM emotion_reports
+      WHERE user_id = $1
+      ORDER BY created_at DESC`,
       [req.user.id]
     );
     res.json(result.rows);
@@ -104,9 +104,9 @@ router.post('/', authenticateToken, async (req, res) => {
     const userId = req.user.id;
 
     const result = await query(
-      `INSERT INTO emotion_reports 
-       (user_id, emotion, emotion_label, emotion_color, comment, latitude, longitude) 
-       VALUES ($1, $2, $3, $4, $5, $6, $7) 
+      `INSERT INTO emotion_reports
+      (user_id, emotion, emotion_label, emotion_color, comment, latitude, longitude) 
+      VALUES ($1, $2, $3, $4, $5, $6, $7)
        RETURNING *`,
       [userId, emotion, emotionLabel, emotionColor, comment || null, latitude, longitude]
     );

@@ -9,7 +9,7 @@ router.get('/', async (req, res) => {
     const { type, status = 'activo' } = req.query;
 
     let queryText = `
-      SELECT 
+      SELECT
         ir.id,
         ir.category_id,
         ic.name as incident_type,
@@ -40,12 +40,6 @@ router.get('/', async (req, res) => {
 
     const result = await query(queryText, params);
 
-    // Si ic.name es nulo (por migración pendiente)
-    const rows = result.rows.map(row => ({
-      ...row,
-      incident_type: row.incident_type || row.old_incident_type
-    }));
-
     res.json(result.rows);
   } catch (error) {
     console.error('Error al obtener incidentes:', error);
@@ -57,7 +51,7 @@ router.get('/', async (req, res) => {
 router.get('/admin', authenticateToken, requireAdmin, async (req, res) => {
   try {
     const result = await query(
-      `SELECT 
+      `SELECT
         ir.*,
         ic.name as category_name,
         ic.icon as category_icon,
@@ -65,11 +59,11 @@ router.get('/admin', authenticateToken, requireAdmin, async (req, res) => {
         u.name as user_name,
         u.email as user_email,
         resolver.name as resolved_by_name
-       FROM incident_reports ir
-       LEFT JOIN users u ON ir.user_id = u.id
-       LEFT JOIN incident_categories ic ON ir.category_id = ic.id
-       LEFT JOIN users resolver ON ir.resolved_by = resolver.id
-       ORDER BY ir.created_at DESC`
+      FROM incident_reports ir
+      LEFT JOIN users u ON ir.user_id = u.id
+      LEFT JOIN incident_categories ic ON ir.category_id = ic.id
+      LEFT JOIN users resolver ON ir.resolved_by = resolver.id
+      ORDER BY ir.created_at DESC`
     );
     res.json(result.rows);
   } catch (error) {
@@ -82,7 +76,7 @@ router.get('/admin', authenticateToken, requireAdmin, async (req, res) => {
 router.get('/my-incidents', authenticateToken, async (req, res) => {
   try {
     const result = await query(
-      `SELECT 
+      `SELECT
         ir.id,
         ir.category_id,
         ic.name as incident_type,
@@ -94,10 +88,10 @@ router.get('/my-incidents', authenticateToken, async (req, res) => {
         ir.longitude::float as lng,
         ir.created_at,
         ir.status
-       FROM incident_reports ir
-       LEFT JOIN incident_categories ic ON ir.category_id = ic.id
-       WHERE ir.user_id = $1
-       ORDER BY ir.created_at DESC`,
+      FROM incident_reports ir
+      LEFT JOIN incident_categories ic ON ir.category_id = ic.id
+      WHERE ir.user_id = $1
+      ORDER BY ir.created_at DESC`,
       [req.user.id]
     );
     res.json(result.rows);
@@ -124,9 +118,9 @@ router.post('/', authenticateToken, async (req, res) => {
     const incident_type = categoryResult.rows[0].name;
 
     const result = await query(
-      `INSERT INTO incident_reports 
-       (user_id, category_id, incident_type, title, description, latitude, longitude)
-       VALUES ($1, $2, $3, $4, $5, $6, $7)
+      `INSERT INTO incident_reports
+      (user_id, category_id, incident_type, title, description, latitude, longitude)
+      VALUES ($1, $2, $3, $4, $5, $6, $7)
        RETURNING *`,
       [req.user.id, category_id, incident_type, title || null, description || null, latitude, longitude]
     );
@@ -145,9 +139,9 @@ router.patch('/:id/resolve', authenticateToken, requireAdmin, async (req, res) =
 
     const result = await query(
       `UPDATE incident_reports
-       SET status = 'resuelto',
-           resolved_by = $1,
-           resolved_at = NOW()
+      SET status = 'resuelto',
+          resolved_by = $1,
+          resolved_at = NOW()
        WHERE id = $2
        RETURNING *`,
       [req.user.id, id]
@@ -196,13 +190,13 @@ router.delete('/:id', authenticateToken, async (req, res) => {
 router.get('/stats', async (req, res) => {
   try {
     const stats = await query(
-      `SELECT 
+      `SELECT
         incident_type,
         COUNT(*) as count
-       FROM incident_reports
-       WHERE status = 'activo'
-       GROUP BY incident_type
-       ORDER BY count DESC`
+      FROM incident_reports
+      WHERE status = 'activo'
+      GROUP BY incident_type
+      ORDER BY count DESC`
     );
 
     const total = await query(

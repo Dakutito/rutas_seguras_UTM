@@ -9,7 +9,7 @@ router.get('/', async (req, res) => {
     await query('SELECT update_risk_zones()');
 
     const result = await query(
-      `SELECT 
+      `SELECT
         id,
         latitude::float as lat,
         longitude::float as lng,
@@ -18,8 +18,8 @@ router.get('/', async (req, res) => {
         last_emotion,
         last_emotion_color,
         updated_at
-       FROM risk_zones 
-       ORDER BY danger_level DESC, report_count DESC`
+      FROM risk_zones
+      ORDER BY danger_level DESC, report_count DESC`
     );
 
     res.json({
@@ -43,7 +43,7 @@ router.get('/danger/:level', async (req, res) => {
     }
 
     const result = await query(
-      `SELECT 
+      `SELECT
         id,
         latitude::float as lat,
         longitude::float as lng,
@@ -52,9 +52,9 @@ router.get('/danger/:level', async (req, res) => {
         last_emotion,
         last_emotion_color,
         updated_at
-       FROM risk_zones 
-       WHERE danger_level = $1
-       ORDER BY report_count DESC`,
+      FROM risk_zones
+      WHERE danger_level = $1
+      ORDER BY report_count DESC`,
       [level]
     );
 
@@ -84,7 +84,7 @@ router.get('/nearby', async (req, res) => {
     const searchRadius = Number.parseFloat(radius);
 
     const result = await query(
-      `SELECT 
+      `SELECT
         id,
         latitude::float as lat,
         longitude::float as lng,
@@ -96,11 +96,11 @@ router.get('/nearby', async (req, res) => {
         SQRT(
           POWER(latitude - $1, 2) + POWER(longitude - $2, 2)
         ) as distance
-       FROM risk_zones
-       WHERE latitude BETWEEN $1 - $3 AND $1 + $3
-         AND longitude BETWEEN $2 - $3 AND $2 + $3
-       ORDER BY distance ASC
-       LIMIT 20`,
+      FROM risk_zones
+      WHERE latitude BETWEEN $1 - $3 AND $1 + $3
+        AND longitude BETWEEN $2 - $3 AND $2 + $3
+      ORDER BY distance ASC
+      LIMIT 20`,
       [latitude, longitude, searchRadius]
     );
 

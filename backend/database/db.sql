@@ -1,15 +1,3 @@
-/*DROP TABLE IF EXISTS activity_logs CASCADE;
-DROP TABLE IF EXISTS user_sessions CASCADE;
-DROP TABLE IF EXISTS risk_zones CASCADE;
-DROP TABLE IF EXISTS emotion_reports CASCADE;
-DROP TABLE IF EXISTS incident_reports CASCADE;
-DROP TABLE IF EXISTS incident_categories CASCADE;
-DROP TABLE IF EXISTS refresh_tokens CASCADE;
-DROP TABLE IF EXISTS users CASCADE;
-*/
--- TABLA DE REFRESH TOKENS (Sesiones persistentes)
--- Almacena los tokens de renovación de sesión por usuario.
--- Permite invalidar sesiones individuales sin afectar a otros usuarios.
 CREATE TABLE IF NOT EXISTS refresh_tokens (
     id SERIAL PRIMARY KEY,
     user_id INTEGER REFERENCES users(id) ON DELETE CASCADE,
@@ -84,7 +72,7 @@ CREATE TABLE emotion_reports (
 CREATE INDEX idx_emotions_location ON emotion_reports(latitude, longitude);
 CREATE INDEX idx_emotions_expires ON emotion_reports(expires_at);
 
--- ABLA DE ZONAS DE RIESGO
+-- TABLA DE ZONAS DE RIESGO
 CREATE TABLE risk_zones (
     id SERIAL PRIMARY KEY,
     latitude DECIMAL(10,8) NOT NULL,
@@ -103,10 +91,10 @@ BEGIN
     TRUNCATE risk_zones;
     
     INSERT INTO risk_zones (latitude, longitude, danger_level, report_count, last_event_type, updated_at)
-    SELECT 
+    SELECT
         lat as latitude,
         lng as longitude,
-        CASE 
+        CASE
             WHEN score >= 10 THEN 'alto'
             WHEN score >= 5 THEN 'medio'
             ELSE 'bajo'
@@ -115,18 +103,18 @@ BEGIN
         'mixed' as last_event_type,
         NOW() as updated_at
     FROM (
-        SELECT 
+        SELECT
             ROUND(latitude::numeric, 3) as lat,
             ROUND(longitude::numeric, 3) as lng,
             SUM(weight) as score,
             COUNT(*) as total_count
         FROM (
             -- Pesos para emociones (Ej: Tristeza/Enojo = 3, Ansiedad = 2)
-            SELECT latitude, longitude, 
-                CASE 
-                    WHEN emotion IN ('😢', '😡') THEN 3 
-                    WHEN emotion IN ('😰', '😨') THEN 2 
-                    ELSE 1 
+            SELECT latitude, longitude,
+                CASE
+                    WHEN emotion IN ('😢', '😡') THEN 3
+                    WHEN emotion IN ('😰', '😨') THEN 2
+                    ELSE 1
                 END as weight
             FROM emotion_reports
             
@@ -152,7 +140,7 @@ INSERT INTO incident_categories (name, icon, color, display_order) VALUES
 ('Infraestructura Peligrosa', '🏗️', '#3b82f6', 6),
 ('Persona Sospechosa', '👁️', '#f97316', 7),
 ('Otro', '📋', '#10b981', 8)
-ON CONFLICT (name) DO UPDATE SET 
+ON CONFLICT (name) DO UPDATE SET
     icon = EXCLUDED.icon,
     color = EXCLUDED.color;
 

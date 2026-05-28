@@ -6,17 +6,17 @@ const { query } = require('../config/database');
 router.get('/', async (req, res) => {
   try {
     const result = await query(
-      `SELECT 
-        u.id, 
-        u.name, 
-        u.email, 
-        u.created_at, 
+      `SELECT
+        u.id,
+        u.name,
+        u.email,
+        u.created_at,
         u.status,
         (SELECT COUNT(*) FROM emotion_reports WHERE user_id = u.id) + 
         (SELECT COUNT(*) FROM incident_reports WHERE user_id = u.id) as reports_count
-       FROM users u
-       WHERE u.role = 'user'
-       ORDER BY u.created_at DESC`
+      FROM users u
+      WHERE u.role = 'user'
+      ORDER BY u.created_at DESC`
     );
     res.json(result.rows);
   } catch (error) {

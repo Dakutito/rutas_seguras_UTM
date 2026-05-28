@@ -6,7 +6,6 @@ async function test() {
   console.log('--- TEST DE EMAIL (RESEND / SMTP) ---');
   console.log(`RESEND_API_KEY: ${process.env.RESEND_API_KEY ? 'Presente' : 'Ausente'}`);
   console.log(`EMAIL_USER: ${process.env.EMAIL_USER}`);
-  console.log('------------------------------------');
 
   try {
     // Crear un token de ejemplo
@@ -14,7 +13,7 @@ async function test() {
     const frontendUrl = process.env.FRONTEND_URL || 'http://localhost:5173';
     const verifyLink = `${frontendUrl}/verify-email?token=${testToken}`;
 
-    // Email mejorado con el nuevo template
+    // Email
     const html = `
       <div style="font-family: sans-serif; max-width: 600px; margin: auto; border: 1px solid #eee; padding: 20px; background-color: #f9f9f9;">
         <div style="text-align: center; margin-bottom: 30px;">
@@ -56,7 +55,7 @@ async function test() {
       html
     });
     console.log('Resultado:', result);
-    console.log('✅ Email enviado exitosamente');
+    console.log('Email enviado exitosamente');
   } catch (error) {
     console.error('Error en el test:', error);
   }
