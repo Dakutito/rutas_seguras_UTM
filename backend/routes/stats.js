@@ -3,8 +3,8 @@ const router = express.Router();
 const { query } = require('../config/database');
 const { authenticateToken, requireAdmin } = require('../middleware/auth');
 
-// ESTADÍSTICAS GENERALES (público)
-router.get('/general', async (req, res) => {
+// ESTADÍSTICAS GENERALES (Requiere autenticación)
+router.get('/general', authenticateToken, async (req, res) => {
   try {
     // Total de reportes de emociones
     const totalReports = await query(
@@ -213,7 +213,7 @@ router.get('/user', authenticateToken, async (req, res) => {
 });
 
 // HEATMAP DE EMOCIONES
-router.get('/heatmap', async (req, res) => {
+router.get('/heatmap', authenticateToken, async (req, res) => {
   try {
     const result = await query(
       `SELECT 

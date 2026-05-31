@@ -3,8 +3,8 @@ const router = express.Router();
 const { query } = require('../config/database');
 const { authenticateToken, requireAdmin } = require('../middleware/auth');
 
-// OBTENER TODOS LOS INCIDENTES (Público - con email)
-router.get('/', async (req, res) => {
+// OBTENER TODOS LOS INCIDENTES (Solo usuario autenticado)
+router.get('/', authenticateToken, async (req, res) => {
   try {
     const { type, status = 'activo' } = req.query;
 
@@ -193,7 +193,7 @@ router.delete('/:id', authenticateToken, async (req, res) => {
 });
 
 // OBTENER ESTADÍSTICAS DE INCIDENTES
-router.get('/stats', async (req, res) => {
+router.get('/stats', authenticateToken, async (req, res) => {
   try {
     const stats = await query(
       `SELECT 

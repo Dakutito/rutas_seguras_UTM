@@ -63,9 +63,6 @@ const Navbar = ({ user, onLogout, isAdmin, darkMode, onToggleDarkMode }) => {
           ) : (
             <>
               <Link to="/login" className="nav-link">Iniciar Sesión</Link>
-              <Link to="/register" style={{ textDecoration: 'none', color: 'white' }} className="nav-btn nav-btn-register">
-                Registrarse
-              </Link>
               <button
                 onClick={onToggleDarkMode}
                 className="dark-mode-toggle"
@@ -153,14 +150,6 @@ const Navbar = ({ user, onLogout, isAdmin, darkMode, onToggleDarkMode }) => {
                   onClick={closeMobileMenu}
                 >
                   Iniciar Sesión
-                </Link>
-
-                <Link
-                  to="/register"
-                  className="nav-btn nav-btn-register-mobile"
-                  onClick={closeMobileMenu}
-                >
-                  Registrarse
                 </Link>
                 {/* TOGGLE MODO OSCURO (SIEMPRE VISIBLE EN MÓVIL) */}
                 <button

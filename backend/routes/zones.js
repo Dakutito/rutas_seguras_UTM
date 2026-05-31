@@ -1,9 +1,10 @@
 const express = require('express');
 const router = express.Router();
 const { query } = require('../config/database');
+const { authenticateToken } = require('../middleware/auth');
 
 // OBTENER TODAS LAS ZONAS DE RIESGO
-router.get('/', async (req, res) => {
+router.get('/', authenticateToken, async (req, res) => {
   try {
     // Actualizar zonas antes de devolver
     await query('SELECT update_risk_zones()');
@@ -34,7 +35,7 @@ router.get('/', async (req, res) => {
 });
 
 // OBTENER ZONAS POR NIVEL DE PELIGRO
-router.get('/danger/:level', async (req, res) => {
+router.get('/danger/:level', authenticateToken, async (req, res) => {
   try {
     const { level } = req.params;
 
@@ -71,7 +72,7 @@ router.get('/danger/:level', async (req, res) => {
 });
 
 // BUSCAR ZONAS CERCANAS A UNA UBICACIÓN
-router.get('/nearby', async (req, res) => {
+router.get('/nearby', authenticateToken, async (req, res) => {
   try {
     const { lat, lng, radius = 0.01 } = req.query;
 

@@ -27,9 +27,6 @@ import PrevencionEstafas from './pages/Recursos educativos/PrevencionEstafas'
 import ProteccionDatos from './pages/Recursos educativos/ProteccionDatos'
 
 import Login from './components/Login'
-import Register from './components/Register'
-
-import VerifyEmail from './pages/VerifyEmail'
 
 // MÓDULO DE REPORTES DE INCIDENTES
 import IncidentReports from './pages/IncidentReports'
@@ -185,8 +182,6 @@ function App() {
           <Route path="/recursos/ciudadania-digital" element={<CiudadaniaDigital />} />
           <Route path="/recursos/prevencion-estafas" element={<PrevencionEstafas />} />
           <Route path="/recursos/proteccion-datos" element={<ProteccionDatos />} />
-          <Route path="/verify-email" element={<VerifyEmail />} />
-
           {/*RUTAS DE AUTENTICACIÓN */}
           <Route
             path="/login"
@@ -195,17 +190,6 @@ function App() {
                 <Navigate to={redirectLoggedIn()} replace />
               ) : (
                 <Login onLogin={handleLogin} />
-              )
-            }
-          />
-
-          <Route
-            path="/register"
-            element={
-              user ? (
-                <Navigate to={redirectLoggedIn()} replace />
-              ) : (
-                <Register onLogin={handleLogin} />
               )
             }
           />

@@ -6,9 +6,6 @@ const crypto = require('crypto');
 const { query } = require('../config/database');
 const { body, validationResult } = require('express-validator');
 
-// IMPORTACIÓN DEL SERVICIO DE EMAIL
-const { sendVerificationEmail, sendWelcomeEmail } = require('../config/emailService');
-
 // CONTADOR DE INTENTOS FALLIDOS (protección contra fuerza bruta)
 const loginAttempts = new Map();
 
@@ -50,101 +47,6 @@ const clearAttempts = (email) => {
   loginAttempts.delete(email);
 };
 
-// REGISTRO (Solo POST, sin GET)
-router.post('/register', [
-  body('name').trim().isLength({ min: 3 }),
-  body('email').isEmail(),
-  body('password').isLength({ min: 6 })
-], async (req, res) => {
-  console.log('Intento de registro:', req.body.email);
-  try {
-    const errors = validationResult(req);
-    if (!errors.isEmpty()) return res.status(400).json({ errors: errors.array() });
-
-    const { name, email, password } = req.body;
-    const normalizedEmail = email.toLowerCase();
-
-    const exists = await query('SELECT id FROM users WHERE email = $1', [normalizedEmail]);
-    if (exists.rows.length > 0) return res.status(400).json({ error: 'El correo ya está registrado' });
-
-    const hashedPassword = await bcrypt.hash(password, 10);
-    const role = normalizedEmail === 'admin@rutas.com' ? 'admin' : 'user';
-
-    // Insertar usuario
-    const userResult = await query(
-      `INSERT INTO users (name, email, password, role, email_verified, status)
-        VALUES ($1, $2, $3, $4, false, 'active') RETURNING id`,
-      [name, normalizedEmail, hashedPassword, role]
-    );
-    const newUser = userResult.rows[0];
-
-    // Crear token con CRYPTO
-    const verificationToken = crypto.randomBytes(32).toString('hex');
-
-    await query(
-      `INSERT INTO email_verifications (user_id, verification_token, expires_at)
-        VALUES ($1, $2, NOW() + INTERVAL '24 hours')`,
-      [newUser.id, verificationToken]
-    );
-
-    // URL que el usuario clickeará en su correo
-    const frontendUrl = process.env.FRONTEND_URL || 'https://rutas-seguras-utm.vercel.app';
-    const verifyLink = `${frontendUrl}/verify-email?token=${verificationToken}`;
-
-    // --- ENVÍO DE EMAIL (No bloqueante) ---
-    sendVerificationEmail(normalizedEmail, name, verifyLink)
-      .then(() => console.log(`Correo enviado a: ${normalizedEmail}`))
-      .catch(mailError => console.error("Error al enviar correo (en segundo plano):", mailError.message));
-
-    res.status(201).json({
-      message: 'Registro exitoso. Revisa tu correo para verificar tu cuenta.',
-      token: verificationToken
-    });
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ error: 'Error al registrar usuario' });
-  }
-});
-
-// VERIFICACIÓN DE EMAIL
-router.get('/verify-email/:token', async (req, res) => {
-  try {
-    const { token } = req.params;
-
-    const result = await query(
-      `SELECT ev.*, u.name, u.email
-        FROM email_verifications ev
-        JOIN users u ON ev.user_id = u.id
-        WHERE ev.verification_token = $1
-        AND ev.expires_at > NOW()
-        AND ev.verified = FALSE`,
-      [token]
-    );
-
-    if (result.rows.length === 0) {
-      return res.status(400).json({ error: 'Token inválido o expirado' });
-    }
-
-    const verification = result.rows[0];
-
-    // Actualizar usuario y marcar token como usado
-    await query(`UPDATE users SET email_verified = TRUE, status = 'active' WHERE id = $1`, [verification.user_id]);
-    await query(`UPDATE email_verifications SET verified = TRUE WHERE id = $1`, [verification.id]);
-
-    // --- ENVIAR EMAIL DE BIENVENIDA ---
-    try {
-      await sendWelcomeEmail(verification.email, verification.name);
-    } catch (welcomeError) {
-      console.error("Error al enviar email de bienvenida:", welcomeError);
-    }
-
-    res.json({ message: 'Email verificado correctamente. Ya puedes iniciar sesión.' });
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ error: 'Error al verificar correo' });
-  }
-});
-
 // LOGIN MEJORADO CON CÓDIGO DE ACCESO ADMIN
 router.post('/login', [
   body('email').isEmail(),
@@ -174,11 +76,6 @@ router.post('/login', [
     }
 
     const user = result.rows[0];
-
-    // Verificar email
-    if (!user.email_verified) {
-      return res.status(403).json({ error: 'Debes verificar tu correo antes de entrar' });
-    }
 
     // Verificar estado de cuenta
     if (user.status === 'suspended') {
@@ -253,34 +150,6 @@ router.post('/login', [
     console.error('Error en login:', error);
     res.status(500).json({ error: 'Error al iniciar sesión' });
   }
-});
-
-// RUTA PARA PRUEBA RÁPIDA DE EMAIL DESDE NAVEGADOR (Solo para debugging)
-router.get('/test-email', async (req, res) => {
-  try {
-    const { email } = req.query;
-    if (!email) return res.status(400).json({ error: 'Indica un email: /test-email?email=tu@correo.com' });
-
-    console.log('--- TEST DE EMAIL INICIADO ---');
-    await sendVerificationEmail(email, 'Usuario de Prueba', 'http://localhost:3000/test');
-    res.json({ message: 'Email de prueba enviado (revisa la consola de Render para confirmación)' });
-  } catch (error) {
-    res.status(500).json({
-      error: 'Error en el test de email',
-      message: error.message,
-      code: error.code,
-      details: 'Revisa que EMAIL_USER y EMAIL_PASSWORD sean correctos en Render'
-    });
-  }
-});
-
-// Manejo de GET en rutas que solo deben ser POST (para evitar confusiones)
-router.get('/login', (req, res) => {
-  res.status(405).json({ error: 'El login solo acepta peticiones POST' });
-});
-
-router.get('/register', (req, res) => {
-  res.status(405).json({ error: 'El registro solo acepta peticiones POST' });
 });
 
 module.exports = router;

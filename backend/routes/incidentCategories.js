@@ -4,7 +4,7 @@ const { query } = require('../config/database');
 const { authenticateToken, requireAdmin } = require('../middleware/auth');
 
 // OBTENER TODAS LAS CATEGORÍAS
-router.get('/', async (req, res) => {
+router.get('/', authenticateToken, async (req, res) => {
   try {
     const result = await query(
       `SELECT * FROM incident_categories ORDER BY display_order ASC`

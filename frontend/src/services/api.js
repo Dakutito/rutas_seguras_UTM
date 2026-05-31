@@ -47,16 +47,6 @@ const authHeaders = () => {
 // ==================== AUTENTICACIÓN ====================
 
 export const authAPI = {
-  // Registro
-  register: async (userData) => {
-    const response = await fetch(`${API_URL}/api/auth/register`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(userData)
-    });
-    return handleResponse(response);
-  },
-
   // Login
   login: async (credentials) => {
     const response = await fetch(`${API_URL}/api/auth/login`, {
@@ -93,14 +83,9 @@ export const authAPI = {
       headers: authHeaders()
     });
     return handleResponse(response);
-  },
-
-  // Verificar Email
-  verifyEmail: async (token) => {
-    const response = await fetch(`${API_URL}/api/auth/verify-email/${token}`);
-    return handleResponse(response);
   }
 };
+;
 
 // ==================== USUARIOS ====================
 

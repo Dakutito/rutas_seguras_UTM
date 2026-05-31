@@ -1,9 +1,10 @@
 const express = require('express');
 const router = express.Router();
 const { query } = require('../config/database');
+const { authenticateToken, requireAdmin } = require('../middleware/auth');
 
 // Obtener lista de usuarios para el Admin
-router.get('/', async (req, res) => {
+router.get('/', authenticateToken, requireAdmin, async (req, res) => {
   try {
     const result = await query(
       `SELECT 
@@ -26,7 +27,7 @@ router.get('/', async (req, res) => {
 });
 
 // Cambiar estado (Suspender/Activar)
-router.patch('/:id/status', async (req, res) => {
+router.patch('/:id/status', authenticateToken, requireAdmin, async (req, res) => {
   const { id } = req.params;
   const { status } = req.body;
   try {
@@ -39,7 +40,7 @@ router.patch('/:id/status', async (req, res) => {
 });
 
 // Eliminar usuario
-router.delete('/:id', async (req, res) => {
+router.delete('/:id', authenticateToken, requireAdmin, async (req, res) => {
   const { id } = req.params;
   try {
     await query('DELETE FROM users WHERE id = $1', [id]);
