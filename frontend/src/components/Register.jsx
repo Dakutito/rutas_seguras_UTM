@@ -146,7 +146,7 @@ const Register = () => {
             <div style={{ display: 'flex', gap: '15px', background: '#334155', padding: '15px', borderRadius: '12px' }}>
 
               <div>
-                <strong style={{ fontSize: '14px', display: 'block', marginBottom: '4px' }}>Anonimato Total</strong>
+                <strong style={{ fontSize: '14px', display: 'block', marginBottom: '4px' }}>Anonimato Total emocional</strong>
                 <p style={{ fontSize: '12px', color: '#94a3b8', margin: 0 }}>El usuario no podrá ver los sentimientos en el mapa de otros usuarios.</p>
               </div>
             </div>
@@ -165,7 +165,7 @@ const Register = () => {
 
               <div>
                 <strong style={{ fontSize: '14px', display: 'block', marginBottom: '4px' }}>Datos Seguros Reportes</strong>
-                <p style={{ fontSize: '12px', color: '#94a3b8', margin: 0 }}>Tu nombre aparecera en los reportes de incidentes que crees.</p>
+                <p style={{ fontSize: '12px', color: '#94a3b8', margin: 0 }}>Tu nombre no aparecera en los reportes de incidentes que crees.</p>
               </div>
             </div>
 
