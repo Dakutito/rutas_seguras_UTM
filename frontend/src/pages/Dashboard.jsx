@@ -231,7 +231,7 @@ const Dashboard = ({ user }) => {
 
               <button onClick={() => setShowHistorial(true)} className="action-btn">
                 <div className="action-btn-content">
-                  <span>Reportes Emocionales</span>
+                  <span>Mis Reportes Emocionales</span>
                 </div>
                 <span className="action-btn-arrow">›</span>
               </button>

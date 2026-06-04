@@ -404,30 +404,15 @@ const MapaReporte = ({ viewOnly = false, onInicio, center: initialCenter }) => {
             </div>
           </>
         )}
-
-        {/* Leyenda (SOLO EN viewOnly) */}
-        {viewOnly && incidentTypes.length > 0 && (
-          <div className='mensajemap' style={{ margin: '15px' }}>
-            <h4 className='h4mensa'>Incidentes:</h4>
-            <div style={{ display: 'flex', flexWrap: 'wrap', gap: '12px' }}>
-              {incidentTypes.map(type => (
-                <div key={type.value} style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-                  <div style={{ width: '12px', height: '12px', borderRadius: '50%', background: type.color }}></div>
-                  <span style={{ fontSize: '12px', color: 'var(--text-secondary)' }}>{type.icon} {type.label}</span>
-                </div>
-              ))}
-            </div>
-          </div>
-        )}
       </div>
 
       {/* TOAST NOTIFICATION */}
       {toast && (
         <div className={`toast-notification toast-${toast.type}`}>
           <span className="toast-icon">
-            {toast.type === 'success' && '✅'}
+            {toast.type === 'éxito' && '✅'}
             {toast.type === 'error' && '❌'}
-            {toast.type === 'warning' && '⚠️'}
+            {toast.type === 'advertencia' && '⚠️'}
           </span>
           <span className="toast-message">{toast.message}</span>
           <button className="toast-close" onClick={() => setToast(null)}>✕</button>
