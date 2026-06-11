@@ -307,7 +307,7 @@ const MapaReporte = ({ viewOnly = false, onInicio, center: initialCenter }) => {
                     className={`filter-chip ${selectedFilters.length === 0 ? 'active' : ''}`}
                     onClick={() => setSelectedFilters([])}
                   >
-                    🔍 Todos
+                    Todos
                     <span className="chip-count">{existingIncidents.length}</span>
                   </button>
                   {incidentTypes.map(type => {
@@ -335,7 +335,7 @@ const MapaReporte = ({ viewOnly = false, onInicio, center: initialCenter }) => {
                 {/* Badge de resultados filtrados */}
                 {selectedFilters.length > 0 && (
                   <div className="filter-results-badge">
-                    📊 Mostrando {filteredIncidents.length} de {existingIncidents.length} incidentes
+                    Mostrando {filteredIncidents.length} de {existingIncidents.length} incidentes
                   </div>
                 )}
               </>
@@ -417,7 +417,6 @@ const MapaReporte = ({ viewOnly = false, onInicio, center: initialCenter }) => {
       {toast && (
         <div className={`toast-notification toast-${toast.type}`}>
           <span className="toast-icon">
-            {toast.type === 'success' && '✅'}
             {toast.type === 'error' && '❌'}
             {toast.type === 'warning' && '⚠️'}
           </span>
