@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react'
+import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { MapContainer, TileLayer, Marker, Circle, Popup, useMapEvents } from 'react-leaflet'
 import L from 'leaflet'
@@ -32,6 +32,7 @@ const MapaReporte = ({ viewOnly = false, onInicio, center: initialCenter }) => {
   const [title, setTitle] = useState('')
   const [description, setDescription] = useState('')
   const [loading, setLoading] = useState(false)
+  const [refreshing, setRefreshing] = useState(false)
   const [existingIncidents, setExistingIncidents] = useState([])
   const [userLocation, setUserLocation] = useState(null)
   const [incidentTypes, setIncidentTypes] = useState([])
@@ -80,14 +81,19 @@ const MapaReporte = ({ viewOnly = false, onInicio, center: initialCenter }) => {
     return () => window.removeEventListener('resize', handleResize)
   }, [])
 
-  const loadIncidents = useCallback(async () => {
+  const loadIncidents = async () => {
+    setRefreshing(true)
     try {
       const data = await incidentsAPI.getAll()
       setExistingIncidents(Array.isArray(data) ? data : [])
+      showToast('Incidentes actualizados', 'success')
     } catch (error) {
       console.error('Error:', error)
+      showToast('Error al actualizar incidentes', 'error')
+    } finally {
+      setRefreshing(false)
     }
-  }, [])
+  }
 
   // Cargar incidentes existentes
   useEffect(() => {
@@ -104,7 +110,7 @@ const MapaReporte = ({ viewOnly = false, onInicio, center: initialCenter }) => {
         () => console.log('No se pudo obtener ubicación')
       )
     }
-  }, [loadIncidents])
+  }, [])
 
   const handleSubmit = async () => {
     if (!incidentType) {
@@ -276,8 +282,8 @@ const MapaReporte = ({ viewOnly = false, onInicio, center: initialCenter }) => {
                     </button>
                   )}
 
-                  <button onClick={loadIncidents} className="btn-secondary-map">
-                    Actualizar
+                  <button onClick={loadIncidents} className="btn-secondary-map" disabled={refreshing}>
+                    {refreshing ? 'Actualizando...' : 'Actualizar'}
                   </button>
 
                   {/* BOTÓN MÓVIL PARA ABRIR FORMULARIO */}
@@ -411,9 +417,9 @@ const MapaReporte = ({ viewOnly = false, onInicio, center: initialCenter }) => {
       {toast && (
         <div className={`toast-notification toast-${toast.type}`}>
           <span className="toast-icon">
-            {toast.type === 'éxito' && '✅'}
+            {toast.type === 'success' && '✅'}
             {toast.type === 'error' && '❌'}
-            {toast.type === 'advertencia' && '⚠️'}
+            {toast.type === 'warning' && '⚠️'}
           </span>
           <span className="toast-message">{toast.message}</span>
           <button className="toast-close" onClick={() => setToast(null)}>✕</button>
