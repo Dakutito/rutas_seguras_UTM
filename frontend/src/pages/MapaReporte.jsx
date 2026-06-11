@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { MapContainer, TileLayer, Marker, Circle, Popup, useMapEvents } from 'react-leaflet'
 import L from 'leaflet'
@@ -80,19 +80,18 @@ const MapaReporte = ({ viewOnly = false, onInicio, center: initialCenter }) => {
     return () => window.removeEventListener('resize', handleResize)
   }, [])
 
+  const loadIncidents = useCallback(async () => {
+    try {
+      const data = await incidentsAPI.getAll()
+      setExistingIncidents(Array.isArray(data) ? data : [])
+    } catch (error) {
+      console.error('Error:', error)
+    }
+  }, [])
+
   // Cargar incidentes existentes
   useEffect(() => {
-    const loadIncidents = async () => {
-      try {
-        const data = await incidentsAPI.getAll()
-        setExistingIncidents(Array.isArray(data) ? data : [])
-      } catch (error) {
-        console.error('Error:', error)
-      }
-    }
     loadIncidents()
-
-    const interval = setInterval(loadIncidents, 10000)
 
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition(
@@ -105,9 +104,7 @@ const MapaReporte = ({ viewOnly = false, onInicio, center: initialCenter }) => {
         () => console.log('No se pudo obtener ubicación')
       )
     }
-
-    return () => clearInterval(interval)
-  }, [])
+  }, [loadIncidents])
 
   const handleSubmit = async () => {
     if (!incidentType) {
@@ -278,6 +275,10 @@ const MapaReporte = ({ viewOnly = false, onInicio, center: initialCenter }) => {
                       Ver Lista
                     </button>
                   )}
+
+                  <button onClick={loadIncidents} className="btn-secondary-map">
+                    Actualizar
+                  </button>
 
                   {/* BOTÓN MÓVIL PARA ABRIR FORMULARIO */}
                   {!viewOnly && !isDesktop && (

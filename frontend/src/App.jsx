@@ -109,9 +109,8 @@ function App() {
       }
     };
 
-    // Verificar cada 5 segundos
-    const interval = setInterval(checkStatus, 5000);
-    return () => clearInterval(interval);
+    // Verificar solo una vez cuando el usuario se carga
+    checkStatus();
   }, [user]);
 
   useEffect(() => {
